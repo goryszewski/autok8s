@@ -1,0 +1,33 @@
+
+- name: Download files
+  ansible.builtin.get_url:
+    url: https://github.com/projectcalico/calico/releases/latest/download/calicoctl-linux-amd64
+    dest: /usr/local/bin/calicoctl
+    mode: 'u=rwx,g=rx,o=rx'
+
+- name: calicoctl - test
+  ansible.builtin.shell: DATASTORE_TYPE=kubernetes calicoctl get nodes --allow-version-mismatch
+  register: calicoctl_output
+
+- name: debug calicoctl
+  debug:
+    msg: "{{calicoctl_output.stdout_lines}}"
+
+- name: Template a file to pool1.yaml
+  ansible.builtin.template:
+    src: pool1.yaml.j2
+    dest: /root/pool.yaml
+  register: touch_yaml3
+
+- name: calicoctl - test
+  ansible.builtin.shell: DATASTORE_TYPE=kubernetes calicoctl create -f /root/pool.yaml --allow-version-mismatch
+  when: touch_yaml3.changed
+  run_once: true
+  
+- name: calicoctl - test
+  ansible.builtin.shell: DATASTORE_TYPE=kubernetes calicoctl get ippools --allow-version-mismatch
+  register: calicoctl_output
+
+- name: debug calicoctl
+  debug:
+    msg: "{{calicoctl_output.stdout_lines}}"

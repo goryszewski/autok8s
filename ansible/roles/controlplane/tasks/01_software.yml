@@ -1,0 +1,11 @@
+
+- name: Download files
+  ansible.builtin.get_url:
+    url: "{{item}}"
+    dest: /usr/local/bin/
+    mode: 'u=rwx,g=rx,o=rx'
+  loop:
+    - "https://storage.googleapis.com/kubernetes-release/release/v{{k8s_version}}/bin/linux/amd64/kube-apiserver" 
+    - "https://storage.googleapis.com/kubernetes-release/release/v{{k8s_version}}/bin/linux/amd64/kube-controller-manager" 
+    - "https://storage.googleapis.com/kubernetes-release/release/v{{k8s_version}}/bin/linux/amd64/kube-scheduler" 
+    - "https://storage.googleapis.com/kubernetes-release/release/v{{k8s_version}}/bin/linux/amd64/kubectl"

@@ -1,0 +1,31 @@
+- name: pre falco 04
+  ansible.builtin.shell: FALCO_FRONTEND=noninteractive apt-get install -y falco
+  register: touch1
+
+- name: pre falco 05
+  ansible.builtin.shell: systemctl mask falcoctl-artifact-follow.service
+  register: touch2
+  when: touch1.changed
+
+- name: pre falco 06
+  ansible.builtin.shell: falco-driver-loader bpf
+  register: touch3
+  when: touch2.changed
+
+- name: pre falco 07
+  ansible.builtin.shell: falco-driver-loader 
+  register: touch4
+  when: touch3.changed
+  
+- name: pre falco 08
+  ansible.builtin.shell: systemctl start falco-bpf.service
+  when: touch4.changed
+
+
+
+# - name: pre falco 09
+#   copy:
+#     src: falco01.yml
+#     dest: '/etc/falco/rules.d/rule.yml'
+#     notify:
+#     - falco-reset

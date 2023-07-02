@@ -1,0 +1,43 @@
+- name: Install Default Software
+  apt:
+    pkg:
+      - resolvconf
+  
+- name: Template a file to tail.j2
+  ansible.builtin.template:
+    src: tail.j2
+    dest: /etc/resolvconf/resolv.conf.d/tail
+  register: touch_tail
+
+- name: resolvconf  -u
+  ansible.builtin.command: resolvconf  -u
+  when: 
+    - touch_tail.changed
+
+- name: Install Default Software
+  apt:
+    pkg:
+      - tcpdump
+      - gpg
+      - python3-pip
+      - net-tools
+      - socat 
+      - conntrack 
+      - ipset
+      - curl
+      - sudo
+
+    state: latest
+    update_cache: yes
+
+
+- name: Install python package
+  ansible.builtin.pip:
+    name: pyopenssl
+
+- name: Download file with check (sha256)
+  ansible.builtin.get_url:
+    url: https://dl.k8s.io/release/v{{k8s_version}}/bin/linux/amd64/kubectl
+    dest: /usr/bin/
+    mode: 'u=rwx,g=rx,o=rx'
+

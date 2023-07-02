@@ -1,0 +1,47 @@
+---
+# tasks file for etcd
+
+- name: Download file with check (sha256)
+  ansible.builtin.unarchive:
+    src: https://github.com/etcd-io/etcd/releases/download/v3.4.15/etcd-v3.4.15-linux-amd64.tar.gz
+    dest: /usr/local/bin
+    remote_src: yes
+
+- name: Creates directory /var/lib/etcd
+  file:
+    path: /var/lib/etcd
+    state: directory
+    owner: root
+    group: root
+    mode: '0700'
+
+- name: Creates directory /etc/etcd 
+  file:
+    path: /etc/etcd 
+    state: directory
+    owner: root
+    group: root
+    mode: '0700'
+
+- name: Template a file to etcd.service
+  ansible.builtin.template:
+    src: etcd.service.j2
+    dest: /etc/systemd/system/etcd.service
+  register: touch_etcd_service
+
+- name: Enable service 
+  ansible.builtin.systemd:
+    name: etcd
+    enabled: true
+    daemon_reload: true
+    state: restarted
+  when: touch_etcd_service.changed
+
+- name: etcdctl member list 
+  ansible.builtin.shell: "ETCDCTL_API=3 /usr/local/bin/etcd-v3.4.15-linux-amd64/etcdctl member list --endpoints=https://127.0.0.1:2379 --cacert={{CERT_PATH}}/ca_kubernetes.pem --cert={{CERT_PATH}}/kubernetes.pem --key={{CERT_PATH}}/kubernetes.key"
+  register: etcd_output
+
+- name: etcdctl debug output
+  debug:
+    msg: "{{etcd_output.stdout_lines}}"
+

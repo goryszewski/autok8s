@@ -1,0 +1,123 @@
+- name: "[{{hostname}}] system:kube-controller-manager"
+  include_tasks:
+    file: _sign.yml
+  vars: 
+    _path_key: "{{CERT_PATH}}/kube-controller-manager.key"
+    _path_crt: "{{CERT_PATH}}/kube-controller-manager.pem"
+    _common_name: "system:kube-controller-manager"
+    _organization_name: "system:kube-controller-manager"
+    _ca_key: "{{ hostvars['INIT_CA_HOST']['ca_kubernetes']['key']['source'] }}"
+    _ca_pem: "{{ hostvars['INIT_CA_HOST']['ca_kubernetes']['crt']['source'] }}" 
+
+- name: "[{{hostname}}] system:kube-proxy"
+  include_tasks:
+    file: _sign.yml
+  vars: 
+    _path_key: "{{CERT_PATH}}/kube-proxy.key"
+    _path_crt: "{{CERT_PATH}}/kube-proxy.pem"
+    _common_name: "system:kube-proxy"
+    _organization_name: "system:node-proxier"
+    _ca_key: "{{ hostvars['INIT_CA_HOST']['ca_kubernetes']['key']['source'] }}"
+    _ca_pem: "{{ hostvars['INIT_CA_HOST']['ca_kubernetes']['crt']['source'] }}"
+
+- name: "[{{hostname}}] system:kube-scheduler"
+  include_tasks:
+    file: _sign.yml
+  vars: 
+    _path_key: "{{CERT_PATH}}/kube-scheduler.key"
+    _path_crt: "{{CERT_PATH}}/kube-scheduler.pem"
+    _common_name: "system:kube-scheduler"
+    _organization_name: "system:kube-scheduler"
+    _ca_key: "{{ hostvars['INIT_CA_HOST']['ca_kubernetes']['key']['source'] }}"
+    _ca_pem: "{{ hostvars['INIT_CA_HOST']['ca_kubernetes']['crt']['source'] }}"
+
+- name: "[{{hostname}}] system:service-accounts"
+  include_tasks:
+    file: _sign.yml
+  vars: 
+    _path_key: "{{CERT_PATH}}/service-accounts.key"
+    _path_crt: "{{CERT_PATH}}/service-accounts.pem"
+    _common_name: "service-accounts"
+    _ca_key: "{{ hostvars['INIT_CA_HOST']['ca_kubernetes']['key']['source'] }}"
+    _ca_pem: "{{ hostvars['INIT_CA_HOST']['ca_kubernetes']['crt']['source'] }}"
+
+- name: "[{{hostname}}] kubernetes SAN"
+  set_fact:
+    static:
+      - "DNS:kubernetes"
+      - "DNS:kubernetes.default"
+      - "DNS:kubernetes.default.svc"
+      - "DNS:kubernetes.default.svc.cluster"
+      - "DNS:kubernetes.svc.cluster.local"
+      - "DNS:kubernetes.svc.{{domain}}"
+      - "IP:127.0.0.1"
+      - "IP:{{clusterIP}}" 
+      - "IP:{{KUBERNETES_PUBLIC_ADDRESS}}"
+    dynamic: "{{groups['controlplane'] | a_filter}}"
+
+- name: "[{{hostname}}] kubernetes"
+  include_tasks:
+    file: _sign.yml
+  vars: 
+    _path_key: "{{CERT_PATH}}/kubernetes.key"
+    _path_crt: "{{CERT_PATH}}/kubernetes.pem"
+    _common_name: "kubernetes"
+    _subject_alt_name: "{{ static + dynamic }}"
+    _ca_key: "{{ hostvars['INIT_CA_HOST']['ca_kubernetes']['key']['source'] }}"
+    _ca_pem: "{{ hostvars['INIT_CA_HOST']['ca_kubernetes']['crt']['source'] }}"
+
+- name: "[{{hostname}}] calico-cni"
+  include_tasks:
+    file: _sign.yml
+  vars: 
+    _path_key: "{{CERT_PATH}}/calico-cni.key"
+    _path_crt: "{{CERT_PATH}}/calico-cni.pem"
+    _common_name: "calico-cni"
+    _ca_key: "{{ hostvars['INIT_CA_HOST']['ca_kubernetes']['key']['source'] }}"
+    _ca_pem: "{{ hostvars['INIT_CA_HOST']['ca_kubernetes']['crt']['source'] }}"
+
+- name: "[{{hostname}}] [01_ca_typha] calico-typha"
+  include_tasks:
+    file: _sign.yml
+  vars: 
+    _path_key: "{{CERT_PATH}}/typha.key"
+    _path_crt: "{{CERT_PATH}}/typha.pem"
+    _common_name: "calico-typha"
+    _organization_name: "calico:typha"
+    _ca_key: "{{CERT_PATH}}/ca_typha.key"
+    _ca_pem: "{{CERT_PATH}}/ca_typha.pem"
+
+- name: "[{{hostname}}] [01_ca_typha] calico-node"
+  include_tasks:
+    file: _sign.yml
+  vars: 
+    _path_key: "{{CERT_PATH}}/calico-node.key"
+    _path_crt: "{{CERT_PATH}}/calico-node.pem"
+    _common_name: "calico-node"
+    _organization_name: "calico:node"
+    _ca_key: "{{CERT_PATH}}/ca_typha.key"
+    _ca_pem: "{{CERT_PATH}}/ca_typha.pem"
+
+- name: "[{{hostname}}] Admin user"
+  include_tasks:
+    file: _sign.yml
+  vars: 
+    _path_key: "{{CERT_PATH}}/admin.key"
+    _path_crt: "{{CERT_PATH}}/admin.pem"
+    _common_name: "admin"
+    _organization_name: "system:masters"
+    _ca_key: "{{ hostvars['INIT_CA_HOST']['ca_kubernetes']['key']['source'] }}"
+    _ca_pem: "{{ hostvars['INIT_CA_HOST']['ca_kubernetes']['crt']['source'] }}"
+
+- name: "[{{hostname}}] www"
+  include_tasks:
+    file: _sign.yml
+  vars: 
+    _path_key: "{{CERT_PATH}}/wwwmmlocal.key"
+    _path_crt: "{{CERT_PATH}}/wwwmmlocal.pem"
+    _common_name: "wwwlocal"
+    _subject_alt_name: 
+      - "DNS:www.mm.local"
+    _organization_name: "ingress:test"
+    _ca_key: "{{ hostvars['INIT_CA_HOST']['ca_kubernetes']['key']['source'] }}"
+    _ca_pem: "{{ hostvars['INIT_CA_HOST']['ca_kubernetes']['crt']['source'] }}"

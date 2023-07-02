@@ -1,0 +1,58 @@
+
+- name: Download files crds.yaml
+  ansible.builtin.get_url:
+    url: https://raw.githubusercontent.com/projectcalico/calico/v{{calico_version}}/manifests/crds.yaml
+    dest: /etc/kubernetes/
+  register: touch_yaml3
+
+- name: kubectl apply crds.yaml
+  ansible.builtin.command: kubectl apply -f /etc/kubernetes/crds.yaml
+  when: touch_yaml3.changed
+  ignore_errors: true
+  run_once: true
+
+
+# file 
+- name: kubectl create secret calico-typha-certs 
+  ansible.builtin.command: kubectl create secret generic -n kube-system calico-typha-certs --from-file={{CERT_PATH}}/typha.key --from-file={{CERT_PATH}}/typha.pem
+  ignore_errors: true
+  run_once: true
+
+- name: kubectl create configmap calico-typha-ca 
+  ansible.builtin.command: kubectl create configmap -n kube-system calico-typha-ca --from-file={{CERT_PATH}}/ca_typha.pem
+  ignore_errors: true
+  run_once: true
+
+- name: kubectl create secret calico-node-certs 
+  ansible.builtin.command: kubectl create secret generic -n kube-system calico-node-certs --from-file={{CERT_PATH}}/calico-node.key --from-file={{CERT_PATH}}/calico-node.pem
+  ignore_errors: true
+  run_once: true
+
+# end FILE 
+
+
+# BEGIN RBAC
+
+- name: Template a file to calico01_RBAC.yml
+  ansible.builtin.template:
+    src: calico01_RBAC.yml
+    dest: /etc/kubernetes/calico01_RBAC.yml
+  register: touch_yaml4
+
+- name: kubectl apply calico01_RBAC
+  ansible.builtin.command: kubectl apply -f /etc/kubernetes/calico01_RBAC.yml
+  when: touch_yaml4.changed
+  ignore_errors: true
+  run_once: true
+
+# END RBAC
+
+- name: TEST - kubectl get pods -A -o wide
+  ansible.builtin.shell: kubectl get pods -A -o wide
+  register: calico_typha_output
+
+- name: debug TEST - kubectl get pods -A -o wide
+  debug:
+    msg: "{{calico_typha_output.stdout_lines}}"
+
+

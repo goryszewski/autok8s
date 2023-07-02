@@ -1,0 +1,24 @@
+- name: "Add dumy CA host"
+  add_host:
+    name:   "INIT_CA_HOST"
+    data:  []
+
+- name: Creates directory
+  file:
+    path: "{{CERT_PATH}}"
+    state: directory
+    recurse: yes
+
+- import_tasks: 00.yml
+  delegate_to: '{{groups.init[0]}}'
+  run_once: true
+
+- import_tasks: 02.yml
+  delegate_to: '{{groups.init[0]}}'
+  run_once: true
+
+- import_tasks: 01.yml
+
+- name: test debug
+  debug:
+    msg: "{{hostvars['INIT_CA_HOST']}}"

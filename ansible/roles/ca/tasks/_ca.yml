@@ -1,0 +1,65 @@
+- name: Creates directory
+  file:
+    path: "{{CERT_PATH}}"
+    state: directory
+
+- name: "[{{hostname}}] Create private key for new certificate"
+  community.crypto.openssl_privatekey:
+    path: '{{CERT_PATH}}/{{_name_file}}.key'
+
+#BEGIN valid CA
+
+- name: "[{{hostname}}] Check whether certificate exists"
+  stat:
+    path: '{{CERT_PATH}}/{{_name_file}}.pem'
+  register: certificate_exists
+
+- name: "[{{hostname}}] Test whether that certificate is valid tomorrow and/or in three weeks"
+  community.crypto.x509_certificate_info:
+    path:  '{{CERT_PATH}}/{{_name_file}}.pem'
+    valid_at:
+      point_1: "+1d"
+  when: certificate_exists.stat.exists
+  register: valid
+
+#END
+
+- name: "[{{hostname}}] Create certificate signing request (CSR) for CA certificate"
+  community.crypto.openssl_csr_pipe:
+    privatekey_path: '{{CERT_PATH}}/{{_name_file}}.key'
+    common_name: "{{_CA_name}}"
+    use_common_name_for_san: false
+    basic_constraints:
+      - 'CA:TRUE'
+    basic_constraints_critical: true
+    key_usage:
+      - keyCertSign
+    key_usage_critical: true
+  register: ca_csr
+  when: not certificate_exists.stat.exists or not valid.valid_at.point_1 
+
+- name: "[{{hostname}}] Create self-signed CA certificate from CSR"
+  community.crypto.x509_certificate:
+    path: '{{CERT_PATH}}/{{_name_file}}.pem'
+    csr_content: "{{ ca_csr.csr }}"
+    privatekey_path: '{{CERT_PATH}}/{{_name_file}}.key'
+    provider: selfsigned
+  when: ca_csr.changed
+
+- name: "[{{hostname}}] Read existing certificate CA if exists and valids"
+  slurp:
+    src: '{{CERT_PATH}}/{{_name_file}}.pem'
+  register: tmp_cert
+
+
+- name: "[{{hostname}}] Read existing certificate CA Key"
+  slurp:
+    src: '{{CERT_PATH}}/{{_name_file}}.key'
+  register: tmp_key
+
+- name: set fact on swarm nodes
+  set_fact: 
+    "{{_name_file}}": { "key": "{{tmp_key}}", "crt": "{{tmp_cert}}", "certs":[] } 
+  delegate_to: "INIT_CA_HOST"
+  delegate_facts: True
+

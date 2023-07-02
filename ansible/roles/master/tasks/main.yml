@@ -1,0 +1,82 @@
+- name: Creates directory
+  file:
+    path: /root/.kube
+    state: directory
+  register: touch_6
+
+# - name: key repo helm
+#   ansible.builtin.shell: curl https://baltocdn.com/helm/signing.asc | gpg --dearmor | sudo tee /usr/share/keyrings/helm.gpg > /dev/null
+#   when: touch_6.changed
+
+- name: Add ASC/GPG key to repository
+  apt_key:
+    url: "https://baltocdn.com/helm/signing.asc" # URL of the repository's asc/gpg key
+    state: present # specify 'absent' to remove the key instead
+
+# - name: repo helm
+#   ansible.builtin.shell: echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/helm.gpg] https://baltocdn.com/helm/stable/debian/ all main" | sudo tee /etc/apt/sources.list.d/helm-stable-debian.list
+#   when: touch_6.changed
+- name: Add helm repository
+  apt_repository:
+    repo: "deb https://baltocdn.com/helm/stable/debian/ all main"
+    state: present
+    filename: helm-stable-debian
+  register: touch_6
+
+- name: Install helm
+  ansible.builtin.apt:
+    update_cache: yes
+    pkg:
+    - helm
+  when: touch_6.changed
+
+
+- name: kubectl init cluster
+  ansible.builtin.shell: kubeadm init --pod-network-cidr {{ cluster_cidr }} --kubernetes-version {{ k8s_version }}
+  register: touch_7
+
+
+- name: config kube
+  ansible.builtin.shell: cp /etc/kubernetes/admin.conf /root/.kube/config
+  when: touch_7.changed
+  register: touch_8 
+
+- name: create calico network
+  ansible.builtin.shell: kubectl apply -f {{ callico_yaml }}
+  when: touch_8.changed
+
+- name: kubectl get token
+  ansible.builtin.shell: kubeadm token create --print-join-command
+  register: data
+
+- name: "Add K8S Token and Hash to dummy host"
+  add_host:
+    name:   "K8S_TOKEN_HOLDER"
+    token:  "{{ data.stdout_lines[0]}}"
+- debug:
+    var: data.stdout_lines[0]
+
+
+# - name: "repo admiss"
+#   ansible.builtin.git:
+#     repo: 'git clone https://github.com/linuxacademy/content-cks-trivy-k8s-webhook.git'
+#     dest: /root/
+
+
+# - name: K8s - config
+#   copy:
+#     src: k8s-defauly.yml
+#     dest: '/srv/k8s-defauly.yml'
+#   register: k8s
+
+# - name: K8s - init
+#   ansible.builtin.shell: kubectl apply -f /srv/k8s-defauly.yml
+#   when: k8s.changed
+
+- name: "Example2: Add the line if it does not exist"
+  lineinfile:
+    path: /root/.bashrc
+    line: "alias"
+    state: present
+    backup: yes
+  register: example2out

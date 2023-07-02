@@ -1,0 +1,34 @@
+#/etc/systemd/system/etcd.service
+[Unit]
+Description=etcd
+Documentation=https://github.com/coreos
+
+[Service]
+Type=notify
+ExecStart=/usr/local/bin/etcd-v3.4.15-linux-amd64/etcd \
+  --name {{inventory_hostname}} \
+  --cert-file={{CERT_PATH}}/kubernetes.pem \
+  --key-file={{CERT_PATH}}/kubernetes.key \
+  --peer-cert-file={{CERT_PATH}}/kubernetes.pem \
+  --peer-key-file={{CERT_PATH}}/kubernetes.key \
+  --trusted-ca-file={{CERT_PATH}}/ca_kubernetes.pem \
+  --peer-trusted-ca-file={{CERT_PATH}}/ca_kubernetes.pem \
+  --peer-client-cert-auth \
+  --client-cert-auth \
+  --initial-advertise-peer-urls https://{{inventory_hostname}}:2380 \
+  --listen-peer-urls https://{{inventory_hostname}}:2380 \
+  --listen-client-urls https://{{inventory_hostname}}:2379,https://127.0.0.1:2379 \
+  --advertise-client-urls https://{{inventory_hostname}}:2379 \
+  --initial-cluster-token etcd-cluster-0 \
+{% set masters = [] %}
+{% for worker in groups['etcd'] %}
+{% set masters= masters.append('{0}=https://{0}:2380'.format(worker)) %}
+{% endfor %}
+  --initial-cluster {{masters | join(",")}} \
+  --initial-cluster-state new \
+  --data-dir=/var/lib/etcd
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

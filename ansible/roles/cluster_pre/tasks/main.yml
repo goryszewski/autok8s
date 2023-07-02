@@ -1,0 +1,2 @@
+- import_tasks: 02_k8s.yml
+- import_tasks: 03_calico.yml

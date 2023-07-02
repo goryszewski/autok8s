@@ -1,0 +1,15 @@
+
+
+- name: "CA Kubernetes"
+  include_tasks:
+    file: _ca.yml
+  vars: 
+    _name_file: 'ca_kubernetes'
+    _CA_name: "Kubernetes CA "
+
+- name: "CA Typha"
+  include_tasks:
+    file: _ca.yml
+  vars: 
+    _name_file: 'ca_typha'
+    _CA_name: "Calico Typha CA"

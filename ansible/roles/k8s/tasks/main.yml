@@ -1,0 +1,6 @@
+- import_tasks: repo.yml
+- import_tasks: linux-pre.yml
+- import_tasks: containerd.yml
+- import_tasks: ped-pack.yml
+- import_tasks: k8s.yml
+- import_tasks: falco.yml

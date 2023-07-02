@@ -1,0 +1,25 @@
+---
+
+- name: Template a file to calico.yml
+  ansible.builtin.copy:
+    src: calico.yml
+    dest: /etc/kubernetes/config/calico.yml
+  register: touch_calico_yml
+
+- name: kubectl apply calico
+  ansible.builtin.command: kubectl apply -f /etc/kubernetes/config/calico.yml
+  when: touch_calico_yml.changed
+  ignore_errors: true
+  run_once: true
+
+- name: Template dns.yml
+  ansible.builtin.template:
+    src: dns.yml
+    dest: /etc/kubernetes/config/dns.yml
+  register: touch_dns_yml
+
+- name: kubectl apply dns.yml
+  ansible.builtin.command: kubectl apply -f /etc/kubernetes/config/dns.yml
+  when: touch_dns_yml.changed
+  ignore_errors: true
+  run_once: true

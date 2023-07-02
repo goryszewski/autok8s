@@ -1,0 +1,43 @@
+- hosts: haproxy
+  gather_facts: no
+  roles:
+    - haproxy
+    - keepalive
+
+- hosts: controlplane
+  gather_facts: no
+  roles:
+    # - common
+    - ca
+
+- hosts: worker
+  gather_facts: no
+  roles:
+    # - common
+    - certs
+
+- hosts: etcd
+  gather_facts: no
+  roles:
+    - etcd
+
+- hosts: controlplane
+  gather_facts: no
+  roles:
+    - controlplane
+
+- hosts: controlplane
+  gather_facts: no
+  roles:
+    - cluster_pre
+
+- hosts: worker
+  gather_facts: no
+  roles:
+    - worker_v2
+
+- hosts: controlplane
+  gather_facts: no
+  roles:
+    - cluster_post
+

@@ -1,0 +1,20 @@
+
+cluster_cidr: 10.10.0.0/16 # pod_cidr pod-cidr=10.200.${i}.0/24
+network_servers: 10.17.3.0/24 # node_network  10.240.0.0/24
+service_cluster_ip_range: 10.32.0.0/24 # address range (10.32.0.0/24) reserved for internal cluster 
+callico_yaml: https://raw.githubusercontent.com/projectcalico/calico/v3.25.0/manifests/calico.yaml
+http: 30080
+https: 30443
+
+CERT_PATH: "/etc/kubernetes/pki"
+
+KUBERNETES_PUBLIC_ADDRESS: 10.17.3.2
+clusterDNS: 10.32.0.10
+clusterIP: 10.32.0.1
+# cert
+CA_name: "Mideawork CA"
+cert_country_name: "PL"
+cert_organization_name: "Kubernetes"
+cert_organizational_unit_name: "IT"
+cert_state_or_province_name: "Mazovia"
+email_address: "goryszewski@gmail.com"

@@ -1,0 +1,11 @@
+- name: Install k8s version {{ k8s_version }}-00
+  ansible.builtin.apt:
+    update_cache: yes
+    allow_change_held_packages: true
+    pkg:
+      - kubelet={{ k8s_version }}-00
+      - kubeadm={{ k8s_version }}-00
+      - kubectl={{ k8s_version }}-00
+
+- name: crictl config --set
+  ansible.builtin.shell: crictl config --set runtime-endpoint=unix:///run/containerd/containerd.sock --set image-endpoint=unix:///run/containerd/containerd.sock

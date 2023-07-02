@@ -1,0 +1,40 @@
+- name: containerd-  Update the repository cache and install containerd
+  ansible.builtin.apt:
+    state: latest
+    update_cache: yes
+    allow_change_held_packages: true
+    pkg:
+      - containerd.io=1.6.21-1
+
+- name: containerd - Creates directory
+  file:
+    path: /etc/containerd
+    state: directory
+
+- name: containerd - config default
+  ansible.builtin.shell: containerd config default | sudo tee /etc/containerd/config.toml
+  notify:
+    - Restart-service-containerd
+
+- name: gVisor - Install sunsc
+  ansible.builtin.apt:
+    update_cache: yes
+    allow_change_held_packages: true
+    pkg:
+      - runsc
+
+- name: gVisor - config
+  copy:
+    src: config.toml
+    dest: '/etc/containerd/config.toml'
+  notify:
+    - Restart-service-containerd
+
+- name: Force all notified handlers to run at this point, not waiting for normal sync points
+  ansible.builtin.meta: flush_handlers
+  # https://docs.ansible.com/ansible/latest/collections/ansible/builtin/meta_module.html#meta-module
+
+- name: Install crictl Software
+  apt:
+    pkg:
+      - cri-tools

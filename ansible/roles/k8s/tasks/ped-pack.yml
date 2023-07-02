@@ -1,0 +1,11 @@
+  - name: Install a list of packages
+    ansible.builtin.apt:
+      pkg:
+      - apt-transport-https
+      - inetutils-ping
+      - tcpdump
+      - curl
+      - vim
+      - git
+      - net-tools
+      - trivy

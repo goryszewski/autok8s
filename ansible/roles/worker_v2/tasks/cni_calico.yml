@@ -1,0 +1,59 @@
+- name: Creates directory 
+  file:
+    path: "{{item}}"
+    state: directory
+    owner: root
+    group: root
+    mode: '0700'
+  loop:
+    - /etc/cni
+    - /opt/cni
+    - /etc/cni/net.d
+    - /opt/cni/bin 
+
+- name: Download files
+  ansible.builtin.get_url:
+    url: "{{item}}"
+    dest: /usr/local/bin/
+    mode: 'u=rwx,g=rx,o=rx'
+  loop:
+    - https://github.com/containernetworking/plugins/releases/download/v1.3.0/cni-plugins-linux-amd64-v1.3.0.tgz
+  register: touchcni
+
+- name: tar cni
+  ansible.builtin.command: tar zxvf /usr/local/bin/cni-plugins-linux-amd64-v1.3.0.tgz -C /opt/cni/bin/
+  when: 
+    - touchcni.changed
+
+
+  
+- name: kubectl config step 1
+  ansible.builtin.command: kubectl config set-cluster kubernetes-the-hard-way --certificate-authority=/etc/kubernetes/pki/ca_kubernetes.pem --embed-certs=true --server=https://{{KUBERNETES_PUBLIC_ADDRESS}}:6443 --kubeconfig=/etc/kubernetes/config/cni.kubeconfig
+
+- name: kubectl config step 2
+  ansible.builtin.command: kubectl config set-credentials calico-cni --client-certificate=/etc/kubernetes/pki/calico-cni.pem --client-key=/etc/kubernetes/pki/calico-cni.key --embed-certs=true --kubeconfig=/etc/kubernetes/config/cni.kubeconfig
+
+- name: kubectl config step 3
+  ansible.builtin.command: kubectl config set-context default --cluster=kubernetes-the-hard-way --user=calico-cni --kubeconfig=/etc/kubernetes/config/cni.kubeconfig
+
+- name: kubectl config step 4
+  ansible.builtin.command: kubectl config use-context default --kubeconfig=/etc/kubernetes/config/cni.kubeconfig
+
+- name: Download files /opt/cni/bin/calico
+  ansible.builtin.get_url:
+    url: https://github.com/projectcalico/cni-plugin/releases/download/v{{calico_version_cni}}/calico-amd64
+    dest: /opt/cni/bin/calico
+    mode: 'u=rwx,g=rx,o=rx'
+- name: Download files /opt/cni/bin/calico-ipam
+  ansible.builtin.get_url:
+    url: https://github.com/projectcalico/cni-plugin/releases/download/v{{calico_version_cni}}/calico-ipam-amd64
+    dest: /opt/cni/bin/calico-ipam
+    mode: 'u=rwx,g=rx,o=rx'
+
+- name: Template a file to 10-calico.conflist.j2
+  ansible.builtin.template:
+    src: 10-calico.conflist.j2
+    dest: /etc/cni/net.d/10-calico.conflist 
+
+  notify:
+    - Restart-service-containerd

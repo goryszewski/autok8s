@@ -1,0 +1,44 @@
+
+- name: kubectl config step 1
+  ansible.builtin.command: kubectl config set-cluster kubernetes-the-hard-way --certificate-authority=/etc/kubernetes/pki/ca_kubernetes.pem --embed-certs=true --server=https://{{KUBERNETES_PUBLIC_ADDRESS}}:6443 --kubeconfig=/etc/kubernetes/config/kube-proxy.kubeconfig
+- name: kubectl config step 2
+  ansible.builtin.command: kubectl config set-credentials system:kube-proxy --client-certificate=/etc/kubernetes/pki/kube-proxy.pem --client-key=/etc/kubernetes/pki/kube-proxy.key --embed-certs=true --kubeconfig=/etc/kubernetes/config/kube-proxy.kubeconfig
+- name: kubectl config step 3
+  ansible.builtin.command: kubectl config set-context default --cluster=kubernetes-the-hard-way --user=system:kube-proxy --kubeconfig=/etc/kubernetes/config/kube-proxy.kubeconfig
+- name: kubectl config step 4
+  ansible.builtin.command: kubectl config use-context default --kubeconfig=/etc/kubernetes/config/kube-proxy.kubeconfig
+
+- name: Creates directory /var/lib/kube-proxy/
+  file:
+    path: /var/lib/kube-proxy/
+    state: directory
+    owner: root
+    group: root
+    mode: '0700'
+
+- name: Download files
+  ansible.builtin.get_url:
+    url: "{{item}}"
+    dest: /usr/local/bin/
+    mode: 'u=rwx,g=rx,o=rx'
+  loop:
+    - https://storage.googleapis.com/kubernetes-release/release/v{{k8s_version}}/bin/linux/amd64/kube-proxy
+
+- name: Template a file to kube-proxy-config.yaml.j2
+  ansible.builtin.template:
+    src: kube-proxy-config.yaml.j2
+    dest: /var/lib/kube-proxy/kube-proxy-config.yaml
+
+- name: Template a file to kube-proxy.service.j2
+  ansible.builtin.template:
+    src: kube-proxy.service.j2
+    dest: /etc/systemd/system/kube-proxy.service
+  register: touch_kube_proxy_service
+
+- name: Enable service kube-proxy
+  ansible.builtin.systemd:
+    name: kube-proxy
+    enabled: true
+    daemon_reload: true
+    state: restarted
+  when: touch_kube_proxy_service.changed

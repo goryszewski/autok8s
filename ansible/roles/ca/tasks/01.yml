@@ -1,0 +1,116 @@
+
+- name: Write certificate 
+  copy:
+    dest: "{{ hostvars['INIT_CA_HOST']['ca_kubernetes']['crt']['source'] }}"
+    content: "{{ hostvars['INIT_CA_HOST']['ca_kubernetes']['crt']['content']|b64decode }}"
+
+- name: Write key 
+  copy:
+    dest: "{{ hostvars['INIT_CA_HOST']['ca_kubernetes']['key']['source'] }}"
+    content: "{{ hostvars['INIT_CA_HOST']['ca_kubernetes']['key']['content']|b64decode }}"
+
+
+- name: Write certificate 
+  copy:
+    dest: "{{ hostvars['INIT_CA_HOST']['ca_typha']['crt']['source'] }}"
+    content: "{{ hostvars['INIT_CA_HOST']['ca_typha']['crt']['content']|b64decode }}"
+
+- name: Write key 
+  copy:
+    dest: "{{ hostvars['INIT_CA_HOST']['ca_typha']['key']['source'] }}"
+    content: "{{ hostvars['INIT_CA_HOST']['ca_typha']['key']['content']|b64decode }}"
+###
+- name: Write certificate system_kube_controller_manager
+  copy:
+    dest: "{{ hostvars['INIT_CA_HOST']['system_kube_controller_manager']['crt']['source'] }}"
+    content: "{{ hostvars['INIT_CA_HOST']['system_kube_controller_manager']['crt']['content']|b64decode }}"
+
+- name: Write key system_kube_controller_manager
+  copy:
+    dest: "{{ hostvars['INIT_CA_HOST']['system_kube_controller_manager']['key']['source'] }}"
+    content: "{{ hostvars['INIT_CA_HOST']['system_kube_controller_manager']['key']['content']|b64decode }}"
+##
+- name: Write certificate system_kube_proxy
+  copy:
+    dest: "{{ hostvars['INIT_CA_HOST']['system_kube_proxy']['crt']['source'] }}"
+    content: "{{ hostvars['INIT_CA_HOST']['system_kube_proxy']['crt']['content']|b64decode }}"
+
+- name: Write key system_kube_proxy
+  copy:
+    dest: "{{ hostvars['INIT_CA_HOST']['system_kube_proxy']['key']['source'] }}"
+    content: "{{ hostvars['INIT_CA_HOST']['system_kube_proxy']['key']['content']|b64decode }}"
+##
+- name: Write certificate system_kube_scheduler
+  copy:
+    dest: "{{ hostvars['INIT_CA_HOST']['system_kube_scheduler']['crt']['source'] }}"
+    content: "{{ hostvars['INIT_CA_HOST']['system_kube_scheduler']['crt']['content']|b64decode }}"
+
+- name: Write key system_kube_scheduler
+  copy:
+    dest: "{{ hostvars['INIT_CA_HOST']['system_kube_scheduler']['key']['source'] }}"
+    content: "{{ hostvars['INIT_CA_HOST']['system_kube_scheduler']['key']['content']|b64decode }}"
+##
+- name: Write certificate service_accounts
+  copy:
+    dest: "{{ hostvars['INIT_CA_HOST']['service_accounts']['crt']['source'] }}"
+    content: "{{ hostvars['INIT_CA_HOST']['service_accounts']['crt']['content']|b64decode }}"
+
+- name: Write key service_accounts
+  copy:
+    dest: "{{ hostvars['INIT_CA_HOST']['service_accounts']['key']['source'] }}"
+    content: "{{ hostvars['INIT_CA_HOST']['service_accounts']['key']['content']|b64decode }}"
+
+##
+- name: Write certificate kubernetes
+  copy:
+    dest: "{{ hostvars['INIT_CA_HOST']['kubernetes']['crt']['source'] }}"
+    content: "{{ hostvars['INIT_CA_HOST']['kubernetes']['crt']['content']|b64decode }}"
+
+- name: Write key kubernetes
+  copy:
+    dest: "{{ hostvars['INIT_CA_HOST']['kubernetes']['key']['source'] }}"
+    content: "{{ hostvars['INIT_CA_HOST']['kubernetes']['key']['content']|b64decode }}"
+##
+- name: Write certificate calico_cni
+  copy:
+    dest: "{{ hostvars['INIT_CA_HOST']['calico_cni']['crt']['source'] }}"
+    content: "{{ hostvars['INIT_CA_HOST']['calico_cni']['crt']['content']|b64decode }}"
+
+- name: Write key calico_cni
+  copy:
+    dest: "{{ hostvars['INIT_CA_HOST']['calico_cni']['key']['source'] }}"
+    content: "{{ hostvars['INIT_CA_HOST']['calico_cni']['key']['content']|b64decode }}"    
+
+##
+- name: Write certificate calico_typha
+  copy:
+    dest: "{{ hostvars['INIT_CA_HOST']['calico_typha']['crt']['source'] }}"
+    content: "{{ hostvars['INIT_CA_HOST']['calico_typha']['crt']['content']|b64decode }}"
+
+- name: Write key calico_typha
+  copy:
+    dest: "{{ hostvars['INIT_CA_HOST']['calico_typha']['key']['source'] }}"
+    content: "{{ hostvars['INIT_CA_HOST']['calico_typha']['key']['content']|b64decode }}"    
+
+##
+- name: Write certificate calico_node
+  copy:
+    dest: "{{ hostvars['INIT_CA_HOST']['calico_node']['crt']['source'] }}"
+    content: "{{ hostvars['INIT_CA_HOST']['calico_node']['crt']['content']|b64decode }}"
+
+- name: Write key calico_node
+  copy:
+    dest: "{{ hostvars['INIT_CA_HOST']['calico_node']['key']['source'] }}"
+    content: "{{ hostvars['INIT_CA_HOST']['calico_node']['key']['content']|b64decode }}"
+
+
+##
+- name: Write certificate admin
+  copy:
+    dest: "{{ hostvars['INIT_CA_HOST']['admin']['crt']['source'] }}"
+    content: "{{ hostvars['INIT_CA_HOST']['admin']['crt']['content']|b64decode }}"
+
+- name: Write key admin
+  copy:
+    dest: "{{ hostvars['INIT_CA_HOST']['admin']['key']['source'] }}"
+    content: "{{ hostvars['INIT_CA_HOST']['admin']['key']['content']|b64decode }}"

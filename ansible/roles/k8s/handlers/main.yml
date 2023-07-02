@@ -1,0 +1,12 @@
+  - name: sysctl--system
+    ansible.builtin.shell: sysctl --system
+
+  - name: Restart-service-containerd
+    ansible.builtin.service:
+      name: containerd
+      state: restarted
+
+  - name: falco-reset
+    ansible.builtin.service:
+      name: falco-bpf.service
+      state: restarted

@@ -1,0 +1,14 @@
+---
+# tasks file for keepalived
+- name: "[keepalived] Install"
+  ansible.builtin.package:
+    name: keepalived
+    state: present
+
+- name: "[keepalived] configuration file"
+  template:
+    src: "config.j2"
+    dest: "/etc/keepalived/keepalived.conf"
+
+  notify:
+    - Restart keepalived

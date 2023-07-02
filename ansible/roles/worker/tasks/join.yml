@@ -1,0 +1,6 @@
+- name: kubectl get token
+  ansible.builtin.shell: "{{ hostvars['K8S_TOKEN_HOLDER']['token'] }}"
+  register: data2
+
+- debug:
+    var: data2.stdout_lines

@@ -1,0 +1,4 @@
+# ca import
+- import_tasks: 00_ca.yml 
+
+- import_tasks: 01_cert_nodes.yml
