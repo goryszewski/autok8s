@@ -1,2 +1,7 @@
 ---
 # vars file for etcd
+
+etcd:
+  version: "v3.5.9"
+  platform: "linux-amd64"
+  members: "{{groups['etcd']  | endpoints | join(',')  }}"

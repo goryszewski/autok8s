@@ -46,13 +46,3 @@
   run_once: true
 
 # END RBAC
-
-- name: TEST - kubectl get pods -A -o wide
-  ansible.builtin.shell: kubectl get pods -A -o wide
-  register: calico_typha_output
-
-- name: debug TEST - kubectl get pods -A -o wide
-  debug:
-    msg: "{{calico_typha_output.stdout_lines}}"
-
-

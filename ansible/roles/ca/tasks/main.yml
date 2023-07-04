@@ -9,15 +9,15 @@
     state: directory
     recurse: yes
 
-- import_tasks: 00.yml
+- import_tasks: 00_generate_CA.yml
   delegate_to: '{{groups.init[0]}}'
   run_once: true
 
-- import_tasks: 02.yml
+- import_tasks: 01_generate_certs.yml
   delegate_to: '{{groups.init[0]}}'
   run_once: true
 
-- import_tasks: 01.yml
+- import_tasks: 02_redistributed_CA_certs.yml
 
 - name: test debug
   debug:

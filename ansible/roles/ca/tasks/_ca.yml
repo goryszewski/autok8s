@@ -1,4 +1,4 @@
-- name: Creates directory
+- name: "Creates directory: {{CERT_PATH}}"
   file:
     path: "{{CERT_PATH}}"
     state: directory
@@ -14,7 +14,7 @@
     path: '{{CERT_PATH}}/{{_name_file}}.pem'
   register: certificate_exists
 
-- name: "[{{hostname}}] Test whether that certificate is valid tomorrow and/or in three weeks"
+- name: "[{{hostname}}] Test whether that certificate is valid tomorrow"
   community.crypto.x509_certificate_info:
     path:  '{{CERT_PATH}}/{{_name_file}}.pem'
     valid_at:
@@ -57,7 +57,7 @@
     src: '{{CERT_PATH}}/{{_name_file}}.key'
   register: tmp_key
 
-- name: set fact on swarm nodes
+- name: set fact about CA 
   set_fact: 
     "{{_name_file}}": { "key": "{{tmp_key}}", "crt": "{{tmp_cert}}", "certs":[] } 
   delegate_to: "INIT_CA_HOST"

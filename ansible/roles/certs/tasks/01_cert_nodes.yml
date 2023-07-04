@@ -4,7 +4,7 @@
 
 - name: system:node:{{hostname}}
   include_tasks:
-    file: sign.yml
+    file: _sign.yml
   vars: 
     _path_key: "/etc/ssl/private/certificate.key"
     _path_crt: /etc/ssl/certs/certificate.pem

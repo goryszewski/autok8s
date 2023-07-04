@@ -1,24 +1,29 @@
 #VAR 
 CONF_domain=goryszewski.local
 
-# TEMPLATE=debian12
-TEMPLATE=debian11
-LIBVIRT_PATH=template=/var/lib/libvirt/images
-# config
+# Terraform_VARS= -var 'template=/var/lib/libvirt/images/debian11.qcow2' \
+# 				-var 'domain=$(CONF_domain)' \
+# 				-var 'hosts={"master01" : { "tags" : ["controlplane","etcd","init"] },\
+# 							"master02"  : { "tags" : ["controlplane","etcd"] }, \
 
-Terraform_VARS=-var '$(LIBVIRT_PATH)/$(TEMPLATE).qcow2' \
-		-var 'domain=$(CONF_domain)' \
-		-var 'hosts={"master01" : { "tags" : ["controlplane","etcd","init"] },\
-					 "master02" : { "tags" : ["controlplane","etcd"] }, \
-					 "worker01" : { "tags" : ["worker"] }, \
-					 "worker02" : { "tags" : ["worker"] }, \
-					 "haproxy01" : { "tags" : ["haproxy"] }}' 
+# 							"haproxy01" : { "tags" : ["haproxy","keepalive_master"],}, \
+# 							"haproxy02" : { "tags" : ["haproxy"], "template" : "/var/lib/libvirt/images/debian12.qcow2"  } \
+# 							}' 
 
-# Terraform_VARS=-var '$(LIBVIRT_PATH)/$(TEMPLATE).qcow2' \
-# 		-var 'domain=$(CONF_domain)' \
-# 		-var 'hosts={"master01" : { "tags" : ["controlplane","etcd","init"] },\
-# 					 "worker01" : { "tags" : ["worker"] }, \
-# 					 "worker02" : { "tags" : ["worker"] }}' 
+Terraform_VARS= -var 'domain=$(CONF_domain)' \
+				-var 'hosts={"master01" : { "tags" : ["controlplane","etcd","init"],\
+											"template" : "/var/lib/libvirt/images/debian12.qcow2" },\
+							 "master02" : { "tags" : ["controlplane","etcd"],\
+											"template" : "/var/lib/libvirt/images/debian11.qcow2" },\
+				   			 "worker01" : { "tags" : ["worker"] , \
+							 			    "template" : "/var/lib/libvirt/images/debian11.qcow2"}, \
+							 "worker02" : { "tags" : ["worker"] , \
+							 			    "template" : "/var/lib/libvirt/images/debian11.qcow2"}, \
+							 "haproxy01" : { "tags" : ["haproxy","master"], \
+							                 "template" : "/var/lib/libvirt/images/debian12.qcow2"}, \
+							 "haproxy02" : { "tags" : ["haproxy"], \
+							                 "template" : "/var/lib/libvirt/images/debian11.qcow2"} \
+							}' 
 
 inventory=-i ./scripts/libvirt_inventory.py
 

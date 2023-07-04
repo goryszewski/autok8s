@@ -53,7 +53,7 @@
       - "IP:127.0.0.1"
       - "IP:{{clusterIP}}" 
       - "IP:{{KUBERNETES_PUBLIC_ADDRESS}}"
-    dynamic: "{{groups['controlplane'] | a_filter}}"
+    dynamic: "{{groups['controlplane'] | fix_to_san}}"
 
 - name: "[{{hostname}}] kubernetes"
   include_tasks:
@@ -106,18 +106,5 @@
     _path_crt: "{{CERT_PATH}}/admin.pem"
     _common_name: "admin"
     _organization_name: "system:masters"
-    _ca_key: "{{ hostvars['INIT_CA_HOST']['ca_kubernetes']['key']['source'] }}"
-    _ca_pem: "{{ hostvars['INIT_CA_HOST']['ca_kubernetes']['crt']['source'] }}"
-
-- name: "[{{hostname}}] www"
-  include_tasks:
-    file: _sign.yml
-  vars: 
-    _path_key: "{{CERT_PATH}}/wwwmmlocal.key"
-    _path_crt: "{{CERT_PATH}}/wwwmmlocal.pem"
-    _common_name: "wwwlocal"
-    _subject_alt_name: 
-      - "DNS:www.mm.local"
-    _organization_name: "ingress:test"
     _ca_key: "{{ hostvars['INIT_CA_HOST']['ca_kubernetes']['key']['source'] }}"
     _ca_pem: "{{ hostvars['INIT_CA_HOST']['ca_kubernetes']['crt']['source'] }}"

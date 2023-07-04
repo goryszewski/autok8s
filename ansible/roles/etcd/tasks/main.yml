@@ -1,11 +1,27 @@
 ---
 # tasks file for etcd
+- name: Download etcd
+  ansible.builtin.get_url:
+    url: "https://github.com/etcd-io/etcd/releases/download/{{etcd['version']}}/etcd-{{etcd['version']}}-{{etcd['platform']}}.tar.gz"
+    dest: /tmp
+    mode: 'u=rwx,g=rx,o=rx'
+    checksum: sha256:https://github.com/etcd-io/etcd/releases/download/{{etcd['version']}}/SHA256SUMS
 
-- name: Download file with check (sha256)
+- name: unarchive etcd
   ansible.builtin.unarchive:
-    src: https://github.com/etcd-io/etcd/releases/download/v3.4.15/etcd-v3.4.15-linux-amd64.tar.gz
-    dest: /usr/local/bin
+    src: /tmp/etcd-{{etcd['version']}}-{{etcd['platform']}}.tar.gz
+    dest: /tmp
     remote_src: yes
+
+- name: Copy etcd
+  ansible.builtin.copy:
+    src: /tmp/etcd-{{etcd['version']}}-{{etcd['platform']}}/{{item}}
+    dest: /usr/local/bin
+    mode: '0555'
+    remote_src: yes
+  loop:
+   - etcdctl
+   - etcd
 
 - name: Creates directory /var/lib/etcd
   file:
@@ -37,11 +53,12 @@
     state: restarted
   when: touch_etcd_service.changed
 
-- name: etcdctl member list 
-  ansible.builtin.shell: "ETCDCTL_API=3 /usr/local/bin/etcd-v3.4.15-linux-amd64/etcdctl member list --endpoints=https://127.0.0.1:2379 --cacert={{CERT_PATH}}/ca_kubernetes.pem --cert={{CERT_PATH}}/kubernetes.pem --key={{CERT_PATH}}/kubernetes.key"
-  register: etcd_output
-
-- name: etcdctl debug output
-  debug:
-    msg: "{{etcd_output.stdout_lines}}"
-
+- name: "[{{hostname}}] DEBUG ETCD"
+  include_tasks:
+    file: _run_debug.yml
+  vars: 
+    _CMD: "{{item}}"
+  loop:
+  - "ETCDCTL_API=3 etcdctl --write-out=table --endpoints={{etcd['members']}} member list  --cacert={{CERT_PATH}}/ca_kubernetes.pem --cert={{CERT_PATH}}/kubernetes.pem --key={{CERT_PATH}}/kubernetes.key"
+  - "ETCDCTL_API=3 etcdctl --write-out=table --endpoints={{etcd['members']}} endpoint status  --cacert={{CERT_PATH}}/ca_kubernetes.pem --cert={{CERT_PATH}}/kubernetes.pem --key={{CERT_PATH}}/kubernetes.key"
+  - "ETCDCTL_API=3 etcdctl --write-out=table --endpoints={{etcd['members']}} endpoint health  --cacert=/etc/kubernetes/pki/ca_kubernetes.pem --cert=/etc/kubernetes/pki/kubernetes.pem --key=/etc/kubernetes/pki/kubernetes.key"

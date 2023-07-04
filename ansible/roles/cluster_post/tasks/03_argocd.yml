@@ -3,9 +3,15 @@
 #  ~/Downloads/argocd-linux-amd64 admin initial-password -n argocd
 # argocd app create test_argocd --repo git@github.com:goryszewski/test_argocd.git --path test_argocd --dest-namespace default
 
-- name: kubectl create namespace argocd
-  ansible.builtin.command: kubectl create namespace argocd
+- name: Copy argocd_pre.yml
+  ansible.builtin.copy:
+    src: argocd_pre.yml
+    dest: /etc/kubernetes/config/argocd_pre.yml
+  register: touch_argocd_yml
 
+- name: kubectl apply argocd_pre.yml
+  ansible.builtin.command: kubectl apply -n argocd  -f /etc/kubernetes/config/argocd_pre.yml
+  when: touch_argocd_yml.changed
   ignore_errors: true
   run_once: true
 
@@ -18,17 +24,5 @@
 - name: kubectl apply argocd.yml
   ansible.builtin.command: kubectl apply -n argocd  -f /etc/kubernetes/config/argocd.yml
   when: touch_argocd_yml.changed
-  ignore_errors: true
-  run_once: true
-
-- name: Copy argo_app.yml
-  ansible.builtin.copy:
-    src: argo_app.yml
-    dest: /etc/kubernetes/config/argo_app.yml
-  register: touch_argo_app_yml
-
-- name: kubectl apply argo_app.yml
-  ansible.builtin.command: kubectl apply -f /etc/kubernetes/config/argo_app.yml
-  when: touch_argo_app_yml.changed
   ignore_errors: true
   run_once: true

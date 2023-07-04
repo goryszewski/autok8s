@@ -12,3 +12,7 @@
 - import_tasks: 03_argocd.yml
   delegate_to: '{{groups.init[0]}}'
   run_once: true
+
+- import_tasks: 04_deploy_app.yml
+  delegate_to: '{{groups.init[0]}}'
+  run_once: true

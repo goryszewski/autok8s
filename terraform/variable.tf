@@ -2,10 +2,6 @@ variable "domain" {
   type    = string
 }
 
-variable "template" {
-  type    = string
-}
-
 variable "hosts" {
   type = map
 }

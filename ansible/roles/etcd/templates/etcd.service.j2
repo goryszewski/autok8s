@@ -1,11 +1,11 @@
 #/etc/systemd/system/etcd.service
 [Unit]
-Description=etcd
+Description=etcd {{etcd['version']}}-{{etcd['platform']}}
 Documentation=https://github.com/coreos
 
 [Service]
 Type=notify
-ExecStart=/usr/local/bin/etcd-v3.4.15-linux-amd64/etcd \
+ExecStart=/usr/local/bin/etcd \
   --name {{inventory_hostname}} \
   --cert-file={{CERT_PATH}}/kubernetes.pem \
   --key-file={{CERT_PATH}}/kubernetes.key \

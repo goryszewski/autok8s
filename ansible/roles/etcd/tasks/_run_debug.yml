@@ -1,0 +1,9 @@
+- name: "[{{hostname}}] etcdctl "
+  ansible.builtin.shell: "{{_CMD}}"
+  register: etcd_output
+
+- name: "[{{hostname}}] etcdctl debug "
+  debug:
+    msg: 
+    - "{{_CMD}}"
+    - "{{etcd_output.stdout_lines}}"

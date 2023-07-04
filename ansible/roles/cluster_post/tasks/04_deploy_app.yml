@@ -1,0 +1,15 @@
+- name: 5 second pause - ensure CRDs are installed first
+  pause:
+    seconds: 5
+
+- name: Copy argo_app.yml
+  ansible.builtin.copy:
+    src: argo_app.yml
+    dest: /etc/kubernetes/config/argo_app.yml
+  register: touch_argo_app_yml
+
+- name: kubectl apply argo_app.yml
+  ansible.builtin.command: kubectl apply -f /etc/kubernetes/config/argo_app.yml
+  when: touch_argo_app_yml.changed
+  ignore_errors: true
+  run_once: true
