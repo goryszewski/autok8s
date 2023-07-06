@@ -1,8 +1,3 @@
-- name: "Creates directory: {{CERT_PATH}}"
-  file:
-    path: "{{CERT_PATH}}"
-    state: directory
-
 - name: "[{{hostname}}] Create private key for new certificate"
   community.crypto.openssl_privatekey:
     path: '{{CERT_PATH}}/{{_name_file}}.key'
@@ -46,6 +41,8 @@
     provider: selfsigned
   when: ca_csr.changed
 
+# READ crt & key
+
 - name: "[{{hostname}}] Read existing certificate CA if exists and valids"
   slurp:
     src: '{{CERT_PATH}}/{{_name_file}}.pem'
@@ -56,6 +53,8 @@
   slurp:
     src: '{{CERT_PATH}}/{{_name_file}}.key'
   register: tmp_key
+
+# save to dump Host
 
 - name: set fact about CA 
   set_fact: 

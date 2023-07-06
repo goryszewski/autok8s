@@ -3,41 +3,48 @@
   roles:
     - haproxy
     - keepalive
+  tags: [ LB ]
 
 - hosts: controlplane
   gather_facts: no
   roles:
     # - common
     - ca
+  tags: [ CA ]
 
 - hosts: worker
   gather_facts: no
   roles:
     # - common
     - certs
+  tags: [ CRT ]
 
 - hosts: etcd
   gather_facts: no
   roles:
     - etcd
+  tags: [ ETCD ]
 
 - hosts: controlplane
   gather_facts: no
   roles:
     - controlplane
+  tags: [ CP ]
 
 - hosts: controlplane
   gather_facts: no
   roles:
     - cluster_pre
+  tags: [ PRE ]
 
 - hosts: worker
   gather_facts: no
   roles:
     - worker_v2
+  tags: [ WORKER ]
 
 - hosts: controlplane
   gather_facts: no
   roles:
     - cluster_post
-
+  tags: [ POST ]

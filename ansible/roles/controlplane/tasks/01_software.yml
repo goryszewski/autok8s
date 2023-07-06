@@ -1,11 +1,12 @@
 
 - name: Download files
   ansible.builtin.get_url:
-    url: "{{item}}"
+    url: "https://dl.k8s.io/release/v{{k8s_version}}/bin/linux/amd64/{{item}}"
     dest: /usr/local/bin/
     mode: 'u=rwx,g=rx,o=rx'
+    checksum: sha256:https://dl.k8s.io/release/v{{k8s_version}}/bin/linux/amd64/{{item}}.sha256
   loop:
-    - "https://storage.googleapis.com/kubernetes-release/release/v{{k8s_version}}/bin/linux/amd64/kube-apiserver" 
-    - "https://storage.googleapis.com/kubernetes-release/release/v{{k8s_version}}/bin/linux/amd64/kube-controller-manager" 
-    - "https://storage.googleapis.com/kubernetes-release/release/v{{k8s_version}}/bin/linux/amd64/kube-scheduler" 
-    - "https://storage.googleapis.com/kubernetes-release/release/v{{k8s_version}}/bin/linux/amd64/kubectl"
+    - "kube-apiserver" 
+    - "kube-controller-manager" 
+    - "kube-scheduler" 
+    - "kubectl"

@@ -29,9 +29,9 @@
     src: kube-proxy-config.yaml.j2
     dest: /var/lib/kube-proxy/kube-proxy-config.yaml
 
-- name: Template a file to kube-proxy.service.j2
-  ansible.builtin.template:
-    src: kube-proxy.service.j2
+- name: Copy a file to kube-proxy.service
+  ansible.builtin.copy:
+    src: kube-proxy.service
     dest: /etc/systemd/system/kube-proxy.service
   register: touch_kube_proxy_service
 

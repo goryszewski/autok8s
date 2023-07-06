@@ -38,3 +38,8 @@
   apt:
     pkg:
       - cri-tools
+
+- name: crictl - crictl.yaml
+  copy:
+    src: crictl.yaml
+    dest: '/etc/crictl.yaml'

@@ -5,7 +5,7 @@
     mode: 'u=rwx,g=rx,o=rx'
   loop:
     - https://get.helm.sh/helm-v3.12.1-linux-amd64.tar.gz
-
+# DOTO SHA
 
 - name: unarchive helm
   ansible.builtin.unarchive:
@@ -20,24 +20,22 @@
     mode: '0555'
     remote_src: yes
 
-
 ##
 
 - name: helm repo add haproxytech 
-  ansible.builtin.command: helm repo add haproxytech https://haproxytech.github.io/helm-charts
-
-- name: helm repo update 
-  ansible.builtin.command: helm repo update
-
+  ansible.builtin.command: "{{ item }}"
+  loop:
+    - helm repo add haproxytech https://haproxytech.github.io/helm-charts
+    - helm repo update
 
 - name: COPY haproxy_values.yaml
   ansible.builtin.copy:
     src: haproxy_values.yaml
-    dest: /root/haproxy_values.yaml
+    dest: /etc/kubernetes/config/haproxy_values.yaml
   register: touch_haproxy_values_yaml
 
 - name: helm install ingress 
-  ansible.builtin.command: helm install ingress  haproxytech/kubernetes-ingress --version 1.30.6 -f /root/haproxy_values.yaml
+  ansible.builtin.command: helm install ingress  haproxytech/kubernetes-ingress --version 1.30.6 -f /etc/kubernetes/config/haproxy_values.yaml
   delegate_to: '{{groups.init[0]}}'
   run_once: true
   when: touch_haproxy_values_yaml.changed

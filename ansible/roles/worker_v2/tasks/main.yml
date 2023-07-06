@@ -1,8 +1,3 @@
-- name: Template a file to profile
-  ansible.builtin.template:
-    src: profile.j2
-    dest: /etc/profile.d/00.sh
-
 - import_tasks: linux.yml
 - import_tasks: repo.yml
 - import_tasks: containerd.yml

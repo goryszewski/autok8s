@@ -4,6 +4,7 @@
     state: directory
     recurse: yes
 
+
 - name: "CA Kubernetes certificate "
   copy:
     dest: "{{ hostvars['INIT_CA_HOST']['ca_kubernetes']['crt']['source'] }}"
@@ -25,17 +26,19 @@
     dest: "{{ hostvars['INIT_CA_HOST']['system_kube_proxy']['key']['source'] }}"
     content: "{{ hostvars['INIT_CA_HOST']['system_kube_proxy']['key']['content']|b64decode }}"
 
+
 - name: "system_kube_proxy certificate "
   copy:
     dest: "{{ hostvars['INIT_CA_HOST']['system_kube_proxy']['crt']['source'] }}"
     content: "{{ hostvars['INIT_CA_HOST']['system_kube_proxy']['crt']['content']|b64decode }}"
+
 
 - name: "calico_cni key "
   copy:
     dest: "{{ hostvars['INIT_CA_HOST']['calico_cni']['key']['source'] }}"
     content: "{{ hostvars['INIT_CA_HOST']['calico_cni']['key']['content']|b64decode }}"
 
-- name: "calico_cni crt "
+- name: "calico_cni certificate "
   copy:
     dest: "{{ hostvars['INIT_CA_HOST']['calico_cni']['crt']['source'] }}"
     content: "{{ hostvars['INIT_CA_HOST']['calico_cni']['crt']['content']|b64decode }}"

@@ -26,3 +26,38 @@
   when: touch_argocd_yml.changed
   ignore_errors: true
   run_once: true
+
+###
+
+- name: watch is all running
+  ansible.builtin.shell: kubectl get pods -n argocd -o=jsonpath="{ range .items[*] }{.status.phase}{'\n'}{end} " | grep -v -E '^$'  | grep -i -v running -c
+  register: result
+  until: result.stdout == '1'
+  retries: 20
+  delay: 10
+
+###
+
+- name: Download argoCD
+  ansible.builtin.get_url:
+    url: "{{item}}"
+    dest: /tmp
+    mode: 'u=rwx,g=rx,o=rx'
+  loop:
+    - https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64
+# DOTO SHA
+
+- name: Copy heargoCDlm
+  ansible.builtin.copy:
+    src: /tmp/argocd-linux-amd64
+    dest: /usr/local/bin/argocd
+    mode: '0555'
+    remote_src: yes
+
+- name: argoCD password
+  ansible.builtin.shell: argocd admin initial-password -n argocd
+  register: outputArgoCD
+
+- name: output-argoCD debug
+  ansible.builtin.debug:
+    var: outputArgoCD.stdout

@@ -27,7 +27,7 @@ Terraform_VARS= -var 'domain=$(CONF_domain)' \
 
 inventory=-i ./scripts/libvirt_inventory.py
 
-extra-vars="domain=$(CONF_domain) calico_version=3.26.0 calico_version_cni=3.20.6 k8s_version=1.27.1 ENCRYPTION_KEY=rfjKhlyYRN9WNr026VIKRaRrPZ2GEzqrU3ry2SvDIvs="
+extra-vars="domain=$(CONF_domain) calico_version=3.26.0 calico_version_cni=3.20.6 k8s_version=1.27.3 ENCRYPTION_KEY=rfjKhlyYRN9WNr026VIKRaRrPZ2GEzqrU3ry2SvDIvs="
 
 #end config
 
@@ -55,11 +55,11 @@ ansible_ping:
 
 ansible_k8s: 
 	@echo "[MAKE] Ansible Kubernetes"
-	cd ./ansible && ansible-playbook main.yml $(inventory) --extra-vars $(extra-vars)
+	cd ./ansible && ansible-playbook main.yml $(inventory) --extra-vars $(extra-vars)  --skip-tags SKIP
 
-ansible_k8s_kubeadmin: 
+ansible_k8s_kubeadm: 
 	@echo "[MAKE] Ansible Kubernetes"
-	cd ./ansible && ansible-playbook k8s_kubeadmin.yml $(inventory) --extra-vars $(extra-vars)
+	cd ./ansible && ansible-playbook k8s_kubeadm.yml $(inventory) --extra-vars $(extra-vars) --skip-tags SKIP
 
 ansible: ansible_k8s
 

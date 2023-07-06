@@ -50,9 +50,9 @@
     dest: /opt/cni/bin/calico-ipam
     mode: 'u=rwx,g=rx,o=rx'
 
-- name: Template a file to 10-calico.conflist.j2
-  ansible.builtin.template:
-    src: 10-calico.conflist.j2
+- name: Template a file to 10-calico.conflist
+  ansible.builtin.copy:
+    src: 10-calico.conflist
     dest: /etc/cni/net.d/10-calico.conflist 
 
   notify:

@@ -6,20 +6,14 @@
       ip_conntrack
     dest: /etc/modules-load.d/containerd.conf
 
-- name: Add the overlay
+- name: modprobe
   modprobe:
-    name: overlay
+    name: "{{item}}"
     state: present
-
-- name: Add the br_netfilter
-  modprobe:
-    name: br_netfilter
-    state: present
-
-- name: Add the ip_conntrack
-  modprobe:
-    name: ip_conntrack
-    state: present
+  loop:
+    - ip_conntrack
+    - br_netfilter
+    - overlay
 
 - name: sysctl for k8s-cri
   copy:

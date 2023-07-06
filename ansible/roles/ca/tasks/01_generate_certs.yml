@@ -48,6 +48,7 @@
       - "DNS:kubernetes.default"
       - "DNS:kubernetes.default.svc"
       - "DNS:kubernetes.default.svc.cluster"
+      - "DNS:kubernetes.default.svc.{{domain}}"
       - "DNS:kubernetes.svc.cluster.local"
       - "DNS:kubernetes.svc.{{domain}}"
       - "IP:127.0.0.1"

@@ -6,27 +6,33 @@
     mode: 'u=rwx,g=rx,o=rx'
 
 - name: calicoctl - test
-  ansible.builtin.shell: DATASTORE_TYPE=kubernetes calicoctl get nodes --allow-version-mismatch
+  ansible.builtin.shell:  calicoctl get nodes --allow-version-mismatch
   register: calicoctl_output
+  environment:
+    DATASTORE_TYPE: kubernetes
 
 - name: debug calicoctl
   debug:
     msg: "{{calicoctl_output.stdout_lines}}"
 
-- name: Template a file to pool1.yaml
+- name: Template a file to calico_IPPool_address.yml
   ansible.builtin.template:
-    src: pool1.yaml.j2
-    dest: /root/pool.yaml
-  register: touch_yaml3
+    src: calico_IPPool_address.yml.j2
+    dest: /etc/kubernetes/config/calico_IPPool_address.yml
+  register: touch_calico_IPPool_address
 
-- name: calicoctl - test
-  ansible.builtin.shell: DATASTORE_TYPE=kubernetes calicoctl create -f /root/pool.yaml --allow-version-mismatch
-  when: touch_yaml3.changed
+- name: calicoctl create -f /etc/kubernetes/config/calico_IPPool_address.yml 
+  ansible.builtin.shell: calicoctl create -f /etc/kubernetes/config/calico_IPPool_address.yml --allow-version-mismatch
+  when: touch_calico_IPPool_address.changed
   run_once: true
+  environment:
+    DATASTORE_TYPE: kubernetes
   
-- name: calicoctl - test
-  ansible.builtin.shell: DATASTORE_TYPE=kubernetes calicoctl get ippools --allow-version-mismatch
+- name: calicoctl get ippools
+  ansible.builtin.shell: calicoctl get ippools --allow-version-mismatch
   register: calicoctl_output
+  environment:
+    DATASTORE_TYPE: kubernetes
 
 - name: debug calicoctl
   debug:

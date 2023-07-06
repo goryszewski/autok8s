@@ -12,9 +12,10 @@
     - /etc/kubernetes/
     - /etc/kubernetes/config/
 
-- name: Template a file to kube-scheduler.yaml
-  ansible.builtin.template:
-    src: kube-scheduler.yaml.j2
+
+- name: Copy a file to kube-scheduler.yaml
+  ansible.builtin.copy:
+    src: kube-scheduler.yaml
     dest: /etc/kubernetes/config/kube-scheduler.yaml
 
 - name: Template a file to encryption-config.yaml
@@ -51,9 +52,9 @@
     state: restarted
   when: touch_kube_controller_manager_service.changed
 
-- name: Template a file to kube-scheduler.service
-  ansible.builtin.template:
-    src: kube-scheduler.service.j2
+- name: Copy a file to kube-scheduler.service
+  ansible.builtin.copy:
+    src: kube-scheduler.service
     dest: /etc/systemd/system/kube-scheduler.service
   register: touch_kube_scheduler_service
 
@@ -64,6 +65,7 @@
     daemon_reload: true
     state: restarted
   when: touch_kube_scheduler_service.changed
+
 
 - name: cluster - test
   ansible.builtin.shell: kubectl cluster-info

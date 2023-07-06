@@ -4,22 +4,25 @@
   ansible.builtin.copy:
     src: calico.yml
     dest: /etc/kubernetes/config/calico.yml
-  register: touch_calico_yml
 
-- name: kubectl apply calico
-  ansible.builtin.command: kubectl apply -f /etc/kubernetes/config/calico.yml
-  when: touch_calico_yml.changed
-  ignore_errors: true
-  run_once: true
 
 - name: Template dns.yml
   ansible.builtin.template:
     src: dns.yml
     dest: /etc/kubernetes/config/dns.yml
-  register: touch_dns_yml
 
-- name: kubectl apply dns.yml
-  ansible.builtin.command: kubectl apply -f /etc/kubernetes/config/dns.yml
-  when: touch_dns_yml.changed
+
+- name: kubectl apply
+  ansible.builtin.command: "kubectl apply -f {{ item}}"
   ignore_errors: true
   run_once: true
+  loop:
+   - /etc/kubernetes/config/calico.yml
+   - /etc/kubernetes/config/dns.yml
+
+- name: watch is all running
+  ansible.builtin.shell: kubectl get pods -n kube-system -o=jsonpath="{ range .items[*] }{.status.phase}{'\n'}{end} " | grep -v -E '^$'  | grep -i -v running -c
+  register: result
+  until: result.stdout == '1'
+  retries: 20
+  delay: 10

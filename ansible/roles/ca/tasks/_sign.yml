@@ -59,7 +59,7 @@
     content: "{{ certificate.certificate }}"
   when: certificate is changed
 
-  #
+#
 
 - name: "[{{hostname}}] Read existing certificate cert"
   slurp:
@@ -71,6 +71,8 @@
   slurp:
     src: '{{_path_key}}'
   register: tmp_key
+
+#
 
 - name: set fact on INIT_CA_HOST nodes
   set_fact: 
