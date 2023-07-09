@@ -1,0 +1,7 @@
+. {
+    file /etc/coredns/dns.db {{domain}}
+    forward . 8.8.8.8
+    log
+    errors
+    cache
+}

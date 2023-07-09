@@ -29,5 +29,5 @@ module "node" {
   hostname = each.key
   tags     = each.value["tags"]
   network  = module.network.id
-  template = each.value["template"]
+  template = var.template
 }

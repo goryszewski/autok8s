@@ -22,6 +22,10 @@ variable "mode_network" {
   default = "nat"
 }
 
+variable "template" {
+  type    = string
+}
+
 variable "qemu_url" {
   type = string
   default = "qemu:///system"

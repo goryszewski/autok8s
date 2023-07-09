@@ -1,0 +1,13 @@
+#/etc/systemd/system/etcd.service
+[Unit]
+Description=coredns {{coredns_version}}
+Documentation=https://github.com/coreos
+
+[Service]
+Type=notify
+ExecStart=/usr/local/bin/coredns -conf /etc/coredns/Corefile
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

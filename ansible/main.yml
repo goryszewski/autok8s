@@ -3,7 +3,9 @@
   roles:
     - haproxy
     - keepalive
-  tags: [ LB ]
+    - dns
+    # - bgp
+  tags: [ LB, HA, BGP, DNS ]
 
 - hosts: controlplane
   gather_facts: no

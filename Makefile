@@ -1,29 +1,17 @@
 #VAR 
-CONF_domain=goryszewski.local
+CONF_domain=autok8s.xyz
 
-# Terraform_VARS= -var 'template=/var/lib/libvirt/images/debian11.qcow2' \
-# 				-var 'domain=$(CONF_domain)' \
-# 				-var 'hosts={"master01" : { "tags" : ["controlplane","etcd","init"] },\
-# 							"master02"  : { "tags" : ["controlplane","etcd"] }, \
-
-# 							"haproxy01" : { "tags" : ["haproxy","keepalive_master"],}, \
-# 							"haproxy02" : { "tags" : ["haproxy"], "template" : "/var/lib/libvirt/images/debian12.qcow2"  } \
-# 							}' 
-
-Terraform_VARS= -var 'domain=$(CONF_domain)' \
-				-var 'hosts={"master01" : { "tags" : ["controlplane","etcd","init"],\
-											"template" : "/var/lib/libvirt/images/debian12.qcow2" },\
-							 "master02" : { "tags" : ["controlplane","etcd"],\
-											"template" : "/var/lib/libvirt/images/debian11.qcow2" },\
-				   			 "worker01" : { "tags" : ["worker"] , \
-							 			    "template" : "/var/lib/libvirt/images/debian11.qcow2"}, \
-							 "worker02" : { "tags" : ["worker"] , \
-							 			    "template" : "/var/lib/libvirt/images/debian11.qcow2"}, \
-							 "haproxy01" : { "tags" : ["haproxy","master"], \
-							                 "template" : "/var/lib/libvirt/images/debian12.qcow2"}, \
-							 "haproxy02" : { "tags" : ["haproxy"], \
-							                 "template" : "/var/lib/libvirt/images/debian11.qcow2"} \
+Terraform_VARS1= -var-file="debian11.tfvars"\
+				-var 'domain=$(CONF_domain)' \
+				-var 'hosts={"master01" : { "tags" : ["controlplane","etcd","init"]},\
+							 "master02" : { "tags" : ["controlplane","etcd"]},\
+				   			 "worker01" : { "tags" : ["worker"] }, \
+							 "worker02" : { "tags" : ["worker"] }, \
+							 "haproxy01" : { "tags" : ["haproxy","master"]}, \
+							 "haproxy02" : { "tags" : ["haproxy"]} \
 							}' 
+
+Terraform_VARS= -var-file='debian11.tfvars' -var 'domain=$(CONF_domain)' -var 'hosts={"dns01" : { "tags" : ["dns"]},"haproxy02" : { "tags" : ["haproxy"]}}' 
 
 inventory=-i ./scripts/libvirt_inventory.py
 

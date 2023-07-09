@@ -1,0 +1,57 @@
+---
+# tasks file for CoreDNS
+- name: Download CoreDNS
+  ansible.builtin.get_url:
+    url: "https://github.com/coredns/coredns/releases/download/v{{coredns_version}}/coredns_{{coredns_version}}_linux_amd64.tgz"
+    dest: /tmp
+    mode: 'u=rwx,g=rx,o=rx'
+
+
+- name: unarchive CoreDNS
+  ansible.builtin.unarchive:
+    src: /tmp/coredns_{{coredns_version}}_linux_amd64.tgz
+    dest: /tmp
+    remote_src: yes
+
+- name: Copy CoreDNS
+  ansible.builtin.copy:
+    src: /tmp/coredns
+    dest: /usr/local/bin
+    mode: '0555'
+    remote_src: yes
+
+
+- name: Creates directory /etc/coredns/
+  file:
+    path: /etc/coredns/
+    state: directory
+    owner: root
+    group: root
+    mode: '0700'
+
+- name: Copy Corefile
+  ansible.builtin.template:
+    src: Corefile
+    dest: /etc/coredns/
+    mode: '0555'
+
+- name: Template a file to dns.db
+  ansible.builtin.template:
+    src: dns.db.j2
+    dest: /etc/coredns/dns.db
+  register: touch_coredns_service
+
+
+- name: Template a file to coredns.service
+  ansible.builtin.template:
+    src: coredns.service.j2
+    dest: /etc/systemd/system/coredns.service
+  register: touch_coredns_service
+
+# - name: Enable service 
+#   ansible.builtin.systemd:
+#     name: coredns
+#     enabled: true
+#     daemon_reload: true
+#     state: restarted
+  # when: touch_etcd_service.changed
