@@ -1,7 +1,7 @@
 #VAR 
 CONF_domain=autok8s.xyz
 
-Terraform_VARS1= -var-file="debian11.tfvars"\
+Terraform_VARS= -var-file="debian11.tfvars"\
 				-var 'domain=$(CONF_domain)' \
 				-var 'hosts={"master01" : { "tags" : ["controlplane","etcd","init"]},\
 							 "master02" : { "tags" : ["controlplane","etcd"]},\
@@ -10,8 +10,6 @@ Terraform_VARS1= -var-file="debian11.tfvars"\
 							 "haproxy01" : { "tags" : ["haproxy","master"]}, \
 							 "haproxy02" : { "tags" : ["haproxy"]} \
 							}' 
-
-Terraform_VARS= -var-file='debian11.tfvars' -var 'domain=$(CONF_domain)' -var 'hosts={"dns01" : { "tags" : ["dns"]},"haproxy02" : { "tags" : ["haproxy"]}}' 
 
 inventory=-i ./scripts/libvirt_inventory.py
 

@@ -18243,7 +18243,7 @@ metadata:
   name: argocd-server-ingress
   namespace: argocd
   annotations:
-    # ingress.kubernetes.io/rewrite-target: /
+    ingress.kubernetes.io/rewrite-target: /
     ingress.class: "haproxy"
 spec:
   # tls:
@@ -18251,7 +18251,7 @@ spec:
   #     - www.mm.local
   #   secretName: www-mm-local
   rules:
-  - host: www.mm.local
+  - host: argocd.autok8s.xyz
     http:
       paths:
         - path: /

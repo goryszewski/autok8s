@@ -55,27 +55,15 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: example-ingress
+  name: test-ingress
   annotations:
     ingress.kubernetes.io/rewrite-target: /
     ingress.class: "haproxy"
 spec:
-  # tls:
-  # - hosts:
-  #     - www.mm.local
-  #   secretName: www-mm-local
   rules:
-  - host: www.mm.local
+  - host: test.autok8s.xyz
     http:
       paths:
-        - path: /argo
-          pathType: Prefix
-          backend:
-            service:
-              name: argocd-server
-              port:
-                name: https
-
         - path: /apple
           pathType: Prefix
 

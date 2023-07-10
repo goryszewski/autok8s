@@ -4,20 +4,21 @@
     - haproxy
     - keepalive
     - dns
+    - common
     # - bgp
   tags: [ LB, HA, BGP, DNS ]
 
 - hosts: controlplane
   gather_facts: no
   roles:
-    # - common
+    - common
     - ca
   tags: [ CA ]
 
 - hosts: worker
   gather_facts: no
   roles:
-    # - common
+    - common
     - certs
   tags: [ CRT ]
 

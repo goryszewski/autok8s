@@ -1,17 +1,20 @@
-$ORIGIN {{domain}}.
-@	3600 IN	SOA a.{{domain}}. b.{{domain}}. (
-				2017042745 ; serial
-				7200       ; refresh (2 hours)
-				3600       ; retry (1 hour)
-				1209600    ; expire (2 weeks)
-				3600       ; minimum (1 hour)
-				)
+$TTL    604800
+@       IN      SOA     ns1.{{domain}}. admin.{{domain}}. (
+			      3		; Serial
+			 604800		; Refresh
+			  86400		; Retry
+			2419200		; Expire
+			 604800 )	; Negative Cache TTL
+;
+; name servers - NS records
+     IN      NS      ns1.{{domain}}.
 
-	3600 IN NS a.{{domain}}.
-	3600 IN NS b.{{domain}}.
-
+; name servers - A records
+ns1.{{domain}}. IN A {{KUBERNETES_PUBLIC_ADDRESS}}
+k8sapi.{{domain}}. IN A {{KUBERNETES_PUBLIC_ADDRESS}}
 {% for host,v in groups.items() if host not in ['all','ungrouped'] %}
 {% for item in v %}
-{{hostvars[item]['hostname']}}     IN A     {{item}}
+{{hostvars[item]['hostname']}} IN A {{item}}
 {% endfor %}
 {% endfor %}
+* IN A {{KUBERNETES_PUBLIC_ADDRESS}}
