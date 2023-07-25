@@ -7,8 +7,8 @@ Terraform_VARS= -var-file="debian11.tfvars"\
 							 "master02" : { "tags" : ["controlplane","etcd"]},\
 				   			 "worker01" : { "tags" : ["worker"] }, \
 							 "worker02" : { "tags" : ["worker"] }, \
-							 "haproxy01" : { "tags" : ["haproxy","master"]}, \
-							 "haproxy02" : { "tags" : ["haproxy"]} \
+							 "haproxy01" : { "tags" : ["bgp","haproxy","master"]}, \
+							 "haproxy02" : { "tags" : ["bgp","haproxy"]} \
 							}' 
 
 inventory=-i ./scripts/libvirt_inventory.py

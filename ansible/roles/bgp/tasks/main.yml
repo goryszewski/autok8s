@@ -1,7 +1,43 @@
 ## install BGP
+- name: "[bird2] Install"
+  ansible.builtin.package:
+    name: bird2
+    state: present
+
+- name: sysctl for bird2
+  copy:
+    content: |
+      net.ipv4.conf.all.forwarding=1
+    dest: /etc/sysctl.d/98-bird2.conf
+  notify:
+    - sysctl--system
+
+- name: "[bird] configuration file"
+  template:
+    src: "bird.conf.j2"
+    dest: "/etc/bird/bird.conf"
+
+- name: "[{{hostname}}] DEBUG birdc"
+  include_tasks:
+    file: _run_debug.yml
+  vars: 
+    _CMD: "{{item}}"
+  loop:
+  - birdc configure
+  - birdc show protocols
 
 ## install exaBGP
+- name: Install python package
+  ansible.builtin.pip:
+    name: exabgp
 
-## Config BGP
+- name: "[exabgp] configuration file"
+  template:
+    src: "conf.ini.J2"
+    dest: "/etc/bird/conf.ini"
 
-## config / app exaBGP
+- name: "[exabgp] route.py"
+  template:
+    src: "route.py.j2"
+    dest: "/srv/route.py"
+    mode: 0755

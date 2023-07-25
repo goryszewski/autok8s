@@ -30,4 +30,4 @@
 
 - name: "[localhost] etcdctl debug "
   debug:
-    msg: output_test
+    msg: "{{output_test}}"
