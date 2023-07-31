@@ -1,12 +1,20 @@
-- hosts: haproxy
-  gather_facts: no
-  roles:
-    - haproxy
-    - keepalive
-    - dns
-    - common
-    - bgp
-  tags: [ LB, HA, BGP, DNS ]
+# - hosts: haproxy
+#   gather_facts: no
+#   roles:
+#     - haproxy
+#     - keepalive
+#     - dns
+#     - common
+#     - bgp
+#   tags: [ LB, HA, BGP, DNS ]
+
+# - hosts: exabgp
+#   gather_facts: no
+#   roles:
+#     - exabgp
+#   tags: [ EXABGP ]
+
+
 
 # - hosts: controlplane
 #   gather_facts: no
@@ -14,6 +22,12 @@
 #     - common
 #     - ca
 #   tags: [ CA ]
+
+- hosts: prometheus
+  gather_facts: no
+  roles:
+    - prometheus
+  tags: [ PROMETHEUS ]
 
 # - hosts: worker
 #   gather_facts: no

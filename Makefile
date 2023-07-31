@@ -3,12 +3,15 @@ CONF_domain=autok8s.xyz
 
 Terraform_VARS= -var-file="debian11.tfvars"\
 				-var 'domain=$(CONF_domain)' \
-				-var 'hosts={"master01" : { "tags" : ["controlplane","etcd","init"]},\
-							 "master02" : { "tags" : ["controlplane","etcd"]},\
-				   			 "worker01" : { "tags" : ["worker"] }, \
-							 "worker02" : { "tags" : ["worker"] }, \
-							 "haproxy01" : { "tags" : ["bgp","haproxy","master"]}, \
-							 "haproxy02" : { "tags" : ["bgp","haproxy"]} \
+				-var 'hosts={ "master01" : { "tags" : ["controlplane","etcd","init"]},\
+							  "master02" : { "tags" : ["controlplane","etcd"]},\
+				   			  "worker01" : { "tags" : ["worker"] }, \
+							  "worker02" : { "tags" : ["worker"] }, \
+							  "exabgp01" : { "tags" : ["exabgp"]}, \
+							  "exabgp02" : { "tags" : ["exabgp"]}, \
+							  "haproxy01" : { "tags" : ["bgp","haproxy","master"]}, \
+							  "haproxy02" : { "tags" : ["bgp","haproxy"]}, \
+							  "prometheus": {"tags" : ["prometheus"] } \
 							}' 
 
 inventory=-i ./scripts/libvirt_inventory.py
@@ -60,6 +63,23 @@ all: terraform_apply ansible_k8s
 clean: backup terraform_destroy ansible_buffer_clean
 
 re: clean all
+
+sudo:
+	sudo ls > /dev/null
+
+stop: sudo
+	@echo " [KVM] STOP all vms"
+	for i in `sudo virsh list --name ` ; do sudo virsh shutdown --domain $$i ; done
+	sudo virsh net-destroy --network Local_ansible
+
+start: sudo
+	sudo virsh net-start --network Local_ansible
+	@echo " [KVM] START all vms"
+	for i in `sudo virsh list --name --all | grep $(CONF_domain) ` ; do sudo virsh start --domain $$i ; done
+
+rv: sudo
+	systemctl stop libvirtd
+	systemctl start libvirtd
 
 test:
 	@echo "[MAKE] test pytest - inventory"

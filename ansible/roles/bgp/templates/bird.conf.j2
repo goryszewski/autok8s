@@ -138,10 +138,12 @@ protocol static {
 #       reject;
 # }
 # BGP example, explicit name 'uplink1' is used instead of default 'bgp1'
-protocol bgp local_exabgp {
-        description "auto_k8s";
+
+{% for host in groups['exabgp'] %}
+protocol bgp exabgp_{{host|replace(".","_")}} {
+        description "auto_k8s_{{host|replace(".","_")}}_exabgp";
         local {{inventory_hostname}} as {{AS}};
-        neighbor 127.0.0.1 as {{AS}};
+        neighbor {{host}} as {{AS}};
         hold time 90;           # Default is 240
 #
         ipv4 {                  # regular IPv4 unicast (1/1)
@@ -149,15 +151,14 @@ protocol bgp local_exabgp {
                export all;
         };
 }
-
-protocol bgp uplink1 {
-       description "auto_k8s";
-       local {{inventory_hostname}} as {{AS}};
-{% for host in groups['haproxy'] %}
-{% if host != inventory_hostname %}
-       neighbor {{host}} as {{AS}};
-{% endif %}
 {% endfor %}
+
+{% for host in groups['bgp'] %}
+{% if host != inventory_hostname %}
+protocol bgp uplink_{{host|replace(".","_")}} {
+       description "auto_k8s_{{host|replace(".","_")}}_bird";
+       local {{inventory_hostname}} as {{AS}};
+       neighbor {{host}} as {{AS}};
        hold time 90;           # Default is 240
        password "secret";      # Password used for MD5 authentication
 #
@@ -165,28 +166,9 @@ protocol bgp uplink1 {
                import all;
                export all;
        };
-#
-#       ipv6 {                  # regular IPv6 unicast (2/1)
-#               import filter rt_import;
-#               export filter { # The same as 'where' expression above
-#                       if source ~ [ RTS_STATIC, RTS_BGP ]
-#                       then accept;
-#                       else reject;
-#               };
-#       };
-#
-#       ipv4 multicast {        # IPv4 multicast topology (1/2)
-#               table mrib4;    # explicit IPv4 table
-#               import filter rt_import;
-#               export all;
-#       };
-#
-#       ipv6 multicast {        # IPv6 multicast topology (2/2)
-#               table mrib6;    # explicit IPv6 table
-#               import filter rt_import;
-#               export all;
-#       };
 }
+{% endif %}
+{% endfor %}
 
 # Template example. Using templates to define IBGP route reflector clients.
 # template bgp rr_clients {

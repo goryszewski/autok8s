@@ -26,18 +26,3 @@
   - birdc configure
   - birdc show protocols
 
-## install exaBGP
-- name: Install python package
-  ansible.builtin.pip:
-    name: exabgp
-
-- name: "[exabgp] configuration file"
-  template:
-    src: "conf.ini.J2"
-    dest: "/etc/bird/conf.ini"
-
-- name: "[exabgp] route.py"
-  template:
-    src: "route.py.j2"
-    dest: "/srv/route.py"
-    mode: 0755

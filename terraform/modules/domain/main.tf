@@ -22,7 +22,7 @@ resource "libvirt_domain" "node" {
   memory = var.memoryMB
   vcpu   = var.cpu
   description = join("_", var.tags)
-  autostart = true
+  autostart = false
   disk {
     volume_id = libvirt_volume.image.id
   }

@@ -13,7 +13,7 @@ resource "libvirt_network" "default" {
   mode      = var.mode
   domain    = var.domain
   addresses = var.addresses
-  autostart = true
+  autostart = false
     dns {
 
     enabled = true

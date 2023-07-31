@@ -1,0 +1,68 @@
+- name: Download files
+  ansible.builtin.get_url:
+    url: "https://github.com/prometheus/prometheus/releases/download/v2.46.0/prometheus-2.46.0.linux-amd64.tar.gz"
+    dest: /opt/
+    mode: 'u=rwx,g=rx,o=rx'
+    checksum: sha256:d2177ea21a6f60046f9510c828d4f8969628cfd35686780b3898917ef9c268b9
+
+- name: unarchive prometheus
+  ansible.builtin.unarchive:
+    src: /opt/prometheus-2.46.0.linux-amd64.tar.gz
+    dest: /opt/
+    remote_src: yes
+
+- name: Creates directory /etc/prometheus/
+  file:
+    path: /etc/prometheus/
+    state: directory
+    owner: root
+    group: root
+    mode: '0700'
+
+ 
+- name: Creates directory /var/lib/prometheus
+  file:
+    path: /var/lib/prometheus
+    state: directory
+    owner: root
+    group: root
+    mode: '0700'
+
+- name: "[prometheus] configuration file"
+  template:
+    src: "prometheus.yml"
+    dest: "/etc/prometheus/prometheus.yml"
+  register: touch_prometheus_service
+
+- name: Template a file to prometheus
+  ansible.builtin.copy:
+    src: prometheus.service
+    dest: /etc/systemd/system/prometheus.service
+
+- name: Enable service prometheus
+  ansible.builtin.systemd:
+    name: prometheus
+    enabled: true
+    daemon_reload: true
+    state: restarted
+  when: touch_prometheus_service.changed
+
+- name: Add repositories key
+  apt_key:
+    url: https://apt.grafana.com/gpg.key
+    state: present
+
+
+- name: Add repositories
+  apt_repository:
+    repo: 'deb https://apt.grafana.com stable main'
+    state: present
+    filename: 'grafana'
+
+
+- name: grafana - Install
+  ansible.builtin.apt:
+    update_cache: yes
+    allow_change_held_packages: true
+    pkg:
+      - grafana
