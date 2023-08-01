@@ -66,3 +66,10 @@
     allow_change_held_packages: true
     pkg:
       - grafana
+
+- name: Enable service grafana
+  ansible.builtin.systemd:
+    name: grafana-server.service
+    enabled: true
+    daemon_reload: true
+    state: restarted

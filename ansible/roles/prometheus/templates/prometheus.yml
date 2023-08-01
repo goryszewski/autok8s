@@ -16,13 +16,22 @@ rule_files:
   # - "first_rules.yml"
   # - "second_rules.yml"
 
+
 # A scrape configuration containing exactly one endpoint to scrape:
 # Here it's Prometheus itself.
+{% set all = [] %}
+{% for host in groups['all'] %}
+{% set all= all.append('{0}:9100'.format(host)) %}
+{% endfor %}
 scrape_configs:
+## DOTO sd for kubernetes
+  - job_name: all_host
+    static_configs:
+    - targets: [ {{ all | join(",") }} ]
   - job_name: etcd
     scheme: https
     tls_config:
-        insecure_skip_verify: true
+        ca_file: /etc/kubernetes/pki/ca_kubernetes.pem
         cert_file: /etc/ssl/certs/certificate.pem
         key_file: /etc/ssl/private/certificate.key
     static_configs:

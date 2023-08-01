@@ -6,6 +6,7 @@ DOTO:
 * BGP + calico
 * hardening nftable ebpf 
 * falco
-* monitoring
+* monitoring sd kubernetes apiserver
 * testunit
+* cloud controller manager "ownk8s"
 * ...
