@@ -1,0 +1,5 @@
+node_explorer:
+  version: 1.6.1
+  platform: linux-amd64
+  hash: sha256:ecc41b3b4d53f7b9c16a370419a25a133e48c09dfc49499d63bcc0c5e0cf3d01
+  path: "/opt"

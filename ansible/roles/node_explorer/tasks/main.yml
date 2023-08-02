@@ -1,19 +1,19 @@
 - name: Download files
   ansible.builtin.get_url:
-    url: "https://github.com/prometheus/node_exporter/releases/download/v1.6.1/node_exporter-1.6.1.linux-amd64.tar.gz"
-    dest: /opt/
+    url: "https://github.com/prometheus/node_exporter/releases/download/v{{node_explorer['version']}}/node_exporter-{{node_explorer['version']}}.{{node_explorer['platform']}}.tar.gz"
+    dest: "{{node_explorer['path']}}/"
     mode: 'u=rwx,g=rx,o=rx'
-    checksum: sha256:ecc41b3b4d53f7b9c16a370419a25a133e48c09dfc49499d63bcc0c5e0cf3d01
+    checksum: "{{node_explorer['hash']}}"
 
 - name: unarchive prometheus
   ansible.builtin.unarchive:
-    src: /opt/node_exporter-1.6.1.linux-amd64.tar.gz
-    dest: /opt/
+    src: "{{node_explorer['path']}}/node_exporter-{{node_explorer['version']}}.{{node_explorer['platform']}}.tar.gz"
+    dest: "{{node_explorer['path']}}/"
     remote_src: yes
 
 - name: Template a file to node_explorer
-  ansible.builtin.copy:
-    src: node_explorer.service
+  ansible.builtin.template:
+    src: node_explorer.service.j2
     dest: /etc/systemd/system/node_explorer.service
   register: touch_node_explorer_service
 

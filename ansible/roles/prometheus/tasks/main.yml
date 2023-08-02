@@ -1,14 +1,14 @@
 - name: Download files
   ansible.builtin.get_url:
-    url: "https://github.com/prometheus/prometheus/releases/download/v2.46.0/prometheus-2.46.0.linux-amd64.tar.gz"
-    dest: /opt/
+    url: "https://github.com/prometheus/prometheus/releases/download/v{{prometheus['version']}}/prometheus-{{prometheus['version']}}.{{prometheus['platform']}}.tar.gz"
+    dest: "{{prometheus['path']}}/"
     mode: 'u=rwx,g=rx,o=rx'
-    checksum: sha256:d2177ea21a6f60046f9510c828d4f8969628cfd35686780b3898917ef9c268b9
+    checksum: "{{prometheus['hash']}}"
 
 - name: unarchive prometheus
   ansible.builtin.unarchive:
-    src: /opt/prometheus-2.46.0.linux-amd64.tar.gz
-    dest: /opt/
+    src: "{{prometheus['path']}}/prometheus-{{prometheus['version']}}.{{prometheus['platform']}}.tar.gz"
+    dest: "{{prometheus['path']}}/"
     remote_src: yes
 
 - name: Creates directory /etc/prometheus/

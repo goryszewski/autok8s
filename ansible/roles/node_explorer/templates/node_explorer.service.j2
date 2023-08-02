@@ -9,7 +9,7 @@ After=network-online.target
 User=root
 Group=root
 Type=simple
-ExecStart=/opt/node_exporter-1.6.1.linux-amd64/node_exporter
+ExecStart={{node_explorer['path']}}/node_exporter-{{node_explorer['version']}}.{{node_explorer['platform']}}/node_exporter
 
 [Install]
 WantedBy=multi-user.target
