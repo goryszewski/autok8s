@@ -1,43 +1,44 @@
-- hosts: haproxy
-  gather_facts: no
-  roles:
-    - haproxy
-    - keepalive
-    - dns
-    - common
-    - bgp
-  tags: [ LB, HA, BGP, DNS ]
+# - hosts: all
+#   gather_facts: no
+#   roles:
+#     - common
+#     - node_explorer
 
-- hosts: exabgp
-  gather_facts: no
-  roles:
-    - exabgp
-  tags: [ EXABGP ]
+# - hosts: haproxy
+#   gather_facts: no
+#   roles:
+#     - haproxy
+#     - keepalive
+#     - dns
+#     # - bgp
+#   tags: [ LB, HA, BGP, DNS ]
 
-
+# - hosts: exabgp
+#   gather_facts: no
+#   roles:
+#     - exabgp
+#   tags: [ EXABGP ]
 
 - hosts: controlplane
   gather_facts: no
   roles:
-    - common
     - ca
   tags: [ CA ]
 
-- hosts: all
-  gather_facts: no
-  roles:
-    - node_explorer
+# - hosts: all
+#   gather_facts: no
+#   roles:
+#     
 
-- hosts: prometheus
-  gather_facts: no
-  roles:
-    - prometheus
-  tags: [ PROMETHEUS ]
+# - hosts: prometheus
+#   gather_facts: no
+#   roles:
+#     - prometheus
+#   tags: [ PROMETHEUS ]
 
 - hosts: worker
   gather_facts: no
   roles:
-    - common
     - certs
   tags: [ CRT ]
 

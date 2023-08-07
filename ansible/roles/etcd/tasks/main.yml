@@ -1,4 +1,6 @@
 ---
+- import_tasks: 01_cert_nodes.yml
+
 # tasks file for etcd
 - name: Download etcd
   ansible.builtin.get_url:
@@ -55,16 +57,17 @@
 
 - name: "[{{hostname}}] DEBUG ETCD"
   include_tasks:
-    file: _run_debug.yml
+    file: ./_share/_run_debug.yml
   vars: 
     _CMD: "{{item}}"
+    _NAME: "ETCDTOOL"
   loop:
-  - "ETCDCTL_API=3 etcdctl --write-out=table --endpoints={{etcd['members']}} member list  --cacert={{CERT_PATH}}/ca_kubernetes.pem --cert={{CERT_PATH}}/kubernetes.pem --key={{CERT_PATH}}/kubernetes.key"
-  - "ETCDCTL_API=3 etcdctl --write-out=table --endpoints={{etcd['members']}} endpoint status  --cacert={{CERT_PATH}}/ca_kubernetes.pem --cert={{CERT_PATH}}/kubernetes.pem --key={{CERT_PATH}}/kubernetes.key"
-  - "ETCDCTL_API=3 etcdctl --write-out=table --endpoints={{etcd['members']}} endpoint health  --cacert=/etc/kubernetes/pki/ca_kubernetes.pem --cert=/etc/kubernetes/pki/kubernetes.pem --key=/etc/kubernetes/pki/kubernetes.key"
+  - "ETCDCTL_API=3 etcdctl --write-out=table --endpoints={{etcd['members']}} member list  --cacert={{CERT_PATH}}/ca_etcd.pem --cert={{CERT_PATH}}/certificate-etcd.pem --key={{CERT_PATH}}/certificate-etcd.key"
+  - "ETCDCTL_API=3 etcdctl --write-out=table --endpoints={{etcd['members']}} endpoint status  --cacert={{CERT_PATH}}/ca_etcd.pem --cert={{CERT_PATH}}/certificate-etcd.pem --key={{CERT_PATH}}/certificate-etcd.key"
+  - "ETCDCTL_API=3 etcdctl --write-out=table --endpoints={{etcd['members']}} endpoint health  --cacert={{CERT_PATH}}/ca_etcd.pem --cert={{CERT_PATH}}/certificate-etcd.pem --key={{CERT_PATH}}/certificate-etcd.key"
 
 - name: backup cron job
   ansible.builtin.cron:
     name: "check dirs"
     minute: "*/5"
-    job: 'ETCDCTL_API=3 etcdctl --endpoints={{inventory_hostname}}:2379 snapshot save /srv/backup.$(date "+\%Y.\%m.\%d-\%H.\%M.\%S") --cacert={{CERT_PATH}}/ca_kubernetes.pem --cert={{CERT_PATH}}/kubernetes.pem --key={{CERT_PATH}}/kubernetes.key'
+    job: 'ETCDCTL_API=3 etcdctl --endpoints={{inventory_hostname}}:2379 snapshot save /srv/backup.$(date "+\%Y.\%m.\%d-\%H.\%M.\%S") --cacert={{CERT_PATH}}/ca_etcd.pem --cert={{CERT_PATH}}/certificate-etcd.pem --key={{CERT_PATH}}/certificate-etcd.key'

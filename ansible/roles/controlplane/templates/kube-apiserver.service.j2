@@ -15,9 +15,9 @@ ExecStart=/usr/local/bin/kube-apiserver \
   --bind-address=0.0.0.0 \
   --client-ca-file={{CERT_PATH}}/ca_kubernetes.pem \
   --enable-admission-plugins=NamespaceLifecycle,NodeRestriction,LimitRanger,ServiceAccount,DefaultStorageClass,ResourceQuota \
-  --etcd-cafile={{CERT_PATH}}/ca_kubernetes.pem \
-  --etcd-certfile={{CERT_PATH}}/kubernetes.pem \
-  --etcd-keyfile={{CERT_PATH}}/kubernetes.key \
+  --etcd-cafile={{CERT_PATH}}/ca_etcd.pem \
+  --etcd-certfile={{CERT_PATH}}/kube-api-client.pem \
+  --etcd-keyfile={{CERT_PATH}}/kube-api-client.key \
 {% set masters = [] %}
 {% for worker in groups['etcd'] %}
 {% set masters= masters.append('https://{0}:2379'.format(worker)) %}

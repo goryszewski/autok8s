@@ -4,7 +4,7 @@
 
 - name: system:node:{{hostname}}
   include_tasks:
-    file: _sign.yml
+    file: ./_share/_sign.yml
   vars: 
     _path_key: "/etc/ssl/private/certificate.key"
     _path_crt: /etc/ssl/certs/certificate.pem
@@ -14,5 +14,5 @@
       - "DNS:{{hostname}}.{{domain}}"
       - "DNS:{{hostname}}"
       - "IP:{{inventory_hostname}}"
-    _ca_key: "{{ hostvars['INIT_CA_HOST']['ca_kubernetes']['key']['source'] }}"
-    _ca_pem: "{{ hostvars['INIT_CA_HOST']['ca_kubernetes']['crt']['source'] }}"
+    _ca_key: "{{ hostvars['INIT_CA_HOST']['share_ca_kubernetes']['key']['source'] }}"
+    _ca_pem: "{{ hostvars['INIT_CA_HOST']['share_ca_kubernetes']['crt']['source'] }}"

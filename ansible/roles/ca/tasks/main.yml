@@ -19,6 +19,6 @@
 
 - import_tasks: 02_redistributed_CA_certs.yml
 
-- name: test debug
-  debug:
-    msg: "{{hostvars['INIT_CA_HOST']}}"
+# - name: test debug
+#   debug:
+#     msg: "{{hostvars['INIT_CA_HOST']}}"

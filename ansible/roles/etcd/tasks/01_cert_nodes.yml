@@ -1,0 +1,19 @@
+- name: Create private key for new certificate on {{hostname}} {{inventory_hostname}}
+  community.crypto.openssl_privatekey:
+    path: "{{CERT_PATH}}/certificate-etcd.key"
+
+- name: ETCD:Mambers:{{hostname}}
+  include_tasks:
+    file: ./_share/_sign.yml
+  vars: 
+    _path_key: "{{CERT_PATH}}/certificate-etcd.key"
+    _path_crt: "{{CERT_PATH}}/certificate-etcd.pem"
+    _common_name: "{{hostname}}"
+    _organization_name: "etcd"
+    _subject_alt_name:
+      - "DNS:{{hostname}}.{{domain}}"
+      - "DNS:{{hostname}}"
+      - "IP:{{inventory_hostname}}"
+      - "IP:127.0.0.1"
+    _ca_key: "{{ hostvars['INIT_CA_HOST']['share_ca_etcd']['key']['source'] }}"
+    _ca_pem: "{{ hostvars['INIT_CA_HOST']['share_ca_etcd']['crt']['source'] }}"

@@ -58,3 +58,24 @@
     dest: "{{_path_crt}}"
     content: "{{ certificate.certificate }}"
   when: certificate is changed
+
+#
+
+- name: "[{{hostname}}] Read existing certificate cert"
+  slurp:
+    src: '{{ _path_crt }}'
+  register: tmp_cert
+
+
+- name: "[{{hostname}}] Read existing certificate Key"
+  slurp:
+    src: '{{_path_key}}'
+  register: tmp_key
+
+#
+
+- name: set fact on INIT_CA_HOST nodes
+  set_fact: 
+    "share_{{_common_name| replace('-','_') | replace(':','_')}}": { "key": "{{tmp_key}}", "crt": "{{tmp_cert}}" } 
+  delegate_to: "INIT_CA_HOST"
+  delegate_facts: True

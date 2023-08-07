@@ -7,12 +7,12 @@ Documentation=https://github.com/coreos
 Type=notify
 ExecStart=/usr/local/bin/etcd \
   --name {{inventory_hostname}} \
-  --cert-file={{CERT_PATH}}/kubernetes.pem \
-  --key-file={{CERT_PATH}}/kubernetes.key \
-  --peer-cert-file={{CERT_PATH}}/kubernetes.pem \
-  --peer-key-file={{CERT_PATH}}/kubernetes.key \
-  --trusted-ca-file={{CERT_PATH}}/ca_kubernetes.pem \
-  --peer-trusted-ca-file={{CERT_PATH}}/ca_kubernetes.pem \
+  --cert-file={{CERT_PATH}}/etcd-cluster.pem \
+  --key-file={{CERT_PATH}}/etcd-cluster.key \
+  --peer-cert-file={{CERT_PATH}}/certificate-etcd.pem \
+  --peer-key-file={{CERT_PATH}}/certificate-etcd.key \
+  --trusted-ca-file={{CERT_PATH}}/ca_etcd.pem \
+  --peer-trusted-ca-file={{CERT_PATH}}/ca_etcd.pem \
   --peer-client-cert-auth \
   --client-cert-auth \
   --initial-advertise-peer-urls https://{{inventory_hostname}}:2380 \

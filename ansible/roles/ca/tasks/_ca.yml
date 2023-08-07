@@ -58,7 +58,7 @@
 
 - name: set fact about CA 
   set_fact: 
-    "{{_name_file}}": { "key": "{{tmp_key}}", "crt": "{{tmp_cert}}", "certs":[] } 
+    "share_{{_name_file}}": { "key": "{{tmp_key}}", "crt": "{{tmp_cert}}", "certs":[] } 
   delegate_to: "INIT_CA_HOST"
   delegate_facts: True
 

@@ -1,46 +1,3 @@
-- name: "[{{hostname}}] system:kube-controller-manager"
-  include_tasks:
-    file: _sign.yml
-  vars: 
-    _path_key: "{{CERT_PATH}}/kube-controller-manager.key"
-    _path_crt: "{{CERT_PATH}}/kube-controller-manager.pem"
-    _common_name: "system:kube-controller-manager"
-    _organization_name: "system:kube-controller-manager"
-    _ca_key: "{{ hostvars['INIT_CA_HOST']['ca_kubernetes']['key']['source'] }}"
-    _ca_pem: "{{ hostvars['INIT_CA_HOST']['ca_kubernetes']['crt']['source'] }}" 
-
-- name: "[{{hostname}}] system:kube-proxy"
-  include_tasks:
-    file: _sign.yml
-  vars: 
-    _path_key: "{{CERT_PATH}}/kube-proxy.key"
-    _path_crt: "{{CERT_PATH}}/kube-proxy.pem"
-    _common_name: "system:kube-proxy"
-    _organization_name: "system:node-proxier"
-    _ca_key: "{{ hostvars['INIT_CA_HOST']['ca_kubernetes']['key']['source'] }}"
-    _ca_pem: "{{ hostvars['INIT_CA_HOST']['ca_kubernetes']['crt']['source'] }}"
-
-- name: "[{{hostname}}] system:kube-scheduler"
-  include_tasks:
-    file: _sign.yml
-  vars: 
-    _path_key: "{{CERT_PATH}}/kube-scheduler.key"
-    _path_crt: "{{CERT_PATH}}/kube-scheduler.pem"
-    _common_name: "system:kube-scheduler"
-    _organization_name: "system:kube-scheduler"
-    _ca_key: "{{ hostvars['INIT_CA_HOST']['ca_kubernetes']['key']['source'] }}"
-    _ca_pem: "{{ hostvars['INIT_CA_HOST']['ca_kubernetes']['crt']['source'] }}"
-
-- name: "[{{hostname}}] system:service-accounts"
-  include_tasks:
-    file: _sign.yml
-  vars: 
-    _path_key: "{{CERT_PATH}}/service-accounts.key"
-    _path_crt: "{{CERT_PATH}}/service-accounts.pem"
-    _common_name: "service-accounts"
-    _ca_key: "{{ hostvars['INIT_CA_HOST']['ca_kubernetes']['key']['source'] }}"
-    _ca_pem: "{{ hostvars['INIT_CA_HOST']['ca_kubernetes']['crt']['source'] }}"
-
 - name: "[{{hostname}}] kubernetes SAN"
   set_fact:
     static:
@@ -56,56 +13,33 @@
       - "IP:{{KUBERNETES_PUBLIC_ADDRESS}}"
     dynamic: "{{groups['controlplane'] | fix_to_san}}"
 
-- name: "[{{hostname}}] kubernetes"
-  include_tasks:
-    file: _sign.yml
-  vars: 
-    _path_key: "{{CERT_PATH}}/kubernetes.key"
-    _path_crt: "{{CERT_PATH}}/kubernetes.pem"
-    _common_name: "kubernetes"
-    _subject_alt_name: "{{ static + dynamic }}"
-    _ca_key: "{{ hostvars['INIT_CA_HOST']['ca_kubernetes']['key']['source'] }}"
-    _ca_pem: "{{ hostvars['INIT_CA_HOST']['ca_kubernetes']['crt']['source'] }}"
+- name: "[{{hostname}}] etcd SAN"
+  set_fact:
+    dynamic_etcd: "{{groups['controlplane'] | fix_to_san}}"
 
-- name: "[{{hostname}}] calico-cni"
+- name: "[{{hostname}}] {{item.common_name}}"
   include_tasks:
-    file: _sign.yml
+    file: ./_share/_sign.yml
   vars: 
-    _path_key: "{{CERT_PATH}}/calico-cni.key"
-    _path_crt: "{{CERT_PATH}}/calico-cni.pem"
-    _common_name: "calico-cni"
-    _ca_key: "{{ hostvars['INIT_CA_HOST']['ca_kubernetes']['key']['source'] }}"
-    _ca_pem: "{{ hostvars['INIT_CA_HOST']['ca_kubernetes']['crt']['source'] }}"
+    _path_key: "{{CERT_PATH}}/{{item.name}}.key"
+    _path_crt: "{{CERT_PATH}}/{{item.name}}.pem"
+    _common_name: "{{item.common_name}}"
+    _organization_name: "{{item.organization_name}}"
+    _ca_key: "{{ hostvars['INIT_CA_HOST'][item.ca]['key']['source'] }}"
+    _ca_pem: "{{ hostvars['INIT_CA_HOST'][item.ca]['crt']['source'] }}" 
 
-- name: "[{{hostname}}] [01_ca_typha] calico-typha"
-  include_tasks:
-    file: _sign.yml
-  vars: 
-    _path_key: "{{CERT_PATH}}/typha.key"
-    _path_crt: "{{CERT_PATH}}/typha.pem"
-    _common_name: "calico-typha"
-    _organization_name: "calico:typha"
-    _ca_key: "{{CERT_PATH}}/ca_typha.key"
-    _ca_pem: "{{CERT_PATH}}/ca_typha.pem"
-
-- name: "[{{hostname}}] [01_ca_typha] calico-node"
-  include_tasks:
-    file: _sign.yml
-  vars: 
-    _path_key: "{{CERT_PATH}}/calico-node.key"
-    _path_crt: "{{CERT_PATH}}/calico-node.pem"
-    _common_name: "calico-node"
-    _organization_name: "calico:node"
-    _ca_key: "{{CERT_PATH}}/ca_typha.key"
-    _ca_pem: "{{CERT_PATH}}/ca_typha.pem"
-
-- name: "[{{hostname}}] Admin user"
-  include_tasks:
-    file: _sign.yml
-  vars: 
-    _path_key: "{{CERT_PATH}}/admin.key"
-    _path_crt: "{{CERT_PATH}}/admin.pem"
-    _common_name: "admin"
-    _organization_name: "system:masters"
-    _ca_key: "{{ hostvars['INIT_CA_HOST']['ca_kubernetes']['key']['source'] }}"
-    _ca_pem: "{{ hostvars['INIT_CA_HOST']['ca_kubernetes']['crt']['source'] }}"
+    _subject_alt_name: "{{ item.subject_alt_name | default([]) }}"
+  loop:
+    - { name: 'kube-controller-manager', common_name: 'system:kube-controller-manager' , ca: 'share_ca_kubernetes', organization_name: 'system:kube-controller-manager'}
+    - { name: 'kube-proxy', common_name: 'system:kube-proxy' , ca: 'share_ca_kubernetes', organization_name: "system:node-proxier"}
+    - { name: 'kube-scheduler', common_name: 'system:kube-scheduler' , ca: 'share_ca_kubernetes' , organization_name: 'system:kube-scheduler'}
+    - { name: 'service-accounts', common_name: 'service-accounts' , ca: 'share_ca_kubernetes' , organization_name: 'service-accounts'}
+    - { name: 'calico-cni', common_name: 'calico-cni' , ca: 'share_ca_kubernetes' , organization_name: 'calico-cni'}
+    - { name: 'admin', common_name: 'admin' , ca: 'share_ca_kubernetes', organization_name: "system:masters"}
+    - { name: 'kubernetes', common_name: 'kubernetes' , ca: 'share_ca_kubernetes', organization_name: "system:masters", subject_alt_name: "{{ static + dynamic }}"}
+    # ca_typha
+    - { name: 'typha', common_name: 'calico-typha' , ca: 'share_ca_typha', organization_name: 'calico:typha'}
+    - { name: 'calico-node', common_name: 'calico-node' , ca: 'share_ca_typha', organization_name: 'calico:node'}
+    # ca_etcd
+    - { name: 'etcd-cluster', common_name: 'etcd-cluster' , ca: 'share_ca_etcd', organization_name: 'etcd-cluster', subject_alt_name: "{{ dynamic_etcd  }}" }
+    - { name: 'kube-api-client', common_name: 'kube-api-client' , ca: 'share_ca_etcd', organization_name: 'etcd-cluster'}
