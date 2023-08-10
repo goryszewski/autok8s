@@ -1,0 +1,53 @@
+flush ruleset
+
+table inet firewall {
+    set allowed_icmp {
+        type inet_proto
+        elements = { icmp }
+    }
+
+    set allowed_interface {
+        type ifname
+        elements = { "lo" }
+    }
+
+    set allowed_tcp_default {
+        type inet_service
+        elements = { ssh, 9100 }
+    }
+
+{% for item in hostvars[inventory_hostname].firewall %}
+    set allowed_port_{{item['port']}} {
+        type inet_service
+        elements = { {{item['port']}} }
+    }
+
+{% if "hosts" in item %}
+    set allowed_hosts_to_{{item['port']}} {
+        type ipv4_addr
+        elements = { {{item['hosts']|join(', ')}} }
+    }
+
+{% endif %}
+{% endfor %}
+
+    chain default {
+        ct state established,related accept
+        meta l4proto @allowed_icmp accept
+        iifname @allowed_interface accept
+        tcp dport @allowed_tcp_default accept
+    }
+
+    chain to_generate {
+{% for item in hostvars[inventory_hostname].firewall %}
+        {% if "hosts" in item %}ip saddr @allowed_hosts_to_{{item['port']}} {% endif %}tcp dport @allowed_port_{{item['port']}} accept
+{% endfor %}
+    }
+
+    chain INPUT {
+        type filter hook input priority filter + 20
+        jump default
+        jump to_generate
+        reject with icmpx type port-unreachable
+    }
+}

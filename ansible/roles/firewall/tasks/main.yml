@@ -1,0 +1,23 @@
+---
+
+- name: create directory
+  ansible.builtin.file:
+    path: /etc/nftables/
+    state: directory
+
+- name: Firewall block
+  block:
+
+  - name: Copy Template firewall
+    ansible.builtin.template:
+      src: main.nft.j2
+      dest: /etc/nftables/main.nft
+    notify: load-new-config
+
+  - name: Run and Enable Service nftables
+    ansible.builtin.service:
+      name: nftables
+      enabled: yes
+      state: started
+
+  when: "'firewall' in hostvars[inventory_hostname]"

@@ -1,3 +1,11 @@
+---
+
+- name: Creates directory
+  file:
+    path: "{{CERT_PATH}}"
+    state: directory
+    recurse: yes
+
 - name: Create private key for new certificate on {{hostname}} {{inventory_hostname}}
   community.crypto.openssl_privatekey:
     path: "{{CERT_PATH}}/certificate-etcd.key"
@@ -17,3 +25,17 @@
       - "IP:127.0.0.1"
     _ca_key: "{{ hostvars['INIT_CA_HOST']['share_ca_etcd']['key']['source'] }}"
     _ca_pem: "{{ hostvars['INIT_CA_HOST']['share_ca_etcd']['crt']['source'] }}"
+
+- name: Write certificate {{item.key}}
+  copy:
+    dest: "{{ item.value['crt']['source'] }}"
+    content: "{{ item.value['crt']['content']|b64decode }}"
+  loop: "{{hostvars['INIT_CA_HOST'] | dict2items}}"
+  when: 'item["key"] in ["share_etcd_cluster","share_ca_etcd"]'
+
+- name: Write key {{item.key}}
+  copy:
+    dest: "{{ item.value['key']['source'] }}"
+    content: "{{ item.value['key']['content']|b64decode }}"
+  loop: "{{hostvars['INIT_CA_HOST'] | dict2items}}"
+  when: 'item["key"] in ["share_etcd_cluster"]'

@@ -28,6 +28,7 @@ module "node" {
   domain   = var.domain
   hostname = each.key
   tags     = each.value["tags"]
+  memoryMB = each.value["memoryMB"]
   network  = module.network.id
   template = var.template
 }

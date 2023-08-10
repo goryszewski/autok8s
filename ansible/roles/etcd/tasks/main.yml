@@ -45,15 +45,13 @@
   ansible.builtin.template:
     src: etcd.service.j2
     dest: /etc/systemd/system/etcd.service
-  register: touch_etcd_service
+  notify: Restart-service-etcd
 
 - name: Enable service 
   ansible.builtin.systemd:
     name: etcd
     enabled: true
     daemon_reload: true
-    state: restarted
-  when: touch_etcd_service.changed
 
 - name: "[{{hostname}}] DEBUG ETCD"
   include_tasks:

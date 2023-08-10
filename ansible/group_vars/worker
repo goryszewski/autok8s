@@ -1,0 +1,7 @@
+firewall:
+    - port: 179
+    - port: 10256 
+    - port: 5473
+    - port: 10250
+    - port: 30080
+    - port: 30443

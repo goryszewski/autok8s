@@ -1,18 +1,30 @@
 #VAR 
 CONF_domain=autok8s.xyz
 
+# HOSTS='{ "master01" : { "tags" : ["controlplane","etcd","init"]},\
+# 							  "master02" : { "tags" : ["controlplane","etcd"]},\
+# 				   			  "worker01" : { "tags" : ["worker"] }, \
+# 							  "worker02" : { "tags" : ["worker"] }, \
+# 							  "exabgp01" : { "tags" : ["exabgp"]}, \
+# 							  "exabgp02" : { "tags" : ["exabgp"]}, \
+# 							  "haproxy01" : { "tags" : ["bgp","haproxy","master"]}, \
+# 							  "haproxy02" : { "tags" : ["bgp","haproxy"]}, \
+# 							  "prometheus": {"tags" : ["monit"] } \
+# 							}'
+HOSTS1={ "etcd01" : { "tags" : ["etcd"] , memoryMB: "2048" },\
+	"etcd02" : { "tags" : ["etcd"]  , memoryMB: "2048"},\
+	"master01" : { "tags" : ["controlplane","init"] , memoryMB: "2048"},\
+	"master02" : { "tags" : ["controlplane"] , memoryMB: "2048"},\
+	"worker01" : { "tags" : ["worker"]  , memoryMB: "8192"}, \
+	"worker02" : { "tags" : ["worker"]  , memoryMB: "8192"}, \
+	"haproxy01" : { "tags" : ["bgp","haproxy","master"] , memoryMB: "2048"}, \
+	"haproxy02" : { "tags" : ["bgp","haproxy"] , memoryMB: "2048"} ,\
+	"prometheus": {"tags" : ["monit"] , memoryMB: "2048"`} \
+		}
+
 Terraform_VARS= -var-file="debian11.tfvars"\
 				-var 'domain=$(CONF_domain)' \
-				-var 'hosts={ "master01" : { "tags" : ["controlplane","etcd","init"]},\
-							  "master02" : { "tags" : ["controlplane","etcd"]},\
-				   			  "worker01" : { "tags" : ["worker"] }, \
-							  "worker02" : { "tags" : ["worker"] }, \
-							  "exabgp01" : { "tags" : ["exabgp"]}, \
-							  "exabgp02" : { "tags" : ["exabgp"]}, \
-							  "haproxy01" : { "tags" : ["bgp","haproxy","master"]}, \
-							  "haproxy02" : { "tags" : ["bgp","haproxy"]}, \
-							  "prometheus": {"tags" : ["prometheus"] } \
-							}' 
+				-var 'hosts=$(HOSTS1)' 
 
 inventory=-i ./scripts/libvirt_inventory.py
 

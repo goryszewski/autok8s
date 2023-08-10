@@ -138,7 +138,7 @@ protocol static {
 #       reject;
 # }
 # BGP example, explicit name 'uplink1' is used instead of default 'bgp1'
-
+{% if 'exabgp' in groups %}
 {% for host in groups['exabgp'] %}
 protocol bgp exabgp_{{host|replace(".","_")}} {
         description "auto_k8s_{{host|replace(".","_")}}_exabgp";
@@ -153,6 +153,7 @@ protocol bgp exabgp_{{host|replace(".","_")}} {
 }
 {% endfor %}
 
+{% endif %}
 {% for host in groups['bgp'] %}
 {% if host != inventory_hostname %}
 protocol bgp uplink_{{host|replace(".","_")}} {

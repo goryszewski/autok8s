@@ -1,22 +1,13 @@
 ---
 
-- name: "CA Kubernetes"
+- name: 'Generate CA: {{item.CA_name}}'
   include_tasks:
     file: _ca.yml
   vars: 
-    _name_file: 'ca_kubernetes'
-    _CA_name: "Kubernetes CA "
-
-- name: "CA ETCD"
-  include_tasks:
-    file: _ca.yml
-  vars: 
-    _name_file: 'ca_etcd'
-    _CA_name: "ETCD CA "
-
-- name: "CA Typha"
-  include_tasks:
-    file: _ca.yml
-  vars: 
-    _name_file: 'ca_typha'
-    _CA_name: "Calico Typha CA"
+    _name_file: '{{item.name_file}}'
+    _CA_name: '{{item.CA_name}}'
+  loop:
+    - { CA_name: 'Kubernetes CA', name_file: 'ca_kubernetes' }
+    - { CA_name: 'ETCD CA', name_file: 'ca_etcd' }
+    - { CA_name: 'Calico Typha CA', name_file: 'ca_typha' }
+    - { CA_name: 'Kubernetes Front Proxy CA', name_file: 'ca_kubernetes_front_proxy' }

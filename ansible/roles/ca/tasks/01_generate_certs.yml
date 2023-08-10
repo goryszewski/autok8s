@@ -15,7 +15,7 @@
 
 - name: "[{{hostname}}] etcd SAN"
   set_fact:
-    dynamic_etcd: "{{groups['controlplane'] | fix_to_san}}"
+    dynamic_etcd: "{{groups['etcd'] | fix_to_san}}"
 
 - name: "[{{hostname}}] {{item.common_name}}"
   include_tasks:
@@ -43,3 +43,4 @@
     # ca_etcd
     - { name: 'etcd-cluster', common_name: 'etcd-cluster' , ca: 'share_ca_etcd', organization_name: 'etcd-cluster', subject_alt_name: "{{ dynamic_etcd  }}" }
     - { name: 'kube-api-client', common_name: 'kube-api-client' , ca: 'share_ca_etcd', organization_name: 'etcd-cluster'}
+    - { name: 'prometheus', common_name: 'prometheus' , ca: 'share_ca_etcd', organization_name: 'monigoring'}

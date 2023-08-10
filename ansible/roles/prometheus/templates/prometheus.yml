@@ -31,9 +31,9 @@ scrape_configs:
   - job_name: etcd
     scheme: https
     tls_config:
-        ca_file: /etc/kubernetes/pki/ca_kubernetes.pem
-        cert_file: /etc/ssl/certs/certificate.pem
-        key_file: /etc/ssl/private/certificate.key
+        ca_file: /etc/kubernetes/pki/ca_etcd.pem
+        cert_file: /etc/kubernetes/pki/prometheus.pem
+        key_file: /etc/kubernetes/pki/prometheus.key
     static_configs:
 {% set etcd = [] %}
 {% for worker in groups['etcd'] %}

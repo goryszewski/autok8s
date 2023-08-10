@@ -1,0 +1,5 @@
+firewall:
+    - port: 10257
+    - port: 10259
+    - port: 6443
+      hosts: "{{groups['worker'] + groups['haproxy'] + groups['controlplane'] + ['10.17.3.2'] }}"

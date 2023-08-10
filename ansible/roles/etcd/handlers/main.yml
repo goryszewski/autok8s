@@ -1,2 +1,6 @@
 ---
 # handlers file for etcd
+  - name: Restart-service-etcd
+    ansible.builtin.service:
+      name: etcd
+      state: restarted
