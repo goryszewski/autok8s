@@ -65,8 +65,14 @@
   - "ETCDCTL_API=3 etcdctl --write-out=table --endpoints={{etcd['members']}} endpoint status  --cacert={{CERT_PATH}}/ca_etcd.pem --cert={{CERT_PATH}}/certificate-etcd.pem --key={{CERT_PATH}}/certificate-etcd.key"
   - "ETCDCTL_API=3 etcdctl --write-out=table --endpoints={{etcd['members']}} endpoint health  --cacert={{CERT_PATH}}/ca_etcd.pem --cert={{CERT_PATH}}/certificate-etcd.pem --key={{CERT_PATH}}/certificate-etcd.key"
 
+- name: script backup
+  ansible.builtin.template:
+    src: backup.sh
+    dest: /tmp/backup.sh
+    mode: u=rwx,g=rx,o=rx
+
 - name: backup cron job
   ansible.builtin.cron:
-    name: "check dirs"
+    name: "Run backup"
     minute: "*/5"
-    job: 'ETCDCTL_API=3 etcdctl --endpoints={{inventory_hostname}}:2379 snapshot save /srv/backup.$(date "+\%Y.\%m.\%d-\%H.\%M.\%S") --cacert={{CERT_PATH}}/ca_etcd.pem --cert={{CERT_PATH}}/certificate-etcd.pem --key={{CERT_PATH}}/certificate-etcd.key'
+    job: '/tmp/backup.sh'
