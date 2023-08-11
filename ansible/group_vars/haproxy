@@ -3,5 +3,10 @@ firewall:
     - port: 443
     - port: 6443
     - port: 53
+      type: 'udp'
+    - port: 53
     - port: 179
       hosts: "{{groups['haproxy']}}"
+
+cname:
+  grafana: prometheus

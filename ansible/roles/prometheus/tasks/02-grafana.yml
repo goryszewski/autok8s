@@ -1,0 +1,27 @@
+
+- name: Add repositories key
+  apt_key:
+    url: https://apt.grafana.com/gpg.key
+    state: present
+
+
+- name: Add repositories
+  apt_repository:
+    repo: 'deb https://apt.grafana.com stable main'
+    state: present
+    filename: 'grafana'
+
+
+- name: grafana - Install
+  ansible.builtin.apt:
+    update_cache: yes
+    allow_change_held_packages: true
+    pkg:
+      - grafana
+
+- name: Enable service grafana
+  ansible.builtin.systemd:
+    name: grafana-server.service
+    enabled: true
+    daemon_reload: true
+    state: started

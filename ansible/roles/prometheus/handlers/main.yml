@@ -1,0 +1,9 @@
+- name: Restart-Nginx
+  ansible.builtin.service:
+    name: nginx
+    state: restarted
+
+- name: Restart-Prometheus
+  ansible.builtin.service:
+    name: prometheus
+    state: restarted

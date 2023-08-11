@@ -29,12 +29,12 @@
     organization_name: "{{ _organization_name | default(cert_organization_name)}}"
     organizational_unit_name: "{{cert_organizational_unit_name}}"
     state_or_province_name: "{{cert_state_or_province_name}}"
-    key_usage:
-      - keyCertSign
-      - keyEncipherment
-    extendedKeyUsage:
-      - serverAuth
-      - clientAuth
+    key_usage: "{{ _key_usage | default(['keyCertSign','keyEncipherment']) }}"
+      # - keyCertSign
+      # - keyEncipherment
+    extendedKeyUsage: "{{ _extendedKeyUsage | default(['serverAuth','clientAuth']) }}"
+      # - serverAuth
+      # - clientAuth
     subject_alt_name: "{{ _subject_alt_name | default([]) }}"
 
 

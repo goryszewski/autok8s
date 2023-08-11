@@ -2,68 +2,68 @@
   gather_facts: no
   roles:
     - firewall
-#     - common
-#     - node_explorer
+    - common
+    - node_explorer
 
-# - hosts: haproxy
-#   gather_facts: no
-#   roles:
-#     - haproxy
-#     - keepalive
-#     - dns
-#     - bgp
-#   tags: [ LB, HA, BGP, DNS ]
+- hosts: haproxy
+  gather_facts: no
+  roles:
+    - haproxy
+    - keepalive
+    - dns
+    # - bgp
+  tags: [ LB, HA, BGP, DNS ]
 
-# - hosts: exabgp
-#   gather_facts: no
-#   roles:
-#     - exabgp
-#   tags: [ EXABGP ]
+- hosts: exabgp
+  gather_facts: no
+  roles:
+    - exabgp
+  tags: [ EXABGP ]
 
-# - hosts: controlplane
-#   gather_facts: no
-#   roles:
-#     - ca
-#   tags: [ CA ]
+- hosts: controlplane
+  gather_facts: no
+  roles:
+    - ca
+  tags: [ CA ]
 
-# - hosts: monit
-#   gather_facts: no
-#   roles:
-#     - prometheus
-#   tags: [ PROMETHEUS ]
+- hosts: monit
+  gather_facts: no
+  roles:
+    - prometheus
+  tags: [ PROMETHEUS ]
 
-# - hosts: worker
-#   gather_facts: no
-#   roles:
-#     - certs
-#   tags: [ CRT ]
+- hosts: worker
+  gather_facts: no
+  roles:
+    - certs
+  tags: [ CRT ]
 
-# - hosts: etcd
-#   gather_facts: no
-#   roles:
-#     - etcd
-#   tags: [ ETCD ]
+- hosts: etcd
+  gather_facts: no
+  roles:
+    - etcd
+  tags: [ ETCD ]
 
-# - hosts: controlplane
-#   gather_facts: no
-#   roles:
-#     - controlplane
-#   tags: [ CP ]
+- hosts: controlplane
+  gather_facts: no
+  roles:
+    - controlplane
+  tags: [ CP ]
 
-# - hosts: controlplane
-#   gather_facts: no
-#   roles:
-#     - cluster_pre
-#   tags: [ PRE ]
+- hosts: controlplane
+  gather_facts: no
+  roles:
+    - cluster_pre
+  tags: [ PRE ]
 
-# - hosts: worker
-#   gather_facts: no
-#   roles:
-#     - worker_v2
-#   tags: [ WORKER ]
+- hosts: worker
+  gather_facts: no
+  roles:
+    - worker_v2
+  tags: [ WORKER ]
 
-# - hosts: controlplane
-#   gather_facts: no
-#   roles:
-#     - cluster_post
-#   tags: [ POST ]
+- hosts: controlplane
+  gather_facts: no
+  roles:
+    - cluster_post
+  tags: [ POST ]

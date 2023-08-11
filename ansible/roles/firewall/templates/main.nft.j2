@@ -17,13 +17,13 @@ table inet firewall {
     }
 
 {% for item in hostvars[inventory_hostname].firewall %}
-    set allowed_port_{{item['port']}} {
+    set allowed_port_{{item['port']}}_{{item['type']|default('tcp')}} {
         type inet_service
         elements = { {{item['port']}} }
     }
 
 {% if "hosts" in item %}
-    set allowed_hosts_to_{{item['port']}} {
+    set allowed_hosts_to_{{item['port']}}_{{item['type']|default('tcp')}}  {
         type ipv4_addr
         elements = { {{item['hosts']|join(', ')}} }
     }
@@ -40,7 +40,7 @@ table inet firewall {
 
     chain to_generate {
 {% for item in hostvars[inventory_hostname].firewall %}
-        {% if "hosts" in item %}ip saddr @allowed_hosts_to_{{item['port']}} {% endif %}tcp dport @allowed_port_{{item['port']}} accept
+        {% if "hosts" in item %}ip saddr @allowed_hosts_to_{{item['port']}}_{{item['type']|default('tcp')}}  {% endif %}tcp dport @allowed_port_{{item['port']}}_{{item['type']|default('tcp')}}  accept
 {% endfor %}
     }
 

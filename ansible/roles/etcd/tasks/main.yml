@@ -52,6 +52,7 @@
     name: etcd
     enabled: true
     daemon_reload: true
+    state: started
 
 - name: "[{{hostname}}] DEBUG ETCD"
   include_tasks:
