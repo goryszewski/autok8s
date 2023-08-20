@@ -62,6 +62,10 @@
   roles:
     - crt
     - worker_v2
+    - containerd
+    - kubelet
+    - kube-proxy
+    - calico
   tags: [ WORKER ]
 
 - hosts: controlplane

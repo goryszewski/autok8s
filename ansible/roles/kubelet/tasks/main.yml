@@ -1,0 +1,67 @@
+---
+# tasks file for kubelet
+
+- name: Download files
+  ansible.builtin.get_url:
+    url: "https://dl.k8s.io/release/v{{k8s_version}}/bin/linux/amd64/{{item}}"
+    dest: /usr/local/bin/
+    mode: 'u=rwx,g=rx,o=rx'
+    checksum: sha256:https://dl.k8s.io/release/v{{k8s_version}}/bin/linux/amd64/{{item}}.sha256
+  loop:
+    - "kubelet" 
+    - "kubectl"
+
+- name: Creates directory /etc/kubernetes/*
+  file:
+    path: "{{item}}"
+    state: directory
+    recurse: true
+    owner: root
+    group: root
+    mode: '0700'
+  loop:
+    - "/etc/kubernetes/manifest"
+    - "/etc/kubernetes/config"
+    
+- name: "KubeConfig Kube-proxy"
+  include_tasks:
+    file: ./_share/_.kubeconfig.yml
+  vars: 
+    _name: "{{element._name}}"
+    _crt: "{{element._crt}}"
+    _IP: "{{KUBERNETES_PUBLIC_ADDRESS}}"
+  loop:
+    - {_name: 'system:node:{{hostname}}',_crt: "node_{{hostname}}"}
+  loop_control:
+    loop_var: element
+
+- name: Creates directory /var/lib/kubelet/
+  file:
+    path: /var/lib/kubelet/
+    state: directory
+    owner: root
+    group: root
+    mode: '0700'
+
+
+
+
+
+- name: Template a file to kubelet-config.yaml
+  ansible.builtin.template:
+    src: kubelet-config.yaml.j2
+    dest: /var/lib/kubelet/kubelet-config.yaml
+  register: touch_kubelet1_service
+
+- name: Template a file to kubelet.service.j2
+  ansible.builtin.template:
+    src: kubelet.service.j2
+    dest: /etc/systemd/system/kubelet.service
+  register: touch_kubelet2_service
+
+- name: Enable service kubelet
+  ansible.builtin.systemd:
+    name: kubelet
+    enabled: true
+    daemon_reload: true
+    state: restarted

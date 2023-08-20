@@ -1,0 +1,48 @@
+---
+# tasks file for kube-proxy
+- name: "KubeConfig Kube-proxy"
+  include_tasks:
+    file: ./_share/_.kubeconfig.yml
+  vars: 
+    _name: "{{element._name}}"
+    _crt: "{{element._crt}}"
+    _IP: "{{KUBERNETES_PUBLIC_ADDRESS}}"
+  loop:
+    - {_name: 'system:kube-proxy',_crt: "kube-proxy"}
+  loop_control:
+    loop_var: element
+
+- name: Creates directory /var/lib/kube-proxy/
+  file:
+    path: /var/lib/kube-proxy/
+    state: directory
+    owner: root
+    group: root
+    mode: '0700'
+
+- name: Download files
+  ansible.builtin.get_url:
+    url: "{{item}}"
+    dest: /usr/local/bin/
+    mode: 'u=rwx,g=rx,o=rx'
+  loop:
+    - https://storage.googleapis.com/kubernetes-release/release/v{{k8s_version}}/bin/linux/amd64/kube-proxy
+
+- name: Template a file to kube-proxy-config.yaml.j2
+  ansible.builtin.template:
+    src: kube-proxy-config.yaml.j2
+    dest: /var/lib/kube-proxy/kube-proxy-config.yaml
+
+- name: Copy a file to kube-proxy.service
+  ansible.builtin.copy:
+    src: kube-proxy.service
+    dest: /etc/systemd/system/kube-proxy.service
+  register: touch_kube_proxy_service
+
+- name: Enable service kube-proxy
+  ansible.builtin.systemd:
+    name: kube-proxy
+    enabled: true
+    daemon_reload: true
+    state: restarted
+  when: touch_kube_proxy_service.changed
