@@ -1,16 +1,21 @@
-- name: nginx - Install
+---
+# tasks file for nginx
+
+- name: Install
   ansible.builtin.apt:
     update_cache: yes
     allow_change_held_packages: true
     pkg:
       - nginx
 
-- name: Enable service nginx
+- name: Enable service and started
   ansible.builtin.systemd:
     name: nginx.service
     enabled: true
     daemon_reload: true
     state: started
+
+
 
 - name: system:node:{{hostname}}
   include_tasks:
@@ -28,14 +33,15 @@
     _ca_pem: "{{ hostvars['INIT_CA_HOST']['share_ca_kubernetes']['crt']['source'] }}"
     _extendedKeyUsage: ['serverAuth']
     _key_usage: []
+  when: nginx.ssl
 
+- name: debug
+  debug:
+    var: nginx.vhost
 
 - name: nginx - vhost - {{item.name}}
   ansible.builtin.template:
-    src: vhost.conf
+    src: vhost.conf.j2
     dest: /etc/nginx/sites-enabled/{{item.name}}.vhost.cfg
-  loop:
-    - {name: grafana , port: 3000 }
-    - {name: prometheus , port: 9090 }
+  loop: "{{nginx.vhost}}"
   notify: Restart-Nginx
-# DOTO SSL HTTPS

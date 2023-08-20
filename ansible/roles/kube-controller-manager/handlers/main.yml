@@ -1,0 +1,6 @@
+---
+# handlers file for kube-controller-manager
+- name: Restart kube-controller-manager
+  ansible.builtin.service:
+    name: kube-controller-manager
+    state: restarted

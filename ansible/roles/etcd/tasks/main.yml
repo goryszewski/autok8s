@@ -1,6 +1,4 @@
 ---
-- import_tasks: 01_cert_nodes.yml
-
 # tasks file for etcd
 - name: Download etcd
   ansible.builtin.get_url:
@@ -61,9 +59,9 @@
     _CMD: "{{item}}"
     _NAME: "ETCDTOOL"
   loop:
-  - "ETCDCTL_API=3 etcdctl --write-out=table --endpoints={{etcd['members']}} member list  --cacert={{CERT_PATH}}/ca_etcd.pem --cert={{CERT_PATH}}/certificate-etcd.pem --key={{CERT_PATH}}/certificate-etcd.key"
-  - "ETCDCTL_API=3 etcdctl --write-out=table --endpoints={{etcd['members']}} endpoint status  --cacert={{CERT_PATH}}/ca_etcd.pem --cert={{CERT_PATH}}/certificate-etcd.pem --key={{CERT_PATH}}/certificate-etcd.key"
-  - "ETCDCTL_API=3 etcdctl --write-out=table --endpoints={{etcd['members']}} endpoint health  --cacert={{CERT_PATH}}/ca_etcd.pem --cert={{CERT_PATH}}/certificate-etcd.pem --key={{CERT_PATH}}/certificate-etcd.key"
+  - "ETCDCTL_API=3 etcdctl --write-out=table --endpoints={{etcd['members']}} member list  --cacert=/etc/etcd/ssl/ETCD_CA.pem --cert=/etc/etcd/ssl/check_health.pem --key=/etc/etcd/ssl/check_health.key"
+  - "ETCDCTL_API=3 etcdctl --write-out=table --endpoints={{etcd['members']}} endpoint status  --cacert=/etc/etcd/ssl/ETCD_CA.pem --cert=/etc/etcd/ssl/check_health.pem --key=/etc/etcd/ssl/check_health.key"
+  - "ETCDCTL_API=3 etcdctl --write-out=table --endpoints={{etcd['members']}} endpoint health  --cacert=/etc/etcd/ssl/ETCD_CA.pem --cert=/etc/etcd/ssl/check_health.pem --key=/etc/etcd/ssl/check_health.key"
 
 - name: script backup
   ansible.builtin.template:

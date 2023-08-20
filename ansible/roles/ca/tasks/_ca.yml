@@ -1,64 +1,77 @@
-- name: "[{{hostname}}] Create private key for new certificate"
+- name: "[{{_common_name}}] Create private key for new certificate"
   community.crypto.openssl_privatekey:
-    path: '{{CERT_PATH}}/{{_name_file}}.key'
+    path: "{{path_ca}}/{{_common_name | replace (' ','_')}}.key"
 
 #BEGIN valid CA
 
-- name: "[{{hostname}}] Check whether certificate exists"
+- name: "[{{_common_name}}] Check whether certificate exists"
   stat:
-    path: '{{CERT_PATH}}/{{_name_file}}.pem'
+    path: "{{path_ca}}/{{_common_name | replace (' ','_')}}.pem"
   register: certificate_exists
 
-- name: "[{{hostname}}] Test whether that certificate is valid tomorrow"
+- name: "[{{_common_name}}] Test whether that certificate is valid tomorrow"
   community.crypto.x509_certificate_info:
-    path:  '{{CERT_PATH}}/{{_name_file}}.pem'
+    path: "{{path_ca}}/{{_common_name | replace (' ','_')}}.pem"
     valid_at:
       point_1: "+1d"
   when: certificate_exists.stat.exists
-  register: valid
+  register: valid 
 
 #END
 
-- name: "[{{hostname}}] Create certificate signing request (CSR) for CA certificate"
+- name: "[{{_common_name}}] Create certificate signing request (CSR) for CA certificate"
   community.crypto.openssl_csr_pipe:
-    privatekey_path: '{{CERT_PATH}}/{{_name_file}}.key'
-    common_name: "{{_CA_name}}"
+    privatekey_path: "{{path_ca}}/{{_common_name | replace (' ','_')}}.key"
+    common_name: "{{_common_name}}"
     use_common_name_for_san: false
     basic_constraints:
-      - 'CA:TRUE'
+      - "CA:TRUE"
     basic_constraints_critical: true
     key_usage:
       - keyCertSign
     key_usage_critical: true
   register: ca_csr
-  when: not certificate_exists.stat.exists or not valid.valid_at.point_1 
+  when: not certificate_exists.stat.exists or not valid.valid_at.point_1
 
-- name: "[{{hostname}}] Create self-signed CA certificate from CSR"
+- name: "[{{_common_name}}] Create [{{_ca_sign}}] certificate from CSR"
   community.crypto.x509_certificate:
-    path: '{{CERT_PATH}}/{{_name_file}}.pem'
+    path: "{{path_ca}}/{{_common_name | replace (' ','_')}}.pem"
     csr_content: "{{ ca_csr.csr }}"
-    privatekey_path: '{{CERT_PATH}}/{{_name_file}}.key'
+    ownca_path: "{{path_ca}}/{{_ca_sign|replace(' ','_')}}.pem"
+    ownca_privatekey_path: "{{path_ca}}/{{_ca_sign|replace(' ','_')}}.key"
+    provider: ownca
+  when: 
+    - ca_csr.changed 
+    - not _ca_sign == "selfsigned"
+
+- name: "[{{_common_name}}] Create [{{_ca_sign}}] certificate from CSR"
+  community.crypto.x509_certificate:
+    path: "{{path_ca}}/{{_common_name | replace (' ','_')}}.pem"
+    csr_content: "{{ ca_csr.csr }}"
+    privatekey_path: "{{path_ca}}/{{_common_name | replace (' ','_')}}.key"
     provider: selfsigned
-  when: ca_csr.changed
+  when: 
+    - ca_csr.changed 
+    - _ca_sign == "selfsigned"
 
 # READ crt & key
 
 - name: "[{{hostname}}] Read existing certificate CA if exists and valids"
   slurp:
-    src: '{{CERT_PATH}}/{{_name_file}}.pem'
+    src: "{{path_ca}}/{{_common_name | replace (' ','_')}}.pem"
   register: tmp_cert
 
 
 - name: "[{{hostname}}] Read existing certificate CA Key"
   slurp:
-    src: '{{CERT_PATH}}/{{_name_file}}.key'
+    src: "{{path_ca}}/{{_common_name | replace (' ','_')}}.key"
   register: tmp_key
 
 # save to dump Host
 
 - name: set fact about CA 
   set_fact: 
-    "share_{{_name_file}}": { "key": "{{tmp_key}}", "crt": "{{tmp_cert}}", "certs":[] } 
+    "share_{{_common_name | replace (' ','_')}}": { "key": "{{tmp_key}}", "crt": "{{tmp_cert}}", "certs":[] } 
   delegate_to: "INIT_CA_HOST"
   delegate_facts: True
 

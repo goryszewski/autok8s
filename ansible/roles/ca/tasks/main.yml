@@ -3,17 +3,16 @@
     name:   "INIT_CA_HOST"
     data:  []
 
-- name: Creates directory
+- name: "Creates directory"
   file:
-    path: "{{CERT_PATH}}"
+    path: "{{path_ca}}"
     state: directory
     recurse: yes
 
-- import_tasks: 00_generate_CA.yml
-  delegate_to: '{{groups.init[0]}}'
-  run_once: true
-
-- import_tasks: 01_generate_certs.yml
+- name: Run singleton
+  block:
+  - import_tasks: 00_generate_CA.yml
+  - import_tasks: 01_generate_certs.yml
   delegate_to: '{{groups.init[0]}}'
   run_once: true
 
@@ -21,4 +20,6 @@
 
 # - name: test debug
 #   debug:
-#     msg: "{{hostvars['INIT_CA_HOST']}}"
+#     msg: "{{item.key}}"
+#   loop: "{{hostvars['INIT_CA_HOST'] | dict2items}}"
+#   when: '"share_" in item["key"]'

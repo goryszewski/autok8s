@@ -21,10 +21,19 @@ HOSTS1={ "etcd01" : { "tags" : ["etcd"] , memoryMB: "2048" },\
 	"haproxy02" : { "tags" : ["bgp","haproxy"] , memoryMB: "2048"} ,\
 	"prometheus": {"tags" : ["monit"] , memoryMB: "2048"} \
 		}
+HOSTS2={"master01" : { memoryMB: "2048" , "tags" : ["controlplane","init"] },\
+	"master02" : { memoryMB: "2048" , "tags" : ["controlplane"] },\
+	"etcd01"   : { memoryMB: "2048" , "tags" : ["etcd"] },\
+	"etcd02"   : { memoryMB: "2048" , "tags" : ["etcd"] },\
+	"worker01" : { "tags" : ["worker"]  , memoryMB: "8192"}, \
+	"worker02" : { "tags" : ["worker"]  , memoryMB: "8192"}, \
+	"haproxy01" : { "tags" : ["bgp","haproxy","master"] , memoryMB: "2048"},\
+	"haproxy02" : { "tags" : ["bgp","haproxy"] , memoryMB: "2048"} \
+ }
 
 Terraform_VARS= -var-file="debian11.tfvars"\
 				-var 'domain=$(CONF_domain)' \
-				-var 'hosts=$(HOSTS1)' 
+				-var 'hosts=$(HOSTS2)' 
 
 inventory=-i ./scripts/libvirt_inventory.py
 
@@ -81,13 +90,21 @@ sudo:
 
 stop: sudo
 	@echo " [KVM] STOP all vms"
-	for i in `sudo virsh list --name ` ; do sudo virsh shutdown --domain $$i ; done
+	for i in `sudo virsh list --name ` ; do sudo virsh destroy	 --domain $$i --graceful ; done
 	sudo virsh net-destroy --network Local_ansible
 
 start: sudo
 	sudo virsh net-start --network Local_ansible
 	@echo " [KVM] START all vms"
 	for i in `sudo virsh list --name --all | grep $(CONF_domain) ` ; do sudo virsh start --domain $$i ; done
+
+snap: sudo
+	@echo " [KVM] snap all vms"
+	for i in `sudo virsh list --name --all | grep $(CONF_domain) ` ; do sudo virsh snapshot-create-as --domain $$i --name "makefile" --description "Snapshot via makefile" ; done
+
+revert: sudo
+	@echo " [KVM] revert all vms"
+	for i in `sudo virsh list --name --all | grep $(CONF_domain) ` ; do sudo virsh snapshot-revert --domain $$i --snapshotname  "makefile" ; done
 
 rv: sudo
 	systemctl stop libvirtd

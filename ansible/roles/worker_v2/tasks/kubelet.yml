@@ -21,15 +21,17 @@
     - "/etc/kubernetes/manifest"
     - "/etc/kubernetes/config"
     
-
-- name: kubectl config step 1
-  ansible.builtin.command: kubectl config set-cluster kubernetes-the-hard-way --certificate-authority=/etc/kubernetes/pki/ca_kubernetes.pem --embed-certs=true --server=https://{{KUBERNETES_PUBLIC_ADDRESS}}:6443 --kubeconfig=/etc/kubernetes/config/{{hostname}}.kubeconfig
-- name: kubectl config step 2
-  ansible.builtin.command: kubectl config set-credentials system:node:{{hostname}} --client-certificate=/etc/ssl/certs/certificate.pem --client-key=/etc/ssl/private/certificate.key --embed-certs=true --kubeconfig=/etc/kubernetes/config/{{hostname}}.kubeconfig
-- name: kubectl config step 3
-  ansible.builtin.command: kubectl config set-context default --cluster=kubernetes-the-hard-way --user=system:node:{{hostname}} --kubeconfig=/etc/kubernetes/config/{{hostname}}.kubeconfig
-- name: kubectl config step 4
-  ansible.builtin.command: kubectl config use-context default --kubeconfig=/etc/kubernetes/config/{{hostname}}.kubeconfig
+- name: "KubeConfig Kube-proxy"
+  include_tasks:
+    file: ./_share/_.kubeconfig.yml
+  vars: 
+    _name: "{{element._name}}"
+    _crt: "{{element._crt}}"
+    _IP: "{{KUBERNETES_PUBLIC_ADDRESS}}"
+  loop:
+    - {_name: 'system:node:{{hostname}}',_crt: "node_{{hostname}}"}
+  loop_control:
+    loop_var: element
 
 - name: Creates directory /var/lib/kubelet/
   file:

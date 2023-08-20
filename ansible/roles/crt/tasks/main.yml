@@ -1,0 +1,15 @@
+---
+
+- name: Cert + key
+  include_tasks:
+    file: ./_sign.yml
+  vars: 
+    _path: "{{item.path}}"
+    _path_key: "{{item.path}}/{{item.name}}.key"
+    _path_crt: "{{item.path}}/{{item.name}}.pem"
+    _common_name: "{{item.common_name}}"
+    _organization_name: "{{item. organization_name}}"
+    _subject_alt_name: "{{item.san}}"
+    _ca: "{{item.ca}}"
+  loop: "{{certs}}"
+  when: certs is defined

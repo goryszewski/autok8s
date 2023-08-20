@@ -7,7 +7,7 @@ authentication:
     cacheTTL: 0s
     enabled: true
   x509:
-    clientCAFile: "{{CERT_PATH}}/ca_kubernetes.pem"
+    clientCAFile: "{{CERT_PATH}}/Kubernetes_CA.pem"
 authorization:
   mode: Webhook
   webhook:
@@ -18,5 +18,5 @@ clusterDNS:
   - "{{clusterDNS}}"
 resolvConf: "/run/resolvconf/resolv.conf"
 runtimeRequestTimeout: "15m"
-tlsCertFile: "/etc/ssl/certs/certificate.pem"
-tlsPrivateKeyFile: "/etc/ssl/private/certificate.key"
+tlsCertFile: "/etc/kubernetes/pki/node_{{hostname}}.pem"
+tlsPrivateKeyFile: "/etc/kubernetes/pki/node_{{hostname}}.key"

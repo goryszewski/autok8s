@@ -1,4 +1,72 @@
 ---
-- import_tasks: 01-prometheus.yml
-- import_tasks: 02-grafana.yml
-- import_tasks: 03-nginx.yml
+
+- name: Creates directory
+  file:
+    path: "{{CERT_PATH}}"
+    state: directory
+    recurse: yes
+
+# - name: Write certificate {{item.key}}
+#   copy:
+#     dest: "{{ item.value['crt']['source'] }}"
+#     content: "{{ item.value['crt']['content']|b64decode }}"
+#   loop: "{{hostvars['INIT_CA_HOST'] | dict2items}}"
+#   when: 'item["key"] in ["share_prometheus","share_ca_etcd"]'
+
+# - name: Write key {{item.key}}
+#   copy:
+#     dest: "{{ item.value['key']['source'] }}"
+#     content: "{{ item.value['key']['content']|b64decode }}"
+#   loop: "{{hostvars['INIT_CA_HOST'] | dict2items}}"
+#   when: 'item["key"] in ["share_prometheus"]'
+
+- name: Download files
+  ansible.builtin.get_url:
+    url: "https://github.com/prometheus/prometheus/releases/download/v{{prometheus['version']}}/prometheus-{{prometheus['version']}}.{{prometheus['platform']}}.tar.gz"
+    dest: "{{prometheus['path']}}/"
+    mode: 'u=rwx,g=rx,o=rx'
+    checksum: "{{prometheus['hash']}}"
+
+- name: unarchive prometheus
+  ansible.builtin.unarchive:
+    src: "{{prometheus['path']}}/prometheus-{{prometheus['version']}}.{{prometheus['platform']}}.tar.gz"
+    dest: "{{prometheus['path']}}/"
+    remote_src: yes
+
+
+- name: Creates directory /etc/prometheus/
+  file:
+    path: /etc/prometheus/
+    state: directory
+    owner: root
+    group: root
+    mode: '0700'
+
+ 
+- name: Creates directory /var/lib/prometheus
+  file:
+    path: /var/lib/prometheus
+    state: directory
+    owner: root
+    group: root
+    mode: '0700'
+
+- name: "[prometheus] configuration file"
+  template:
+    src: "prometheus.yml"
+    dest: "/etc/prometheus/prometheus.yml"
+  notify: Restart-Prometheus
+
+
+- name: Template a file to prometheus
+  ansible.builtin.copy:
+    src: prometheus.service
+    dest: /etc/systemd/system/prometheus.service
+  notify: Restart-Prometheus
+
+- name: Enable service prometheus
+  ansible.builtin.systemd:
+    name: prometheus
+    enabled: true
+    daemon_reload: true
+    state: started

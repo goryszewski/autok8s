@@ -18,9 +18,9 @@
   ignore_errors: true
   run_once: true
   loop:
-    - kubectl create secret generic -n kube-system calico-typha-certs --from-file={{CERT_PATH}}/typha.key       --from-file={{CERT_PATH}}/typha.pem
-    - kubectl create secret generic -n kube-system calico-node-certs  --from-file={{CERT_PATH}}/calico-node.key --from-file={{CERT_PATH}}/calico-node.pem
-    - kubectl create configmap      -n kube-system calico-typha-ca    --from-file={{CERT_PATH}}/ca_typha.pem
+    - kubectl create secret generic -n kube-system calico-typha-certs --from-file=/etc/kubernetes/pki/typha.key       --from-file=/etc/kubernetes/pki/typha.pem
+    - kubectl create secret generic -n kube-system calico-node-certs  --from-file=/etc/kubernetes/pki/calico-node.key --from-file=/etc/kubernetes/pki/calico-node.pem
+    - kubectl create configmap      -n kube-system calico-typha-ca    --from-file=/etc/kubernetes/pki/ca_typha.pem
 
 # end FILE 
 

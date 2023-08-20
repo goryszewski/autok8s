@@ -1,5 +1,16 @@
 firewall:
-    - port: 10257
-    - port: 10259
-    - port: 6443
-      hosts: "{{groups['worker'] + groups['haproxy'] + groups['controlplane'] + ['10.17.3.2'] }}"
+  - port: 10257
+  - port: 10259
+  - port: 6443
+    hosts: "{{groups['worker'] + groups['haproxy'] + groups['controlplane'] + ['10.17.3.2'] }}"
+
+ca:
+  - { _common_name: "root CA" , _ca_sign: "selfsigned"}
+  - { _common_name: "Intermidiate CA" , _ca_sign: "root CA"}
+  - { _common_name: "ETCD CA" , _ca_sign: "Intermidiate CA"}
+  - { _common_name: "Kubernetes CA" , _ca_sign: "Intermidiate CA"}
+  - { _common_name: "ca_typha" , _ca_sign: "Intermidiate CA"}
+
+certs:
+  - {ca: "ETCD CA" , path: "/etc/kubernetes/pki" , name: "kube-apiserver-client-etcd" , 
+    common_name: "kube-apiserver-client-etcd", organization_name: "etcd"}

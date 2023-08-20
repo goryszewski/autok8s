@@ -1,9 +1,0 @@
-firewall:
-    - port: 443
-    - port: 80
-    - port: 9090
-    - port: 3000
-
-vhost:
-    - grafana
-    - prometheus

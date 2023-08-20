@@ -14,7 +14,7 @@
           "type": "k8s"
       },
       "kubernetes": {
-          "kubeconfig": "/etc/kubernetes/config/cni.kubeconfig"
+          "kubeconfig": "/etc/kubernetes/config/calico-cni.kubeconfig"
       }
     },
     {

@@ -1,0 +1,48 @@
+---
+# tasks file for kube-scheduler
+
+- name: Download files
+  ansible.builtin.get_url:
+    url: "https://dl.k8s.io/release/v{{k8s_version}}/bin/linux/amd64/kube-scheduler"
+    dest: /usr/local/bin/
+    mode: 'u=rwx,g=rx,o=rx'
+    checksum: sha256:https://dl.k8s.io/release/v{{k8s_version}}/bin/linux/amd64/kube-scheduler.sha256
+
+- name: Download files
+  ansible.builtin.get_url:
+    url: "https://dl.k8s.io/release/v{{k8s_version}}/bin/linux/amd64/kubectl"
+    dest: /usr/local/bin/
+    mode: 'u=rwx,g=rx,o=rx'
+    checksum: sha256:https://dl.k8s.io/release/v{{k8s_version}}/bin/linux/amd64/kubectl.sha256
+
+- name: Creates directory /etc/kubernetes/config
+  file:
+    path: "/etc/kubernetes/config"
+    state: directory
+    owner: root
+    group: root
+    mode: '0700'
+
+- name: Template a file to kube-scheduler.kubeconfig
+  ansible.builtin.template:
+    src: kubeconfig.j2
+    dest: /etc/kubernetes/config/kube-scheduler.kubeconfig
+  notify: Restart kube-scheduler 
+
+- name: Copy a file to kube-scheduler.yaml
+  ansible.builtin.copy:
+    src: kube-scheduler.yaml
+    dest: /etc/kubernetes/config/kube-scheduler.yaml
+  notify: Restart kube-scheduler 
+
+- name: Copy a file to kube-scheduler.service
+  ansible.builtin.copy:
+    src: kube-scheduler.service
+    dest: /etc/systemd/system/kube-scheduler.service
+  notify: Restart kube-scheduler 
+
+- name: Enable service kube-scheduler
+  ansible.builtin.systemd:
+    name: kube-scheduler
+    enabled: true
+    daemon_reload: true

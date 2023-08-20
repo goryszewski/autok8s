@@ -1,18 +1,40 @@
+- hosts: haproxy
+  gather_facts: no
+  roles:
+    - haproxy
+    - keepalive
+    - bind
+    # - bgp
+  tags: [ LB, HA, BGP, DNS ]
+
 - hosts: all
   gather_facts: no
   roles:
     - firewall
     - common
     - node_explorer
+  tags: [ ]
 
-- hosts: haproxy
+- hosts: controlplane
   gather_facts: no
   roles:
-    - haproxy
-    - keepalive
-    - dns
-    # - bgp
-  tags: [ LB, HA, BGP, DNS ]
+    - ca
+  tags: [ CA ]
+
+- hosts: etcd
+  gather_facts: no
+  roles:
+    - crt
+    - etcd
+  tags: [ ETCD ]
+
+- hosts: monit
+  gather_facts: no
+  roles:
+    # - prometheus
+    # - grafana
+    - nginx
+  tags: [ PROMETHEUS ]
 
 - hosts: exabgp
   gather_facts: no
@@ -23,31 +45,10 @@
 - hosts: controlplane
   gather_facts: no
   roles:
-    - ca
-  tags: [ CA ]
-
-- hosts: monit
-  gather_facts: no
-  roles:
-    - prometheus
-  tags: [ PROMETHEUS ]
-
-- hosts: worker
-  gather_facts: no
-  roles:
-    - certs
-  tags: [ CRT ]
-
-- hosts: etcd
-  gather_facts: no
-  roles:
-    - etcd
-  tags: [ ETCD ]
-
-- hosts: controlplane
-  gather_facts: no
-  roles:
-    - controlplane
+    - crt
+    - kube-apiserver
+    - kube-scheduler
+    - kube-controller-manager
   tags: [ CP ]
 
 - hosts: controlplane
@@ -59,6 +60,7 @@
 - hosts: worker
   gather_facts: no
   roles:
+    - crt
     - worker_v2
   tags: [ WORKER ]
 
