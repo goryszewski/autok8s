@@ -26,18 +26,9 @@
       - ipset
       - curl
       - sudo
-
     state: latest
     update_cache: yes
-
 
 - name: Install python package
   ansible.builtin.pip:
     name: pyopenssl
-
-- name: Download file with check (sha256)
-  ansible.builtin.get_url:
-    url: https://dl.k8s.io/release/v{{k8s_version}}/bin/linux/amd64/kubectl
-    dest: /usr/bin/
-    mode: 'u=rwx,g=rx,o=rx'
-

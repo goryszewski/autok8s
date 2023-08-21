@@ -2,13 +2,11 @@
 # tasks file for kube-apiserver
 - name: Creates directory
   file:
-    path: "{{item}}"
+    path: "/etc/kubernetes/config"
     state: directory
     owner: root
     group: root
     mode: '0700'
-  loop:
-    - /etc/kubernetes/config
 
 - name: Download file kube-apiserver
   ansible.builtin.get_url:
@@ -34,6 +32,7 @@
     name: kube-apiserver
     enabled: true
     daemon_reload: true
+    state: started
 
 
 

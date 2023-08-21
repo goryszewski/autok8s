@@ -1,12 +1,9 @@
 server {
-{% if nginx.ssl %}
+
         listen 443 ssl http2 ;
         ssl on;
-        ssl_certificate /etc/ssl/certs/certificate.pem;
-        ssl_certificate_key /etc/ssl/private/certificate.key;
-{% else %}
-        listen 80;
-{% endif %}
+        ssl_certificate /etc/ssl/monit.pem;
+        ssl_certificate_key /etc/ssl/monit.key;
 
         server_name {{item.name}}.{{domain}};
         location / {

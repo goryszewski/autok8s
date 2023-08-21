@@ -1,5 +1,5 @@
 
-- name: BIND - Install
+- name: Install
   ansible.builtin.apt:
     update_cache: yes
     allow_change_held_packages: true
@@ -25,7 +25,6 @@
     owner: bind
     group: bind
     mode: '0644'
-
   notify:
     - Restart bind9
 
@@ -48,3 +47,9 @@
     mode: '0644'
   notify:
     - Restart bind9
+
+- name: Enable service bind9
+  ansible.builtin.systemd:
+    name: bind9
+    enabled: true
+    daemon_reload: true

@@ -7,6 +7,11 @@
   template:
     src: "config.j2"
     dest: "/etc/haproxy/haproxy.cfg"
-
   notify:
     - Restart Haproxy
+
+- name: Enable service haproxy
+  ansible.builtin.systemd:
+    name: haproxy
+    enabled: true
+    daemon_reload: true

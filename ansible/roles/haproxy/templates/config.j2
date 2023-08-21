@@ -24,35 +24,15 @@ defaults
         option  httplog
         option  dontlognull
 
+{% for item in haproxy %}
+frontend public_{{item.name}}
+        bind *:{{item.port.public}}
+        default_backend backend_{{item.name}}
 
-frontend public_{{http}}
-        bind *:80
-        default_backend web-backend_{{http}}
-
-backend web-backend_{{http}}
+backend backend_{{item.name}}
         balance roundrobin
-{% for worker in groups['worker'] %}
-        server worker-{{worker}} {{worker}}:{{http}} check 
+{% for host in groups[item.hosts] %}
+        server {{item.name}}-{{host}} {{host}}:{{item.port.target}} check 
 {% endfor %}
 
-frontend public_{{https}}
-        bind *:443
-        default_backend web-backend_{{https}}
-
-backend web-backend_{{https}}
-        balance roundrobin
-{% for worker in groups['worker'] %}
-        server worker-{{worker}} {{worker}}:{{https}} check 
-{% endfor %}
-
-# kube-apiserver
-
-frontend public_api
-        bind *:6443
-        default_backend web-backend_api
-
-backend web-backend_api
-        balance roundrobin
-{% for master in groups['controlplane'] %}
-        server master-{{master}} {{master}}:6443 check 
 {% endfor %}

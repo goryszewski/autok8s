@@ -15,12 +15,10 @@
   ansible.builtin.template:
     src: node_explorer.service.j2
     dest: /etc/systemd/system/node_explorer.service
-  register: touch_node_explorer_service
+  notify: Restart node_explorer
 
 - name: Enable service node_explorer
   ansible.builtin.systemd:
     name: node_explorer
     enabled: true
     daemon_reload: true
-    state: restarted
-  when: touch_node_explorer_service.changed

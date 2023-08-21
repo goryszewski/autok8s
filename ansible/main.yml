@@ -4,7 +4,7 @@
     - haproxy
     - keepalive
     - bind
-    # - bgp
+    - bird
   tags: [ LB, HA, BGP, DNS ]
 
 - hosts: all
@@ -31,8 +31,9 @@
 - hosts: monit
   gather_facts: no
   roles:
-    # - prometheus
-    # - grafana
+    - crt
+    - prometheus
+    - grafana
     - nginx
   tags: [ PROMETHEUS ]
 
@@ -54,8 +55,8 @@
 - hosts: controlplane
   gather_facts: no
   roles:
-    - cluster_pre
-  tags: [ PRE ]
+    - cluster_init
+  tags: [ INIT ]
 
 - hosts: worker
   gather_facts: no

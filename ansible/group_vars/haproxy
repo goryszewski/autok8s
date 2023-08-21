@@ -10,3 +10,20 @@ firewall:
 
 cname:
   grafana: prometheus
+
+haproxy:
+  - name: http
+    port:
+      public: 80
+      target: 30080
+    hosts: worker
+  - name: https
+    port:
+      public: 443
+      target: 30443
+    hosts: worker
+  - name: api
+    port:
+      public: 6443
+      target: 6443
+    hosts: controlplane

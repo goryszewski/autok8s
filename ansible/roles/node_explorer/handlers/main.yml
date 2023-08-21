@@ -1,0 +1,4 @@
+- name: Restart node_explorer
+  ansible.builtin.service:
+    name: node_explorer
+    state: restarted

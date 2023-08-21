@@ -10,6 +10,8 @@
     _common_name: "{{item.common_name}}"
     _organization_name: "{{item. organization_name}}"
     _subject_alt_name: "{{item.san}}"
+    _key_usage: "{{item.keyUsage|default(['keyCertSign','keyEncipherment'])}}"
+    _extendedKeyUsage: "{{item.extendedKeyUsage|default(['serverAuth','clientAuth'])}}"
     _ca: "{{item.ca}}"
   loop: "{{certs}}"
   when: certs is defined

@@ -28,7 +28,8 @@ HOSTS2={"master01" : { memoryMB: "2048" , "tags" : ["controlplane","init"] },\
 	"worker01" : { "tags" : ["worker"]  , memoryMB: "8192"}, \
 	"worker02" : { "tags" : ["worker"]  , memoryMB: "8192"}, \
 	"haproxy01" : { "tags" : ["bgp","haproxy","master"] , memoryMB: "2048"},\
-	"haproxy02" : { "tags" : ["bgp","haproxy"] , memoryMB: "2048"} \
+	"haproxy02" : { "tags" : ["bgp","haproxy"] , memoryMB: "2048"}, \
+	"prometheus": {"tags" : ["monit"] , memoryMB: "2048"} \
  }
 
 Terraform_VARS= -var-file="debian11.tfvars"\

@@ -15,31 +15,7 @@
     daemon_reload: true
     state: started
 
-
-
-- name: system:node:{{hostname}}
-  include_tasks:
-    file: ./_share/_sign.yml
-  vars: 
-    _path_key: "/etc/ssl/private/certificate.key"
-    _path_crt: /etc/ssl/certs/certificate.pem
-    _common_name: "system:node:{{hostname}}"
-    _organization_name: "system:nodes"
-    _subject_alt_name:
-      - "DNS:grafana.{{domain}}"
-      - "DNS:prometheus.{{domain}}"
-      - "IP:{{inventory_hostname}}"
-    _ca_key: "{{ hostvars['INIT_CA_HOST']['share_ca_kubernetes']['key']['source'] }}"
-    _ca_pem: "{{ hostvars['INIT_CA_HOST']['share_ca_kubernetes']['crt']['source'] }}"
-    _extendedKeyUsage: ['serverAuth']
-    _key_usage: []
-  when: nginx.ssl
-
-- name: debug
-  debug:
-    var: nginx.vhost
-
-- name: nginx - vhost - {{item.name}}
+- name: nginx - vhost
   ansible.builtin.template:
     src: vhost.conf.j2
     dest: /etc/nginx/sites-enabled/{{item.name}}.vhost.cfg
