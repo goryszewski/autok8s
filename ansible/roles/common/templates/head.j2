@@ -1,0 +1,4 @@
+
+{% for host in groups['haproxy'] %}
+nameserver {{host}} 
+{% endfor %}

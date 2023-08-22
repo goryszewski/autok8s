@@ -20,7 +20,7 @@
 - name: "[localhost] kubectl local"
   delegate_to: 'localhost'
   run_once: true
-  ansible.builtin.command: scp root@master01.{{domain}}:/root/.kube/config ~/.kube/config
+  ansible.builtin.command: scp root@{{groups.init[0]}}:/root/.kube/config ~/.kube/config
 
 - name: "[localhost] kubectl test"
   delegate_to: 'localhost'

@@ -7,6 +7,7 @@ certs:
   - {ca: "Kubernetes CA" , path: "/etc/ssl" , name: "monit" , common_name: "system:node:monit",organization_name: "system:nodes" , 
     san: ["DNS:prometheus.{{domain}}","DNS:grafana.{{domain}}","DNS:{{hostname}}.{{domain}}","DNS:{{hostname}}","IP:{{inventory_hostname}}","IP:127.0.0.1"],
     extendedKeyUsage: ['serverAuth'] ,keyUsage: [] }
+  - {ca: "ETCD CA" , path: "/etc/etcd/ssl" , name: "check_health" , common_name: "{{hostname}}" }
 
 nginx:
     vhost:

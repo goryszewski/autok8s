@@ -20,9 +20,17 @@ rule_files:
 # A scrape configuration containing exactly one endpoint to scrape:
 # Here it's Prometheus itself.
 {% set all = [] %}
+
 {% for host in groups['all'] %}
 {% set all= all.append('{0}:9100'.format(host)) %}
 {% endfor %}
+
+{% set etcd = [] %}
+
+{% for worker in groups['etcd'] %}
+{% set etcd= etcd.append('{0}:2379'.format(worker)) %}
+{% endfor %}
+
 scrape_configs:
 ## DOTO sd for kubernetes
   - job_name: all_host
@@ -31,15 +39,10 @@ scrape_configs:
   - job_name: etcd
     scheme: https
     tls_config:
-        ca_file: /etc/kubernetes/pki/ca_etcd.pem
-        cert_file: /etc/kubernetes/pki/prometheus.pem
-        key_file: /etc/kubernetes/pki/prometheus.key
+        ca_file: /etc/etcd/ssl/ETCD_CA.pem
+        cert_file: /etc/etcd/ssl/check_health.pem
+        key_file: /etc/etcd/ssl/check_health.key
     static_configs:
-{% set etcd = [] %}
-{% for worker in groups['etcd'] %}
-{% set etcd= etcd.append('{0}:2379'.format(worker)) %}
-{% endfor %}
-
     - targets: [ {{etcd | join(",")}} ]
   # The job name is added as a label `job=<job_name>` to any timeseries scraped from this config.
   - job_name: "prometheus"

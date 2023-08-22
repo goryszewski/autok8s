@@ -3,10 +3,10 @@
     pkg:
       - resolvconf
   
-- name: Template a file to tail.j2
+- name: Template a file to head.j2
   ansible.builtin.template:
-    src: tail.j2
-    dest: /etc/resolvconf/resolv.conf.d/tail
+    src: head.j2
+    dest: /etc/resolvconf/resolv.conf.d/head
   register: touch_tail
 
 - name: resolvconf  -u

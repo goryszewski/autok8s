@@ -15,10 +15,18 @@
   loop:
     - /root/.kube/
 
-- name: Template a file to kube-controller-manager.kubeconfig
-  ansible.builtin.template:
-    src: kubeconfig.j2
-    dest:  /root/.kube/config
+- name: "KubeConfig Kube-proxy"
+  include_tasks:
+    file: ./_share/_.kubeconfig.yml
+  vars: 
+    _name: "{{element._name}}"
+    _crt: "{{element._crt}}"
+    _IP: "{{KUBERNETES_PUBLIC_ADDRESS}}"
+    _path: "/root/.kube/config"
+  loop:
+    - {_name: 'admin',_crt: "admin"}
+  loop_control:
+    loop_var: element
 
 - import_tasks: 02_k8s.yml
 - import_tasks: 03_calico.yml
