@@ -15,7 +15,7 @@
   loop:
     - /root/.kube/
 
-- name: "KubeConfig Kube-proxy"
+- name: "KubeConfig Admin"
   include_tasks:
     file: ./_share/_.kubeconfig.yml
   vars: 

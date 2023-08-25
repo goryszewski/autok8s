@@ -1,0 +1,71 @@
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: auto-cloud-controller-manager
+  namespace: kube-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: system:cloud-controller-manager
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-admin
+subjects:
+  - kind: ServiceAccount
+    name: auto-cloud-controller-manager
+    namespace: kube-system
+
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  labels:
+    k8s-app: autok8s-cloud-controller-manager
+  name: autok8s-cloud-controller-manager
+  namespace: kube-system
+spec:
+  selector:
+    matchLabels:
+      k8s-app: autok8s-cloud-controller-manager
+  template:
+    metadata:
+      labels:
+        k8s-app: autok8s-cloud-controller-manager
+    spec:
+      serviceAccountName: autok8s-cloud-controller-manager
+      containers:
+        - name: autok8s-cloud-controller-manager
+          imagePullPolicy: Always
+          # for in-tree providers we use k8s.gcr.io/cloud-controller-manager
+          # this can be replaced with any other image for out-of-tree providers
+          image: mikejoh/autok8s-cloud-controller-manager:latest
+          command:
+            - /bin/autok8s-cloud-controller-manager
+          args:
+            - --v=5
+            - --cloud-provider=autok8s
+            - --cluster-name=kubernetes-2
+            - --use-service-account-credentials
+            - --address=127.0.0.1
+            # these flags will vary for every cloud provider
+            #- --cloud-config=""
+            #- --leader-elect=true
+            #- --allocate-node-cidrs=true
+            #- --configure-cloud-routes=true
+            #- --cluster-cidr=172.17.0.0/16
+      tolerations:
+        # this is required so CCM can bootstrap itself
+        - key: node.cloudprovider.kubernetes.io/uninitialized
+          value: "true"
+          effect: NoSchedule
+        # this is to have the daemonset runnable on master nodes
+        # the taint may vary depending on your cluster setup
+        - key: node-role.kubernetes.io/master
+          effect: NoSchedule
+      # this is to restrict CCM to only run on master nodes
+      # the node selector may vary depending on your cluster setup
+      nodeSelector:
+        node-role.kubernetes.io/master: ""

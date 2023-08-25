@@ -11,6 +11,9 @@ firewall:
 cname:
   grafana: prometheus
 
+a_record:
+  argocd: 10.17.3.2
+
 haproxy:
   - name: http
     port:

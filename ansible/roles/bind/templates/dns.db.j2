@@ -20,4 +20,7 @@ k8sapi.{{domain}}. IN A {{KUBERNETES_PUBLIC_ADDRESS}}
 {{hostvars[item]['hostname']}} IN A {{item}}
 {% endfor %}
 {% endfor %}
-* IN A {{KUBERNETES_PUBLIC_ADDRESS}}
+{% for k,v in a_record.items()%}
+{{k}} IN A {{v}}
+{% endfor %}
+;* IN A {{KUBERNETES_PUBLIC_ADDRESS}}

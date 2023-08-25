@@ -50,6 +50,7 @@
     - kube-apiserver
     - kube-scheduler
     - kube-controller-manager
+    - cloud-controller-manager
   tags: [ CP ]
 
 - hosts: controlplane

@@ -6,19 +6,24 @@
     state: directory
     recurse: yes
 
-# - name: Write certificate {{item.key}}
-#   copy:
-#     dest: "{{ item.value['crt']['source'] }}"
-#     content: "{{ item.value['crt']['content']|b64decode }}"
-#   loop: "{{hostvars['INIT_CA_HOST'] | dict2items}}"
-#   when: 'item["key"] in ["share_prometheus","share_ca_etcd"]'
+- name: Download file kubectl
+  ansible.builtin.get_url:
+    url: "https://dl.k8s.io/release/v{{k8s_version}}/bin/linux/amd64/kubectl"
+    dest: /usr/local/bin/
+    mode: 'u=rwx,g=rx,o=rx'
+    checksum: sha256:https://dl.k8s.io/release/v{{k8s_version}}/bin/linux/amd64/kubectl.sha256
 
-# - name: Write key {{item.key}}
-#   copy:
-#     dest: "{{ item.value['key']['source'] }}"
-#     content: "{{ item.value['key']['content']|b64decode }}"
-#   loop: "{{hostvars['INIT_CA_HOST'] | dict2items}}"
-#   when: 'item["key"] in ["share_prometheus"]'
+- name: "KubeConfig monit"
+  include_tasks:
+    file: ./_share/_.kubeconfig.yml
+  vars: 
+    _name: "{{element._name}}"
+    _crt: "{{element._crt}}"
+    _IP: "{{KUBERNETES_PUBLIC_ADDRESS}}"
+  loop:
+    - {_name: 'monit',_crt: "monit"}
+  loop_control:
+    loop_var: element
 
 - name: Download files
   ansible.builtin.get_url:

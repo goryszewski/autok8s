@@ -10,8 +10,13 @@ ExecStart=/usr/local/bin/kubelet \
   --container-runtime-endpoint=unix:///var/run/containerd/containerd.sock \
   --kubeconfig=/etc/kubernetes/config/node_{{hostname}}.kubeconfig  \
   --register-node=true \
-  --pod-manifest-path=/etc/kubernetes/manifest
-  --v=2
+  --pod-manifest-path=/etc/kubernetes/manifest \
+{% if cloud_provider is defined %}
+  --cloud-provider=external \
+  --provider-id {{cloud_provider}}://{{hostname}} \
+  --node-ip {{inventory_hostname}} \
+{% endif %}
+  --v=3
 Restart=on-failure
 RestartSec=5
 

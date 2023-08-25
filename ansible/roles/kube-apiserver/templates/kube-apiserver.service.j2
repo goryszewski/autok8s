@@ -36,10 +36,12 @@ ExecStart=/usr/local/bin/kube-apiserver \
   --service-node-port-range=30000-32767 \
   --tls-cert-file=/etc/kubernetes/pki/kubernetes.pem \
   --tls-private-key-file=/etc/kubernetes/pki/kubernetes.key \
+{% if cloud_provider is defined %}
+  --cloud-provider=external \
+{% endif %}
   --v=2
 Restart=on-failure
 RestartSec=5
 
 [Install]
 WantedBy=multi-user.target
-EOF

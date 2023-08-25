@@ -1,0 +1,6 @@
+---
+# handlers file for cloud-controller-manager
+- name: Restart cloud-controller-manager
+  ansible.builtin.service:
+    name: cloud-controller-manager
+    state: restarted

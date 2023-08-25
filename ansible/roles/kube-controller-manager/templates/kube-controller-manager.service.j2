@@ -15,6 +15,9 @@ ExecStart=/usr/local/bin/kube-controller-manager \
   --service-account-private-key-file=/etc/kubernetes/pki/service-accounts.key \
   --service-cluster-ip-range={{service_cluster_ip_range}} \
   --use-service-account-credentials=true \
+{% if cloud_provider is defined %}
+  --cloud-provider=external \
+{% endif %}
   --v=2
 Restart=on-failure
 RestartSec=5
@@ -22,4 +25,3 @@ RestartSec=5
 
 [Install]
 WantedBy=multi-user.target
-EOF
