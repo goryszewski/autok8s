@@ -1,23 +1,36 @@
 ---
 # tasks file for cloud-controller-manager
 
-- name: Copy a file /usr/local/bin/cloud-controller-manager
-  ansible.builtin.copy:
-    # DOTO fix static bin
-    src: cloud-controller-manager
-    dest: /usr/local/bin/cloud-controller-manager
-    mode: 0555
+- name: Creates directory /etc/kubernetes/config
+  file:
+    path: "/etc/kubernetes/config"
+    state: directory
+    owner: root
+    group: root
+    mode: '0700'
 
-
-- name: Template a file to cloud-controller-manager.service
+- name: Template json with worker
   ansible.builtin.template:
-    src: cloud-controller-manager.service.j2
-    dest: /etc/systemd/system/cloud-controller-manager.service
-  notify: Restart cloud-controller-manager 
+    src: payload.j2
+    dest: /etc/kubernetes/config/payload.json
+
+# - name: Copy a file /usr/local/bin/cloud-controller-manager
+#   ansible.builtin.copy:
+#     # DOTO fix static bin
+#     src: cloud-controller-manager
+#     dest: /usr/local/bin/cloud-controller-manager
+#     mode: 0555
+#   notify: Restart cloud-controller-manager 
+
+# - name: Template a file to cloud-controller-manager.service
+#   ansible.builtin.template:
+#     src: cloud-controller-manager.service.j2
+#     dest: /etc/systemd/system/cloud-controller-manager.service
+#   notify: Restart cloud-controller-manager 
 
 
-- name: Enable service cloud-controller-manager
-  ansible.builtin.systemd:
-    name: cloud-controller-manager
-    enabled: true
-    daemon_reload: true
+# - name: Enable service cloud-controller-manager
+#   ansible.builtin.systemd:
+#     name: cloud-controller-manager
+#     enabled: true
+#     daemon_reload: true

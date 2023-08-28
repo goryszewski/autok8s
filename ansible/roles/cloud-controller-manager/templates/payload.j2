@@ -1,0 +1,6 @@
+{% set workers = [] %}
+{% for worker in groups['worker'] %}
+{% set tmp = {"name": hostvars[worker]['hostname'] , "ip": worker , "type":hostvars[worker]['type'] } %}
+{{ workers.append(tmp) }}
+{% endfor %}
+{ "workers" : [{{workers|join(",")}}] }
