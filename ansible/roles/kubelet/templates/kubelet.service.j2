@@ -10,7 +10,7 @@ ExecStart=/usr/local/bin/kubelet \
   --container-runtime-endpoint=unix:///var/run/containerd/containerd.sock \
   --kubeconfig=/etc/kubernetes/config/node_{{hostname}}.kubeconfig  \
   --register-node=true \
-  --pod-manifest-path=/etc/kubernetes/manifest \
+  --pod-manifest-path=/etc/kubernetes/manifests/ \
 {% if cloud_provider is defined %}
   --cloud-provider=external \
   --provider-id {{cloud_provider}}://{{hostname}} \

@@ -25,7 +25,10 @@
   gather_facts: no
   roles:
     - crt
-    - etcd
+    - containerd
+    - kubelet
+    # - etcd
+    - etcd_pod
   tags: [ ETCD ]
 
 - hosts: monit
@@ -63,7 +66,6 @@
   gather_facts: no
   roles:
     - crt
-    - worker_v2
     - containerd
     - kubelet
     - kube-proxy

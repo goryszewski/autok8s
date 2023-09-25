@@ -1,4 +1,4 @@
-- import_tasks: linux.yml
+# - import_tasks: linux.yml
 - import_tasks: repo.yml
 # - import_tasks: containerd.yml
 # - import_tasks: cni.yml

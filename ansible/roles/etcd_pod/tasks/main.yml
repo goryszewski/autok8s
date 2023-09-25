@@ -1,0 +1,61 @@
+---
+# tasks file for etcd_pod
+
+- name: Download etcd
+  ansible.builtin.get_url:
+    url: "https://github.com/etcd-io/etcd/releases/download/{{etcd['version']}}/etcd-{{etcd['version']}}-{{etcd['platform']}}.tar.gz"
+    dest: /tmp
+    mode: 'u=rwx,g=rx,o=rx'
+    checksum: sha256:https://github.com/etcd-io/etcd/releases/download/{{etcd['version']}}/SHA256SUMS
+
+- name: unarchive etcd
+  ansible.builtin.unarchive:
+    src: /tmp/etcd-{{etcd['version']}}-{{etcd['platform']}}.tar.gz
+    dest: /tmp
+    remote_src: yes
+
+- name: Copy etcd
+  ansible.builtin.copy:
+    src: /tmp/etcd-{{etcd['version']}}-{{etcd['platform']}}/{{item}}
+    dest: /usr/local/bin
+    mode: '0555'
+    remote_src: yes
+  loop:
+   - etcdctl
+   - etcd
+
+- name: Creates directory /etc/kubernetes/manifests
+  file:
+    path: "/etc/kubernetes/manifests"
+    state: directory
+    owner: root
+    group: root
+    mode: '0700'
+
+- name: Creates directory /etc/etcd 
+  file:
+    path: /etc/etcd 
+    state: directory
+    owner: root
+    group: root
+    mode: '0700'
+
+- name: Manifest ETCD
+  ansible.builtin.template:
+    src: manifest.yml.j2
+    dest: /etc/kubernetes/manifests/etcd.yml
+
+- name: 15 second pause - downlaod ETCD image
+  pause:
+    seconds: 15
+
+- name: "[{{hostname}}] DEBUG ETCD"
+  include_tasks:
+    file: ./_share/_run_debug.yml
+  vars: 
+    _CMD: "{{item}}"
+    _NAME: "ETCDTOOL"
+  loop:
+  - "ETCDCTL_API=3 etcdctl --write-out=table --endpoints={{etcd['members']}} member list  --cacert=/etc/etcd/ssl/ETCD_CA.pem --cert=/etc/etcd/ssl/check_health.pem --key=/etc/etcd/ssl/check_health.key"
+  - "ETCDCTL_API=3 etcdctl --write-out=table --endpoints={{etcd['members']}} endpoint status  --cacert=/etc/etcd/ssl/ETCD_CA.pem --cert=/etc/etcd/ssl/check_health.pem --key=/etc/etcd/ssl/check_health.key"
+  - "ETCDCTL_API=3 etcdctl --write-out=table --endpoints={{etcd['members']}} endpoint health  --cacert=/etc/etcd/ssl/ETCD_CA.pem --cert=/etc/etcd/ssl/check_health.pem --key=/etc/etcd/ssl/check_health.key"

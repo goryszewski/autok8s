@@ -20,7 +20,7 @@
     group: root
     mode: '0700'
   loop:
-    - "/etc/kubernetes/manifest"
+    - "/etc/kubernetes/manifests"
     - "/etc/kubernetes/config"
     
 - name: "KubeConfig Kube-proxy"

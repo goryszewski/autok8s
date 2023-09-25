@@ -5,18 +5,6 @@ repositories:
     repo: deb [arch=amd64] https://download.docker.com/linux/debian buster stable
     filename: docker
 
-  # - name: repo_gvisor
-  #   url: https://gvisor.dev/archive.key 
-  #   state: present
-  #   repo: deb [arch=amd64,arm64] https://storage.googleapis.com/gvisor/releases release main
-  #   filename: gvisor
-
-  # - name: repo_k8s
-  #   url: https://packages.cloud.google.com/apt/doc/apt-key.gpg 
-  #   state: present
-  #   repo: deb https://apt.kubernetes.io/ kubernetes-xenial main
-  #   filename: k8s
-
   - name: repo_falco
     url:  https://falco.org/repo/falcosecurity-packages.asc
     state: present
@@ -28,16 +16,3 @@ repositories:
     state: present
     repo:  deb https://aquasecurity.github.io/trivy-repo/deb kinetic main
     filename: trivis
-
-
-  # - name: repo_vault
-  #   url:  https://apt.releases.hashicorp.com/gpg
-  #   state: present
-  #   repo: deb https://apt.releases.hashicorp.com kinetic main
-  #   filename: vault
-
-  # - name: repo_
-  #   url:  
-  #   state: present
-  #   repo: 
-  #   filename: 

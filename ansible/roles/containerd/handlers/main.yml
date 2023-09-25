@@ -1,5 +1,7 @@
 ---
 # handlers file for containerd
+  - name: sysctl--system
+    ansible.builtin.shell: sysctl --system
 
   - name: Restart-service-containerd
     ansible.builtin.service:
