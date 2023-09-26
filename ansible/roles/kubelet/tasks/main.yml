@@ -43,25 +43,20 @@
     group: root
     mode: '0700'
 
-
-
-
-
 - name: Template a file to kubelet-config.yaml
   ansible.builtin.template:
     src: kubelet-config.yaml.j2
     dest: /var/lib/kubelet/kubelet-config.yaml
-  register: touch_kubelet1_service
+  notify: Restart-service-kubelet
 
 - name: Template a file to kubelet.service.j2
   ansible.builtin.template:
     src: kubelet.service.j2
     dest: /etc/systemd/system/kubelet.service
-  register: touch_kubelet2_service
+  notify: Restart-service-kubelet
 
 - name: Enable service kubelet
   ansible.builtin.systemd:
     name: kubelet
     enabled: true
     daemon_reload: true
-    state: restarted

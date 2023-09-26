@@ -1,9 +1,31 @@
 - name: "[{{hostname}}] {{_NAME}} "
   ansible.builtin.shell: "{{_CMD}}"
-  register: etcd_output
+  register: output
+  until: output.rc == 0
+  retries: 20
+  delay: 10
 
 - name: "[{{hostname}}] {{_NAME}} debug "
   debug:
     msg: 
     - "{{_CMD}}"
-    - "{{etcd_output.stdout_lines}}"
+    - "{{output.stdout_lines}}"
+
+# - name: "[{{hostname}}] {{_NAME}} full debug "
+#   debug:
+#     msg: 
+#     - "{{_CMD}}"
+#     - "{{output}}"
+
+# "changed": true,
+# "cmd": "",
+# "delta": "0:00:00.068529",
+# "end": "2023-09-26 14:25:38.277508",
+# "failed": false,
+# "msg": "",
+# "rc": 0,
+# "start": "2023-09-26 14:25:38.208979",
+# "stderr": "",
+# "stderr_lines": [],
+# "stdout": ""
+# "stdout_lines": [],

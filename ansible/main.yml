@@ -27,6 +27,8 @@
     - crt
     - containerd
     - kubelet
+    - kube-proxy
+    - calico
     # - etcd
     - etcd_pod
   tags: [ ETCD ]
@@ -50,7 +52,9 @@
   gather_facts: no
   roles:
     - crt
-    - kube-apiserver
+    - containerd
+    - kubelet
+    - kube-apiserver_pod
     - kube-scheduler
     - kube-controller-manager
     - cloud-controller-manager

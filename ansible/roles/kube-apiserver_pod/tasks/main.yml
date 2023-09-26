@@ -1,0 +1,31 @@
+---
+# tasks file for kube-apiserver
+- name: Creates directory
+  file:
+    path: "/etc/kubernetes/config"
+    state: directory
+    owner: root
+    group: root
+    mode: '0700'
+
+# tasks file for kube-apiserver
+- name: Creates directory
+  file:
+    path: "/etc/kubernetes/manifests"
+    state: directory
+    owner: root
+    group: root
+    mode: '0700'
+
+- name: Manifest kube-apiserver
+  ansible.builtin.template:
+    src: manifest.yml.j2
+    dest: /etc/kubernetes/manifests/kube-apiserver.yml
+  notify: Restart-service-kubelet
+
+- name: Template a file to encryption-config.yaml
+  ansible.builtin.template:
+    src: encryption-config.yaml.j2
+    dest: /etc/kubernetes/pki/encryption-config.yaml
+  notify: Restart-service-kubelet
+
