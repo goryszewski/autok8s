@@ -55,8 +55,8 @@
     - containerd
     - kubelet
     - kube-apiserver_pod
-    - kube-scheduler
-    - kube-controller-manager
+    - kube-scheduler_pod
+    - kube-controller-manager_pod
     - cloud-controller-manager
   tags: [ CP ]
 

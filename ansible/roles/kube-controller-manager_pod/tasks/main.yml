@@ -1,0 +1,31 @@
+---
+# tasks file for kube-controller-manager
+- name: Creates directory
+  file:
+    path: "/etc/kubernetes/config"
+    state: directory
+    owner: root
+    group: root
+    mode: '0700'
+
+# tasks file for kube-controller-manager
+- name: Creates directory
+  file:
+    path: "/etc/kubernetes/manifests"
+    state: directory
+    owner: root
+    group: root
+    mode: '0700'
+
+- name: Manifest kube-controller-manager
+  ansible.builtin.template:
+    src: manifest.yml.j2
+    dest: /etc/kubernetes/manifests/kube-controller-manager.yml
+  notify: Restart-service-kubelet
+
+- name: Template a file to kube-controller-manager.kubeconfig
+  ansible.builtin.template:
+    src: kubeconfig.j2
+    dest: /etc/kubernetes/config/kube-controller-manager.kubeconfig
+  notify: Restart-service-kubelet 
+

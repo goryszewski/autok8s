@@ -74,10 +74,10 @@
     path: /etc/containerd
     state: directory
 
-- name: containerd - config default
-  ansible.builtin.shell: containerd config default | sudo tee /etc/containerd/config.toml
-  notify:
-    - Restart-service-containerd
+# - name: containerd - config default
+#   ansible.builtin.shell: containerd config default | sudo tee /etc/containerd/config.toml
+#   notify:
+#     - Restart-service-containerd
 
 - name: gVisor - Install sunsc
   ansible.builtin.apt:
