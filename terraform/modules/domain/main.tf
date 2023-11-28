@@ -50,7 +50,7 @@ resource "libvirt_domain" "node" {
     user     = var.user
     private_key = "${file("~/.ssh/id_rsa")}"
     timeout = "2m"
-    host     = libvirt_domain.node.network_interface[0].addresses[0]
+    host     = self.network_interface[0].addresses[0]
   }
 
   provisioner "file" {
@@ -65,7 +65,7 @@ resource "libvirt_domain" "node" {
     ]
   }
   provisioner "local-exec" {
-    command = "${path.module}/files/local.sh ${libvirt_domain.node.network_interface[0].addresses[0]} ${var.hostname}.${var.domain}"
+    command = "${path.module}/files/local.sh ${self.network_interface[0].addresses[0]} ${var.hostname}.${var.domain}"
     on_failure = continue
   }
 }

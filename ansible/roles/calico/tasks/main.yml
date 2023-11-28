@@ -27,7 +27,7 @@
   when: 
     - touchcni.changed
 
-- name: "KubeConfig Kube-proxy"
+- name: "KubeConfig calico-cni"
   include_tasks:
     file: ./_share/_.kubeconfig.yml
   vars: 
@@ -54,6 +54,5 @@
   ansible.builtin.copy:
     src: 10-calico.conflist
     dest: /etc/cni/net.d/10-calico.conflist 
-
   notify:
     - Restart-service-containerd

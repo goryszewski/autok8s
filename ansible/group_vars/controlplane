@@ -1,8 +1,15 @@
 firewall:
   - port: 10257
   - port: 10259
+  - port: 443
   - port: 6443
-    hosts: "{{groups['worker'] + groups['haproxy'] + groups['controlplane'] + ['10.17.3.2'] }}"
+    # hosts: "{{groups['worker'] + groups['haproxy'] + groups['controlplane'] + ['10.17.3.2'] }}"
+  - port: 179
+  - port: 10256 
+  - port: 5473
+  - port: 10250
+  - port: 30080
+  - port: 30443
 
 ca:
   - { _common_name: "root CA" , _ca_sign: "selfsigned"}

@@ -15,11 +15,26 @@
     - node_explorer
   tags: [ ]
 
+- hosts: exabgp
+  gather_facts: no
+  roles:
+    - exabgp
+  tags: [ EXABGP ]
+
 - hosts: controlplane
   gather_facts: no
   roles:
     - ca
   tags: [ CA ]
+
+- hosts: monit
+  gather_facts: no
+  roles:
+    - crt
+    - prometheus
+    - grafana
+    - nginx
+  tags: [ PROMETHEUS ]
 
 - hosts: etcd
   gather_facts: no
@@ -33,38 +48,19 @@
     - etcd_pod
   tags: [ ETCD ]
 
-- hosts: monit
-  gather_facts: no
-  roles:
-    - crt
-    - prometheus
-    - grafana
-    - nginx
-  tags: [ PROMETHEUS ]
-
-- hosts: exabgp
-  gather_facts: no
-  roles:
-    - exabgp
-  tags: [ EXABGP ]
-
 - hosts: controlplane
   gather_facts: no
   roles:
     - crt
     - containerd
     - kubelet
+    - kube-proxy
+    - calico
     - kube-apiserver_pod
     - kube-scheduler_pod
     - kube-controller-manager_pod
     - cloud-controller-manager
   tags: [ CP ]
-
-- hosts: controlplane
-  gather_facts: no
-  roles:
-    - cluster_init
-  tags: [ INIT ]
 
 - hosts: worker
   gather_facts: no
@@ -75,6 +71,12 @@
     - kube-proxy
     - calico
   tags: [ WORKER ]
+
+- hosts: controlplane
+  gather_facts: no
+  roles:
+    - cluster_init
+  tags: [ INIT ]
 
 - hosts: controlplane
   gather_facts: no

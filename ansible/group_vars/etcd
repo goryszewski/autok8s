@@ -3,7 +3,16 @@ firewall:
     hosts: "{{  groups['controlplane'] + groups['etcd'] + groups['monit']|default([])}} "
   - port: 2380
     hosts: "{{groups['etcd'] + groups['monit']|default([]) }}"
-
+  - port: 179
+  - port: 10256 
+  - port: 5473
+  - port: 10250
+  - port: 30080
+  - port: 30443
+  - port: 10257
+  - port: 10259
+  - port: 6443
+  - port: 443
 certs:
   - {ca: "ETCD CA" , path: "/etc/etcd/ssl" , name: "certificate-etcd" , common_name: "system:node:{{hostname}}",organization_name: "system:nodes" , 
     san: ["DNS:{{hostname}}.{{domain}}","DNS:{{hostname}}","IP:{{inventory_hostname}}","IP:127.0.0.1"]}
