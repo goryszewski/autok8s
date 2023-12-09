@@ -12,7 +12,7 @@ HOSTS={"master01" : { memoryMB: "2048" , "tags" : ["controlplane","init"] },\
 	"prometheus": {"tags" : ["monit"] , memoryMB: "2048"} \
  }
 
-Terraform_VARS= -var-file="debian11.tfvars"\
+Terraform_VARS= -var-file="debian12.tfvars"\
 				-var 'domain=$(CONF_domain)' \
 				-var 'hosts=$(HOSTS)' 
 
