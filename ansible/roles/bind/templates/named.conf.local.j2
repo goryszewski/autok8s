@@ -1,5 +1,5 @@
 zone "{{domain}}" {
     type master;
-    file "/var/lib/bind/{{domain}}.zone"; # zone file path
-    allow-transfer { none; };         # ns2 private IP address - secondary
+    file "/var/lib/bind/{{domain}}.zone";
+    allow-transfer { none; };
 };

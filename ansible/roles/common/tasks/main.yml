@@ -20,6 +20,8 @@
       - tcpdump
       - gpg
       - python3-pip
+      - python3-full
+      - python3-cryptography
       - net-tools
       - socat 
       - conntrack 
@@ -28,7 +30,3 @@
       - sudo
     state: latest
     update_cache: yes
-
-- name: Install python package
-  ansible.builtin.pip:
-    name: pyopenssl
