@@ -1,0 +1,4 @@
+common:
+  pkg:
+    - python3-full
+    - python3-cryptography

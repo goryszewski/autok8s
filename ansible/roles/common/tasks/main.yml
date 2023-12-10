@@ -1,5 +1,8 @@
+- name: Include OS-specific variables.
+  include_vars: "{{ ansible_distribution }}_{{ ansible_distribution_major_version }}.yml"
+
 - name: Install Default Software
-  apt:
+  ansible.builtin.apt:
     pkg:
       - resolvconf
   
@@ -15,13 +18,11 @@
     - touch_tail.changed
 
 - name: Install Default Software
-  apt:
+  ansible.builtin.apt:
     pkg:
       - tcpdump
       - gpg
       - python3-pip
-      - python3-full
-      - python3-cryptography
       - net-tools
       - socat 
       - conntrack 
@@ -30,3 +31,17 @@
       - sudo
     state: latest
     update_cache: yes
+
+- name: Install apt by OS
+  ansible.builtin.apt:
+    name: "{{ item }}"
+    state: latest
+    update_cache: yes
+  with_items: "{{ common.pkg }}"
+  when: common.pkg is defined
+
+- name: Install pip by OS
+  ansible.builtin.pip:
+    name: "{{ item }}"
+  with_items: "{{ common.pip }}"
+  when: common.pip is defined
