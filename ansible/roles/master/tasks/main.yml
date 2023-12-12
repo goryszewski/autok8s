@@ -39,7 +39,7 @@
 - name: config kube
   ansible.builtin.shell: cp /etc/kubernetes/admin.conf /root/.kube/config
   when: touch_7.changed
-  register: touch_8 
+  register: touch_8
 
 - name: create calico network
   ansible.builtin.shell: kubectl apply -f {{ callico_yaml }}

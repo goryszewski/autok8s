@@ -16,7 +16,7 @@
 - name: "KubeConfig monit"
   include_tasks:
     file: ./_share/_.kubeconfig.yml
-  vars: 
+  vars:
     _name: "{{element._name}}"
     _crt: "{{element._crt}}"
     _IP: "{{KUBERNETES_PUBLIC_ADDRESS}}"
@@ -47,7 +47,7 @@
     group: root
     mode: '0700'
 
- 
+
 - name: Creates directory /var/lib/prometheus
   file:
     path: /var/lib/prometheus

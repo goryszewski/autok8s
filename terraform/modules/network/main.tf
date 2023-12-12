@@ -19,4 +19,3 @@ resource "libvirt_network" "default" {
     enabled = true
     }
 }
-

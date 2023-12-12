@@ -13,10 +13,10 @@
   when: touch2.changed
 
 - name: pre falco 07
-  ansible.builtin.shell: falco-driver-loader 
+  ansible.builtin.shell: falco-driver-loader
   register: touch4
   when: touch3.changed
-  
+
 - name: pre falco 08
   ansible.builtin.shell: systemctl start falco-bpf.service
   when: touch4.changed

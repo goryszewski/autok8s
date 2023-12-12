@@ -1,11 +1,19 @@
 - name: Include OS-specific variables.
   include_vars: "{{ ansible_distribution }}_{{ ansible_distribution_major_version }}.yml"
 
+- name: Config Remote syslog Server
+  copy:
+    src: 10_remote_syslog.conf
+    dest: /etc/rsyslog.d/10_remote.conf
+  when: "inventory_hostname not in groups['syslog']"
+  notify:
+    - Restart rsyslog
+
 - name: Install Default Software
   ansible.builtin.apt:
     pkg:
       - resolvconf
-  
+
 - name: Template a file to head.j2
   ansible.builtin.template:
     src: head.j2
@@ -14,7 +22,7 @@
 
 - name: resolvconf  -u
   ansible.builtin.command: resolvconf  -u
-  when: 
+  when:
     - touch_tail.changed
 
 - name: Install Default Software
@@ -24,8 +32,8 @@
       - gpg
       - python3-pip
       - net-tools
-      - socat 
-      - conntrack 
+      - socat
+      - conntrack
       - ipset
       - curl
       - sudo

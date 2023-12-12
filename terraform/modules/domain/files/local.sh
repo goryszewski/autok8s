@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # $1 - IP
-# $2 - DNS 
+# $2 - DNS
 
 echo "LOCAL - keygen"
 ssh-keygen -R $1

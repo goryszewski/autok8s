@@ -3,7 +3,7 @@
 - name: Cert + key
   include_tasks:
     file: ./_sign.yml
-  vars: 
+  vars:
     _path: "{{item.path}}"
     _path_key: "{{item.path}}/{{item.name}}.key"
     _path_crt: "{{item.path}}/{{item.name}}.pem"

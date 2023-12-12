@@ -12,8 +12,8 @@
   run_once: true
 
 
-# file 
-- name: kubectl create --form-file 
+# file
+- name: kubectl create --form-file
   ansible.builtin.command: "{{ item }}"
   ignore_errors: true
   run_once: true
@@ -22,7 +22,7 @@
     - kubectl create secret generic -n kube-system calico-node-certs  --from-file=/etc/kubernetes/pki/calico-node.key --from-file=/etc/kubernetes/pki/calico-node.pem
     - kubectl create configmap      -n kube-system calico-typha-ca    --from-file=/etc/kubernetes/pki/ca_typha.pem
 
-# end FILE 
+# end FILE
 
 
 # BEGIN RBAC

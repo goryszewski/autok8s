@@ -31,9 +31,9 @@
     group: root
     mode: '0700'
 
-- name: Creates directory /etc/etcd 
+- name: Creates directory /etc/etcd
   file:
-    path: /etc/etcd 
+    path: /etc/etcd
     state: directory
     owner: root
     group: root
@@ -45,7 +45,7 @@
     dest: /etc/systemd/system/etcd.service
   notify: Restart-service-etcd
 
-- name: Enable service 
+- name: Enable service
   ansible.builtin.systemd:
     name: etcd
     enabled: true
@@ -55,7 +55,7 @@
 - name: "[{{hostname}}] DEBUG ETCD"
   include_tasks:
     file: ./_share/_run_debug.yml
-  vars: 
+  vars:
     _CMD: "{{item}}"
     _NAME: "ETCDTOOL"
   loop:

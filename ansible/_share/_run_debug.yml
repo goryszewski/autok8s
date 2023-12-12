@@ -7,13 +7,13 @@
 
 - name: "[{{hostname}}] {{_NAME}} debug "
   debug:
-    msg: 
+    msg:
     - "{{_CMD}}"
     - "{{output.stdout_lines}}"
 
 # - name: "[{{hostname}}] {{_NAME}} full debug "
 #   debug:
-#     msg: 
+#     msg:
 #     - "{{_CMD}}"
 #     - "{{output}}"
 

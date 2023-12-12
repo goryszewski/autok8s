@@ -20,14 +20,14 @@
   ansible.builtin.template:
     src: kubeconfig.j2
     dest: /etc/kubernetes/config/kube-controller-manager.kubeconfig
-  notify: Restart kube-controller-manager 
+  notify: Restart kube-controller-manager
 
 
 - name: Template a file to kube-controller-manager.service
   ansible.builtin.template:
     src: kube-controller-manager.service.j2
     dest: /etc/systemd/system/kube-controller-manager.service
-  notify: Restart kube-controller-manager 
+  notify: Restart kube-controller-manager
 
 
 - name: Enable service kube-controller-manager

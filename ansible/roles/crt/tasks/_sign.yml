@@ -45,7 +45,7 @@
     subject_alt_name: "{{ _subject_alt_name | default([]) }}"
 
 
-  when: not certificate_admin_exists.stat.exists or not valid.valid_at.point_1 
+  when: not certificate_admin_exists.stat.exists or not valid.valid_at.point_1
   register: internal_csr
 
 - name: "[CA] Sign certificate with our CA for {{_common_name}}"

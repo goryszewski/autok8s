@@ -1,20 +1,21 @@
-#VAR 
+#VAR
 CONF_domain=autok8s.xyz
 
-HOSTS={"master01" : { memoryMB: "2048" , "tags" : ["controlplane","init"] },\
-	"master02" : { memoryMB: "2048" , "tags" : ["controlplane"] },\
-	"etcd01"   : { memoryMB: "2048" , "tags" : ["etcd"] },\
-	"etcd02"   : { memoryMB: "2048" , "tags" : ["etcd"] },\
-	"worker01" : { "tags" : ["worker"]  , memoryMB: "8192"}, \
-	"worker02" : { "tags" : ["worker"]  , memoryMB: "8192"}, \
+HOSTS={"master01" : { memoryMB: "4096" , "tags" : ["nodeK8S","controlplane","init"] },\
+	"master02" : { memoryMB: "4096" , "tags" : ["nodeK8S","controlplane"] },\
+	"etcd01"   : { memoryMB: "4096" , "tags" : ["nodeK8S","etcd"] },\
+	"etcd02"   : { memoryMB: "4096" , "tags" : ["nodeK8S","etcd"] },\
+	"worker01" : { "tags" : ["nodeK8S","worker"]  , memoryMB: "8192"}, \
+	"worker02" : { "tags" : ["nodeK8S","worker"]  , memoryMB: "8192"}, \
 	"haproxy01" : { "tags" : ["bgp","haproxy","master"] , memoryMB: "2048"},\
 	"haproxy02" : { "tags" : ["bgp","haproxy"] , memoryMB: "2048"}, \
+	"syslog" : { "tags" : ["syslog"] , memoryMB: "2048"}, \
 	"prometheus": {"tags" : ["monit"] , memoryMB: "2048"} \
  }
 
 Terraform_VARS= -var-file="debian12.tfvars"\
 				-var 'domain=$(CONF_domain)' \
-				-var 'hosts=$(HOSTS)' 
+				-var 'hosts=$(HOSTS)'
 
 inventory=-i ./scripts/libvirt_inventory.py
 
@@ -39,16 +40,16 @@ terraform_destroy: terraform_init
 	cd ./terraform && terraform destroy --auto-approve $(Terraform_VARS)
 
 
-ansible_ping: 
+ansible_ping:
 	@echo "[MAKE] Ansible All ping"
 	cd ./ansible && ansible all -m ping $(inventory)
 
 
-ansible_k8s: 
+ansible_k8s:
 	@echo "[MAKE] Ansible Kubernetes"
 	cd ./ansible && ansible-playbook main.yml $(inventory) --extra-vars $(extra-vars)  --skip-tags SKIP
 
-ansible_k8s_kubeadm: 
+ansible_k8s_kubeadm:
 	@echo "[MAKE] Ansible Kubernetes"
 	cd ./ansible && ansible-playbook k8s_kubeadm.yml $(inventory) --extra-vars $(extra-vars) --skip-tags SKIP
 

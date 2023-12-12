@@ -27,19 +27,19 @@
   ansible.builtin.template:
     src: kubeconfig.j2
     dest: /etc/kubernetes/config/kube-scheduler.kubeconfig
-  notify: Restart kube-scheduler 
+  notify: Restart kube-scheduler
 
 - name: Copy a file to kube-scheduler.yaml
   ansible.builtin.copy:
     src: kube-scheduler.yaml
     dest: /etc/kubernetes/config/kube-scheduler.yaml
-  notify: Restart kube-scheduler 
+  notify: Restart kube-scheduler
 
 - name: Copy a file to kube-scheduler.service
   ansible.builtin.copy:
     src: kube-scheduler.service
     dest: /etc/systemd/system/kube-scheduler.service
-  notify: Restart kube-scheduler 
+  notify: Restart kube-scheduler
 
 - name: Enable service kube-scheduler
   ansible.builtin.systemd:

@@ -28,4 +28,3 @@
     src: encryption-config.yaml.j2
     dest: /etc/kubernetes/pki/encryption-config.yaml
   notify: Restart-service-kubelet
-

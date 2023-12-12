@@ -5,7 +5,7 @@
     mode: 'u=rwx,g=rx,o=rx'
     checksum: sha256:https://dl.k8s.io/release/v{{k8s_version}}/bin/linux/amd64/kubectl.sha256
 
-- name: Creates directory 
+- name: Creates directory
   file:
     path: "{{item}}"
     state: directory
@@ -18,7 +18,7 @@
 - name: "KubeConfig Admin"
   include_tasks:
     file: ./_share/_.kubeconfig.yml
-  vars: 
+  vars:
     _name: "{{element._name}}"
     _crt: "{{element._crt}}"
     _IP: "{{KUBERNETES_PUBLIC_ADDRESS}}"

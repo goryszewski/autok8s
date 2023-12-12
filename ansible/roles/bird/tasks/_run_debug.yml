@@ -4,6 +4,6 @@
 
 - name: "[{{hostname}}] birdc debug "
   debug:
-    msg: 
+    msg:
     - "{{_CMD}}"
     - "{{etcd_output.stdout_lines}}"

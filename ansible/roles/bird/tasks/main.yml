@@ -20,9 +20,8 @@
 - name: "[{{hostname}}] DEBUG birdc"
   include_tasks:
     file: _run_debug.yml
-  vars: 
+  vars:
     _CMD: "{{item}}"
   loop:
   - birdc configure
   - birdc show protocols
-

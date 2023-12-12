@@ -1,6 +1,6 @@
 repositories:
   - name: repo_docker
-    url: https://download.docker.com/linux/debian/gpg 
+    url: https://download.docker.com/linux/debian/gpg
     state: present
     repo: deb [arch=amd64] https://download.docker.com/linux/debian buster stable
     filename: docker
@@ -12,7 +12,7 @@ repositories:
     filename: falco
 
   - name: repo_trivi
-    url:  https://aquasecurity.github.io/trivy-repo/deb/public.key 
+    url:  https://aquasecurity.github.io/trivy-repo/deb/public.key
     state: present
     repo:  deb https://aquasecurity.github.io/trivy-repo/deb kinetic main
     filename: trivis

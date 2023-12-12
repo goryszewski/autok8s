@@ -32,7 +32,7 @@ frontend public_{{item.name}}
 backend backend_{{item.name}}
         balance roundrobin
 {% for host in groups[item.hosts] %}
-        server {{item.name}}-{{host}} {{host}}:{{item.port.target}} check 
+        server {{item.name}}-{{host}} {{host}}:{{item.port.target}} check
 {% endfor %}
 
 {% endfor %}

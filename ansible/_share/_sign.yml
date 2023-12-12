@@ -38,7 +38,7 @@
     subject_alt_name: "{{ _subject_alt_name | default([]) }}"
 
 
-  when: not certificate_admin_exists.stat.exists or not valid.valid_at.point_1 
+  when: not certificate_admin_exists.stat.exists or not valid.valid_at.point_1
   register: internal_csr
 
 - name: "[{{groups.init[0]}}] Sign certificate with our CA for {{_common_name}}"
@@ -75,7 +75,7 @@
 #
 
 - name: set fact on INIT_CA_HOST nodes
-  set_fact: 
-    "share_{{_common_name| replace('-','_') | replace(':','_')}}": { "key": "{{tmp_key}}", "crt": "{{tmp_cert}}" } 
+  set_fact:
+    "share_{{_common_name| replace('-','_') | replace(':','_')}}": { "key": "{{tmp_key}}", "crt": "{{tmp_cert}}" }
   delegate_to: "INIT_CA_HOST"
   delegate_facts: True

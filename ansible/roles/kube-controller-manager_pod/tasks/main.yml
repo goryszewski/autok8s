@@ -27,5 +27,4 @@
   ansible.builtin.template:
     src: kubeconfig.j2
     dest: /etc/kubernetes/config/kube-controller-manager.kubeconfig
-  notify: Restart-service-kubelet 
-
+  notify: Restart-service-kubelet

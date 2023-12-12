@@ -1,4 +1,4 @@
-- name: Creates directory 
+- name: Creates directory
   file:
     path: "{{item}}"
     state: directory
@@ -9,7 +9,7 @@
     - /etc/cni
     - /opt/cni
     - /etc/cni/net.d
-    - /opt/cni/bin 
+    - /opt/cni/bin
 
 - name: Download files
   ansible.builtin.get_url:
@@ -22,13 +22,13 @@
 
 - name: tar cni
   ansible.builtin.command: tar zxvf /usr/local/bin/cni-plugins-linux-amd64-v1.3.0.tgz -C /opt/cni/bin/
-  when: 
+  when:
     - touchcni.changed
 
 - name: "KubeConfig Kube-proxy"
   include_tasks:
     file: ./_share/_.kubeconfig.yml
-  vars: 
+  vars:
     _name: "{{element._name}}"
     _crt: "{{element._crt}}"
     _IP: "{{KUBERNETES_PUBLIC_ADDRESS}}"
@@ -51,7 +51,7 @@
 - name: Template a file to 10-calico.conflist
   ansible.builtin.copy:
     src: 10-calico.conflist
-    dest: /etc/cni/net.d/10-calico.conflist 
+    dest: /etc/cni/net.d/10-calico.conflist
 
   notify:
     - Restart-service-containerd

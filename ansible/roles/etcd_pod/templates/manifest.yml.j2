@@ -24,8 +24,8 @@ spec:
 {% for worker in groups['etcd'] %}
 {% set masters= masters.append('{0}=https://{0}:2380'.format(worker)) %}
 {% endfor %}
-    - --advertise-client-urls=https://{{inventory_hostname}}:2379 
-    - --initial-advertise-peer-urls=https://{{inventory_hostname}}:2380 
+    - --advertise-client-urls=https://{{inventory_hostname}}:2379
+    - --initial-advertise-peer-urls=https://{{inventory_hostname}}:2380
     - --initial-cluster={{masters | join(",")}}
     - --listen-client-urls=https://{{inventory_hostname}}:2379,https://127.0.0.1:23799
     - --listen-metrics-urls=http://127.0.0.1:2381

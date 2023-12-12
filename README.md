@@ -6,7 +6,7 @@ DOTO:
 * prometheus monitoring sd kubernetes apiserver argocd calico
 * Description
 * BGP + calico
-* hardening nftable ebpf 
+* hardening nftable ebpf
 * falco
 * testunit
 * cloud controller manager "autok8s" - testing / build repo

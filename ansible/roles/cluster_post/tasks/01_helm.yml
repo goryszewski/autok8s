@@ -22,7 +22,7 @@
 
 ##
 
-- name: helm repo add haproxytech 
+- name: helm repo add haproxytech
   ansible.builtin.command: "{{ item }}"
   loop:
     - helm repo add haproxytech https://haproxytech.github.io/helm-charts
@@ -34,7 +34,7 @@
     dest: /etc/kubernetes/config/haproxy_values.yaml
   register: touch_haproxy_values_yaml
 
-- name: helm install ingress 
+- name: helm install ingress
   ansible.builtin.command: helm install ingress  haproxytech/kubernetes-ingress --version 1.30.6 -f /etc/kubernetes/config/haproxy_values.yaml
   delegate_to: '{{groups.init[0]}}'
   run_once: true

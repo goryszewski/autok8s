@@ -6,7 +6,7 @@ import libvirt,libxml2
 class Host:
     def __init__(self):
         self.conn = libvirt.open("qemu:///system")
-    
+
     def getAllVM(self):
         return self.conn.listAllDomains(libvirt.VIR_CONNECT_LIST_DOMAINS_ACTIVE)
 
@@ -36,7 +36,7 @@ class Domain:
         return self.dns
 
     def getType(self):
-        return f"kvm.cpu{self.cpu}.mem{int(self.memory)}GB" 
+        return f"kvm.cpu{self.cpu}.mem{int(self.memory)}GB"
 
     def getIP(self):
         return self.address_ip

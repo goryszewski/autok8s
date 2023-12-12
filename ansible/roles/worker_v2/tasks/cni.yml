@@ -1,4 +1,4 @@
-- name: Creates directory 
+- name: Creates directory
   file:
     path: "{{item}}"
     state: directory
@@ -9,7 +9,7 @@
     - /etc/cni
     - /opt/cni
     - /etc/cni/net.d
-    - /opt/cni/bin 
+    - /opt/cni/bin
 
 - name: Download files
   ansible.builtin.get_url:
@@ -22,7 +22,7 @@
 
 - name: tar cni
   ansible.builtin.command: tar zxvf /usr/local/bin/cni-plugins-linux-amd64-v0.9.1.tgz -C /opt/cni/bin/
-  when: 
+  when:
     - touchcni.changed
 
 - name: Template a file to 10-bridge.conf

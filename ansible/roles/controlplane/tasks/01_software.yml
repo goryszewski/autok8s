@@ -6,7 +6,7 @@
     mode: 'u=rwx,g=rx,o=rx'
     checksum: sha256:https://dl.k8s.io/release/v{{k8s_version}}/bin/linux/amd64/{{item}}.sha256
   loop:
-    - "kube-apiserver" 
-    - "kube-controller-manager" 
-    - "kube-scheduler" 
+    - "kube-apiserver"
+    - "kube-controller-manager"
+    - "kube-scheduler"
     - "kubectl"

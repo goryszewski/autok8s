@@ -15,7 +15,7 @@
     valid_at:
       point_1: "+1d"
   when: certificate_exists.stat.exists
-  register: valid 
+  register: valid
 
 #END
 
@@ -40,8 +40,8 @@
     ownca_path: "{{path_ca}}/{{_ca_sign|replace(' ','_')}}.pem"
     ownca_privatekey_path: "{{path_ca}}/{{_ca_sign|replace(' ','_')}}.key"
     provider: ownca
-  when: 
-    - ca_csr.changed 
+  when:
+    - ca_csr.changed
     - not _ca_sign == "selfsigned"
 
 - name: "[{{_common_name}}] Create [{{_ca_sign}}] certificate from CSR"
@@ -50,8 +50,8 @@
     csr_content: "{{ ca_csr.csr }}"
     privatekey_path: "{{path_ca}}/{{_common_name | replace (' ','_')}}.key"
     provider: selfsigned
-  when: 
-    - ca_csr.changed 
+  when:
+    - ca_csr.changed
     - _ca_sign == "selfsigned"
 
 # READ crt & key
@@ -69,9 +69,8 @@
 
 # save to dump Host
 
-- name: set fact about CA 
-  set_fact: 
-    "share_{{_common_name | replace (' ','_')}}": { "key": "{{tmp_key}}", "crt": "{{tmp_cert}}", "certs":[] } 
+- name: set fact about CA
+  set_fact:
+    "share_{{_common_name | replace (' ','_')}}": { "key": "{{tmp_key}}", "crt": "{{tmp_cert}}", "certs":[] }
   delegate_to: "INIT_CA_HOST"
   delegate_facts: True
-

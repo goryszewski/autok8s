@@ -20,13 +20,13 @@
 #     src: cloud-controller-manager
 #     dest: /usr/local/bin/cloud-controller-manager
 #     mode: 0555
-#   notify: Restart cloud-controller-manager 
+#   notify: Restart cloud-controller-manager
 
 # - name: Template a file to cloud-controller-manager.service
 #   ansible.builtin.template:
 #     src: cloud-controller-manager.service.j2
 #     dest: /etc/systemd/system/cloud-controller-manager.service
-#   notify: Restart cloud-controller-manager 
+#   notify: Restart cloud-controller-manager
 
 
 # - name: Enable service cloud-controller-manager

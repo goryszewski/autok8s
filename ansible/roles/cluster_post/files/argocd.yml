@@ -17602,7 +17602,7 @@ spec:
             weight: 5
       containers:
       - args:
-        - /usr/local/bin/argocd-server 
+        - /usr/local/bin/argocd-server
         - --insecure
         env:
         - name: ARGOCD_SERVER_INSECURE

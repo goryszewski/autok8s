@@ -8,7 +8,7 @@
     mode: 'u=rwx,g=rx,o=rx'
     checksum: sha256:https://dl.k8s.io/release/v{{k8s_version}}/bin/linux/amd64/{{item}}.sha256
   loop:
-    - "kubelet" 
+    - "kubelet"
     - "kubectl"
 
 - name: Creates directory /etc/kubernetes/*
@@ -22,11 +22,11 @@
   loop:
     - "/etc/kubernetes/manifests"
     - "/etc/kubernetes/config"
-    
+
 - name: "KubeConfig Kube-proxy"
   include_tasks:
     file: ./_share/_.kubeconfig.yml
-  vars: 
+  vars:
     _name: "{{element._name}}"
     _crt: "{{element._crt}}"
     _IP: "{{KUBERNETES_PUBLIC_ADDRESS}}"

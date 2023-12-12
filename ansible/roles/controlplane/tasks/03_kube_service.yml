@@ -1,6 +1,6 @@
 
 
-# - name: Creates directory  
+# - name: Creates directory
 #   file:
 #     path: "{{item}}"
 #     state: directory

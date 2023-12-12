@@ -21,13 +21,13 @@
     dest: /etc/kubernetes/config/calico_IPPool_address.yml
   register: touch_calico_IPPool_address
 
-- name: calicoctl create -f /etc/kubernetes/config/calico_IPPool_address.yml 
+- name: calicoctl create -f /etc/kubernetes/config/calico_IPPool_address.yml
   ansible.builtin.shell: calicoctl create -f /etc/kubernetes/config/calico_IPPool_address.yml --allow-version-mismatch
   when: touch_calico_IPPool_address.changed
   run_once: true
   environment:
     DATASTORE_TYPE: kubernetes
-  
+
 - name: calicoctl get ippools
   ansible.builtin.shell: calicoctl get ippools --allow-version-mismatch
   register: calicoctl_output

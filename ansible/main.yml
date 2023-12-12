@@ -1,3 +1,9 @@
+- hosts: syslog
+  gather_facts: yes
+  roles:
+    - rsyslog
+  tags: [ LOG ]
+
 - hosts: haproxy
   gather_facts: no
   roles:
@@ -8,7 +14,7 @@
   tags: [ LB, HA, BGP, DNS ]
 
 - hosts: all
-  gather_facts: no
+  gather_facts: yes
   roles:
     - firewall
     - common
@@ -27,59 +33,64 @@
     - ca
   tags: [ CA ]
 
-- hosts: monit
+# - hosts: monit
+#   gather_facts: no
+#   roles:
+#     - crt
+#     - prometheus
+#     - grafana
+#     - nginx
+#   tags: [ PROMETHEUS ]
+
+- hosts: nodeK8S
   gather_facts: no
   roles:
     - crt
-    - prometheus
-    - grafana
-    - nginx
-  tags: [ PROMETHEUS ]
+    - containerd
+    - kubelet
+    - kube-proxy
+    - calico
+  tags: [ ETCD ]
 
 - hosts: etcd
   gather_facts: no
   roles:
-    - crt
-    - containerd
-    - kubelet
-    - kube-proxy
-    - calico
     # - etcd
     - etcd_pod
   tags: [ ETCD ]
 
-- hosts: controlplane
-  gather_facts: no
-  roles:
-    - crt
-    - containerd
-    - kubelet
-    - kube-proxy
-    - calico
-    - kube-apiserver_pod
-    - kube-scheduler_pod
-    - kube-controller-manager_pod
-    - cloud-controller-manager
-  tags: [ CP ]
+# - hosts: controlplane
+#   gather_facts: no
+#   roles:
+#     - crt
+#     - containerd
+#     - kubelet
+#     - kube-proxy
+#     - calico
+#     - kube-apiserver_pod
+#     - kube-scheduler_pod
+#     - kube-controller-manager_pod
+#     - cloud-controller-manager
+#   tags: [ CP ]
 
-- hosts: worker
-  gather_facts: no
-  roles:
-    - crt
-    - containerd
-    - kubelet
-    - kube-proxy
-    - calico
-  tags: [ WORKER ]
+# - hosts: worker
+#   gather_facts: no
+#   roles:
+#     - crt
+#     - containerd
+#     - kubelet
+#     - kube-proxy
+#     - calico
+#   tags: [ WORKER ]
 
-- hosts: controlplane
-  gather_facts: no
-  roles:
-    - cluster_init
-  tags: [ INIT ]
+# - hosts: controlplane
+#   gather_facts: no
+#   roles:
+#     - cluster_init
+#   tags: [ INIT ]
 
-- hosts: controlplane
-  gather_facts: no
-  roles:
-    - cluster_post
-  tags: [ POST ]
+# - hosts: controlplane
+#   gather_facts: no
+#   roles:
+#     - cluster_post
+#   tags: [ POST ]

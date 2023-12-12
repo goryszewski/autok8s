@@ -9,7 +9,7 @@
       - "DNS:kubernetes.svc.cluster.local"
       - "DNS:kubernetes.svc.{{domain}}"
       - "IP:127.0.0.1"
-      - "IP:{{clusterIP}}" 
+      - "IP:{{clusterIP}}"
       - "IP:{{KUBERNETES_PUBLIC_ADDRESS}}"
     dynamic: "{{groups['controlplane'] | fix_to_san}}"
 
@@ -20,13 +20,13 @@
 - name: "[{{hostname}}] {{item.common_name}}"
   include_tasks:
     file: ./_share/_sign.yml
-  vars: 
+  vars:
     _path_key: "{{CERT_PATH}}/{{item.name}}.key"
     _path_crt: "{{CERT_PATH}}/{{item.name}}.pem"
     _common_name: "{{item.common_name}}"
     _organization_name: "{{item.organization_name}}"
     _ca_key: "{{ hostvars['INIT_CA_HOST'][item.ca]['key']['source'] }}"
-    _ca_pem: "{{ hostvars['INIT_CA_HOST'][item.ca]['crt']['source'] }}" 
+    _ca_pem: "{{ hostvars['INIT_CA_HOST'][item.ca]['crt']['source'] }}"
 
     _subject_alt_name: "{{ item.subject_alt_name | default([]) }}"
   loop:

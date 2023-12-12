@@ -1,0 +1,12 @@
+- name: Config rsyslog
+  copy:
+    src: 01_network.conf
+    dest: /etc/rsyslog.d/01_tcp.conf
+  notify:
+    - Restart rsyslog
+- name: Config rsyslog
+  copy:
+    src: 10_template.conf
+    dest: /etc/rsyslog.d/10_template.conf
+  notify:
+    - Restart rsyslog

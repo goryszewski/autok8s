@@ -5,6 +5,6 @@
     dest: /etc/kubernetes/config/ingres.yml
   register: touch_ingres_yml
 
-- name: helm install ingress 
+- name: helm install ingress
   ansible.builtin.command: kubectl apply -f /etc/kubernetes/config/ingres.yml
   when: touch_ingres_yml.changed
