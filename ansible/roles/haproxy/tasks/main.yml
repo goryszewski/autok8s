@@ -2,6 +2,7 @@
   ansible.builtin.package:
     name: haproxy
     state: present
+    update_cache: yes
 
 - name: "[HAPROXY] Enable service haproxy"
   ansible.builtin.systemd:

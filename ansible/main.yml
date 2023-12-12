@@ -33,14 +33,14 @@
     - ca
   tags: [ CA ]
 
-# - hosts: monit
-#   gather_facts: no
-#   roles:
-#     - crt
-#     - prometheus
-#     - grafana
-#     - nginx
-#   tags: [ PROMETHEUS ]
+- hosts: monit
+  gather_facts: no
+  roles:
+    - crt
+    - prometheus
+    - grafana
+    - nginx
+  tags: [ PROMETHEUS ]
 
 - hosts: nodeK8S
   gather_facts: no
@@ -50,47 +50,31 @@
     - kubelet
     - kube-proxy
     - calico
-  tags: [ ETCD ]
+  tags: [ nodeK8S ]
 
 - hosts: etcd
   gather_facts: no
   roles:
-    # - etcd
     - etcd_pod
   tags: [ ETCD ]
 
-# - hosts: controlplane
-#   gather_facts: no
-#   roles:
-#     - crt
-#     - containerd
-#     - kubelet
-#     - kube-proxy
-#     - calico
-#     - kube-apiserver_pod
-#     - kube-scheduler_pod
-#     - kube-controller-manager_pod
-#     - cloud-controller-manager
-#   tags: [ CP ]
+- hosts: controlplane
+  gather_facts: no
+  roles:
+    - kube-apiserver_pod
+    - kube-scheduler_pod
+    - kube-controller-manager_pod
+    - cloud-controller-manager
+  tags: [ CP ]
 
-# - hosts: worker
-#   gather_facts: no
-#   roles:
-#     - crt
-#     - containerd
-#     - kubelet
-#     - kube-proxy
-#     - calico
-#   tags: [ WORKER ]
+- hosts: controlplane
+  gather_facts: no
+  roles:
+    - cluster_init
+  tags: [ INIT ]
 
-# - hosts: controlplane
-#   gather_facts: no
-#   roles:
-#     - cluster_init
-#   tags: [ INIT ]
-
-# - hosts: controlplane
-#   gather_facts: no
-#   roles:
-#     - cluster_post
-#   tags: [ POST ]
+- hosts: controlplane
+  gather_facts: no
+  roles:
+    - cluster_post
+  tags: [ POST ]

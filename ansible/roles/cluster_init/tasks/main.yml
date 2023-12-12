@@ -30,3 +30,13 @@
 
 - import_tasks: 02_k8s.yml
 - import_tasks: 03_calico.yml
+
+
+- name: Get local kubeconfig
+  fetch:
+    src: /root/.kube/config
+    dest: ~/.kube
+    flat: True
+  delegate_to: '{{groups.init[0]}}'
+  ignore_errors: true
+  run_once: true

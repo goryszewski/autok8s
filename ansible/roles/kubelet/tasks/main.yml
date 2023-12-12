@@ -1,6 +1,18 @@
 ---
 # tasks file for kubelet
 
+- name: Check that the kubelet/kubectl exist
+  stat:
+    path: /usr/local/bin/{{ item }}
+  register: stats
+  loop:
+    - "kubelet"
+    - "kubectl"
+
+- name: DEBUG
+  debug:
+    var: stats
+
 - name: Download files
   ansible.builtin.get_url:
     url: "https://dl.k8s.io/release/v{{k8s_version}}/bin/linux/amd64/{{item}}"

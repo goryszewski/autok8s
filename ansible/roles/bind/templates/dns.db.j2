@@ -23,4 +23,6 @@ k8sapi.{{domain}}. IN A {{KUBERNETES_PUBLIC_ADDRESS}}
 {% for k,v in a_record.items()%}
 {{k}} IN A {{v}}
 {% endfor %}
-* IN A {{KUBERNETES_PUBLIC_ADDRESS}}
+
+# statis
+argocd IN A {{KUBERNETES_PUBLIC_ADDRESS}}
