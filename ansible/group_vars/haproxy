@@ -13,6 +13,7 @@ cname:
 
 a_record:
   argocd: 10.17.3.2
+  repo: "{{ global_repo }}"
 
 haproxy:
   - name: http

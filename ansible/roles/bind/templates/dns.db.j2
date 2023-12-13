@@ -1,5 +1,5 @@
 $TTL    604800
-@       IN      SOA     ns1.{{domain}}. admin.{{domain}}. (
+@       IN      SOA     ns1.{{ domain }}. admin.{{ domain }}. (
 			      3		; Serial
 			 604800		; Refresh
 			  86400		; Retry
@@ -7,22 +7,19 @@ $TTL    604800
 			 604800 )	; Negative Cache TTL
 ;
 ; name servers - NS records
-     IN      NS      ns1.{{domain}}.
+     IN      NS      ns1.{{ domain }}.
 ; alias servers - cname records
-{% for k,v in cname.items()%}
-{{k}} IN CNAME {{v}}
+{% for k,v in cname.items() %}
+{{ k }} IN CNAME {{ v }}
 {% endfor %}
 ; name servers - A records
-ns1.{{domain}}. IN A {{KUBERNETES_PUBLIC_ADDRESS}}
-k8sapi.{{domain}}. IN A {{KUBERNETES_PUBLIC_ADDRESS}}
+ns1.{{ domain }}. IN A {{ KUBERNETES_PUBLIC_ADDRESS }}
+k8sapi.{{ domain }}. IN A {{ KUBERNETES_PUBLIC_ADDRESS }}
 {% for host,v in groups.items() if host not in ['all','ungrouped'] %}
 {% for item in v %}
-{{hostvars[item]['hostname']}} IN A {{item}}
+{{ hostvars[item]['hostname'] }} IN A {{ item }}
 {% endfor %}
 {% endfor %}
 {% for k,v in a_record.items()%}
-{{k}} IN A {{v}}
+{{ k }} IN A {{ v }}
 {% endfor %}
-
-# statis
-argocd IN A {{KUBERNETES_PUBLIC_ADDRESS}}

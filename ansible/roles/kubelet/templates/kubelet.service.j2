@@ -16,7 +16,7 @@ ExecStart=/usr/local/bin/kubelet \
   --provider-id {{cloud_provider}}://{{hostname}} \
   --node-ip {{inventory_hostname}} \
 {% endif %}
-  --v=3
+  --v=1
 Restart=on-failure
 RestartSec=5
 

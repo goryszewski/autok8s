@@ -1,12 +1,13 @@
 #VAR
 CONF_domain=autok8s.xyz
-HOSTS={"controlplane01" : { memoryMB: "8192" , "tags" : ["nodeK8S","etcd","controlplane","init"] },\
-	"controlplane02" : { memoryMB: "8192" , "tags" : ["nodeK8S","etcd","controlplane"] },\
+HOSTS={"master01" : { memoryMB: "4096" , "tags" : ["nodeK8S","controlplane","init"] },\
+	"master02" : { memoryMB: "4096" , "tags" : ["nodeK8S","controlplane"] },\
+	"etcd01"   : { memoryMB: "4096" , "tags" : ["nodeK8S","etcd"] },\
+	"etcd02"   : { memoryMB: "4096" , "tags" : ["nodeK8S","etcd"] },\
 	"worker01" : { "tags" : ["nodeK8S","worker"]  , memoryMB: "8192"}, \
 	"worker02" : { "tags" : ["nodeK8S","worker"]  , memoryMB: "8192"}, \
 	"haproxy01" : { "tags" : ["bgp","haproxy","master"] , memoryMB: "2048"},\
 	"haproxy02" : { "tags" : ["bgp","haproxy"] , memoryMB: "2048"}, \
-	"repo" : { "tags" : ["repo"] , memoryMB: "4096"}, \
 	"syslog" : { "tags" : ["syslog"] , memoryMB: "2048"}, \
 	"prometheus": {"tags" : ["monit"] , memoryMB: "2048"} \
  }
@@ -17,7 +18,7 @@ Terraform_VARS= -var-file="debian12.tfvars"\
 
 inventory=-i ./scripts/libvirt_inventory.py
 
-extra-vars="domain=$(CONF_domain) calico_version=3.26.0 calico_version_cni=3.20.6 k8s_version=1.27.3 ENCRYPTION_KEY=rfjKhlyYRN9WNr026VIKRaRrPZ2GEzqrU3ry2SvDIvs="
+extra-vars="domain=$(CONF_domain) global_repo=192.168.100.10 calico_version=3.26.0 calico_version_cni=3.20.6 k8s_version=1.27.3 ENCRYPTION_KEY=rfjKhlyYRN9WNr026VIKRaRrPZ2GEzqrU3ry2SvDIvs="
 
 #end config
 

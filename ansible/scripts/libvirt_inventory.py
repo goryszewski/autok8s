@@ -25,6 +25,7 @@ class Domain:
 
         self.description  = doc.xpathEval("/domain/description")[0].content
         self.address_ip = tmp.interfaceAddresses(libvirt.VIR_DOMAIN_INTERFACE_ADDRESSES_SRC_AGENT)['ens3']['addrs'][0]['addr']
+        self.public_address_ip = tmp.interfaceAddresses(libvirt.VIR_DOMAIN_INTERFACE_ADDRESSES_SRC_AGENT)['ens4']['addrs'][0]['addr']
         self.dns = doc.xpathEval("/domain/name")[0].content
         self.cpu= doc.xpathEval("/domain/vcpu")[0].content
         self.memory= int(doc.xpathEval("/domain/memory")[0].content)/1024/1024 # return GB
@@ -40,6 +41,9 @@ class Domain:
 
     def getIP(self):
         return self.address_ip
+
+    def getPublicIP(self):
+        return self.public_address_ip
 
     def getDescription(self):
         return self.description
@@ -81,7 +85,7 @@ class invent():
 
         for vm in self._domains:
             host = vm.getIP()
-            hostvars[host]= { 'hostname' : vm.getHostname(), 'dns':vm.getDNS(), 'type':vm.getType() }
+            hostvars[host]= { 'hostname' : vm.getHostname(), 'dns':vm.getDNS(), 'type':vm.getType() , 'public_ip':vm.getPublicIP(),'internal_ip':vm.getIP() }
             tags = vm.getDescription().split("_")
 
             for tag in tags:
