@@ -30,5 +30,6 @@ module "node" {
   tags     = each.value["tags"]
   memoryMB = each.value["memoryMB"]
   network  = module.network.id
+  public_network = var.public_network
   template = var.template
 }

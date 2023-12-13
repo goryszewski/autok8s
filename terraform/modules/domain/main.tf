@@ -26,12 +26,18 @@ resource "libvirt_domain" "node" {
   disk {
     volume_id = libvirt_volume.image.id
   }
+
   network_interface {
 
     network_id     = var.network
     hostname       = var.hostname
     wait_for_lease = true
   }
+
+  network_interface {
+    network_name  = var.public_network
+  }
+
 
   console {
     type        = "pty"

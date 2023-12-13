@@ -14,7 +14,12 @@ variable "node_addresses" {
 variable "name_network" {
   type    = string
   default = "Local_ansible"
+}
 
+variable "public_network" {
+  type    = string
+  default = "public"
+  description = "external DHCP start 192.168.100.128 - 192.168.10.254 | GW:192.168.100.1"
 }
 
 variable "mode_network" {

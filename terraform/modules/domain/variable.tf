@@ -12,4 +12,5 @@ variable "pool" {
 variable "memoryMB" { default = 4096 }
 variable "cpu" { default = 2 }
 variable "network" { default = ["internal"] }
+variable "public_network" {}
 variable "user" { default = "root" }
