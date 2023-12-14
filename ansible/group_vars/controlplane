@@ -19,11 +19,11 @@ ca:
   - { _common_name: "ca_typha" , _ca_sign: "Intermidiate CA"}
 
 certs:
-  - {ca: "ETCD CA" , path: "/etc/kubernetes/pki" , name: "kube-apiserver-client-etcd" ,
+  cp_1: {ca: "ETCD CA" , path: "/etc/kubernetes/pki" , name: "kube-apiserver-client-etcd" ,
     common_name: "kube-apiserver-client-etcd", organization_name: "etcd"}
-  - {ca: "Kubernetes CA" , path: "/etc/kubernetes/pki" , name: "node_{{hostname}}" , common_name: "system:node:{{hostname}}",organization_name: "system:nodes" ,
+  cp_2: {ca: "Kubernetes CA" , path: "/etc/kubernetes/pki" , name: "node_{{hostname}}" , common_name: "system:node:{{hostname}}",organization_name: "system:nodes" ,
     san: ["DNS:{{hostname}}.{{domain}}","DNS:{{hostname}}","IP:{{inventory_hostname}}"]}
-  - {ca: "Kubernetes CA" , path: "/etc/kubernetes/pki" , name: "kube-proxy" , common_name: "system:kube-proxy",organization_name: "system:node-proxier",
+  cp_3: {ca: "Kubernetes CA" , path: "/etc/kubernetes/pki" , name: "kube-proxy" , common_name: "system:kube-proxy",organization_name: "system:node-proxier",
     san: ["DNS:{{hostname}}.{{domain}}","DNS:{{hostname}}","IP:{{inventory_hostname}}"]}
-  - {ca: "Kubernetes CA" , path: "/etc/kubernetes/pki" , name: 'calico-cni', common_name: 'calico-cni',organization_name: 'calico-cni',
+  cp_4: {ca: "Kubernetes CA" , path: "/etc/kubernetes/pki" , name: 'calico-cni', common_name: 'calico-cni',organization_name: 'calico-cni',
     san: ["DNS:{{hostname}}.{{domain}}","DNS:{{hostname}}","IP:{{inventory_hostname}}"]}

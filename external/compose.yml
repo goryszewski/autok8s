@@ -1,0 +1,18 @@
+services:
+  registry:
+    image: registry
+    volumes:
+      - /srv/store:/registry
+    ports:
+      - 5000:5000
+    environment:
+      - SETTINGS_FLAVOR=local
+      - STORAGE_PATH=/registry
+
+  mirror:
+    image: registry
+    ports:
+      - 5555:5000
+    volumes:
+      - ./files/config.yml:/etc/docker/registry/config.yml
+      - /srv/cache:/registry

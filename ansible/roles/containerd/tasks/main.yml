@@ -71,13 +71,17 @@
 
 - name: containerd - Creates directory
   file:
-    path: /etc/containerd
+    path: /etc/containerd/certs.d/docker.io/
     state: directory
+    recurse: yes
 
-# - name: containerd - config default
-#   ansible.builtin.shell: containerd config default | sudo tee /etc/containerd/config.toml
-#   notify:
-#     - Restart-service-containerd
+- name: repo local
+  template:
+    src: repo.toml
+    dest: '/etc/containerd/certs.d/docker.io/hosts.toml'
+  when: global_repo is defined
+  notify:
+    - Restart-service-containerd
 
 - name: gVisor - Install sunsc
   ansible.builtin.apt:

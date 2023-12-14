@@ -4,8 +4,8 @@ firewall:
     - port: 9090
     - port: 3000
 certs:
-  - {ca: "Kubernetes CA" , path: "/etc/kubernetes/pki" , name: "monit" , common_name: "system:node:monit",organization_name: "system:nodes" }
-  - {ca: "ETCD CA" , path: "/etc/etcd/ssl" , name: "check_health" , common_name: "{{hostname}}" }
+  monit_1: {ca: "Kubernetes CA" , path: "/etc/kubernetes/pki" , name: "monit" , common_name: "system:node:monit",organization_name: "system:nodes" }
+  monit_2: {ca: "ETCD CA" , path: "/etc/etcd/ssl" , name: "check_health" , common_name: "{{hostname}}" }
 
 nginx:
     vhost:

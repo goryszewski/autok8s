@@ -4,14 +4,14 @@
   include_tasks:
     file: ./_sign.yml
   vars:
-    _path: "{{item.path}}"
-    _path_key: "{{item.path}}/{{item.name}}.key"
-    _path_crt: "{{item.path}}/{{item.name}}.pem"
-    _common_name: "{{item.common_name}}"
-    _organization_name: "{{item. organization_name}}"
-    _subject_alt_name: "{{item.san}}"
-    _key_usage: "{{item.keyUsage|default(['keyCertSign','keyEncipherment'])}}"
-    _extendedKeyUsage: "{{item.extendedKeyUsage|default(['serverAuth','clientAuth'])}}"
-    _ca: "{{item.ca}}"
-  loop: "{{certs}}"
+    _path: "{{item.value.path}}"
+    _path_key: "{{item.value.path}}/{{item.value.name}}.key"
+    _path_crt: "{{item.value.path}}/{{item.value.name}}.pem"
+    _common_name: "{{item.value.common_name}}"
+    _organization_name: "{{item.value. organization_name}}"
+    _subject_alt_name: "{{item.value.san}}"
+    _key_usage: "{{item.value.keyUsage|default(['keyCertSign','keyEncipherment'])}}"
+    _extendedKeyUsage: "{{item.value.extendedKeyUsage|default(['serverAuth','clientAuth'])}}"
+    _ca: "{{item.value.ca}}"
+  loop: "{{ certs | dict2items }}"
   when: certs is defined

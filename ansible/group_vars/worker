@@ -7,9 +7,9 @@ firewall:
     - port: 30443
 
 certs:
-  - {ca: "Kubernetes CA" , path: "/etc/kubernetes/pki" , name: "node_{{hostname}}" , common_name: "system:node:{{hostname}}",organization_name: "system:nodes" ,
+  worker_1: {ca: "Kubernetes CA" , path: "/etc/kubernetes/pki" , name: "node_{{hostname}}" , common_name: "system:node:{{hostname}}",organization_name: "system:nodes" ,
     san: ["DNS:{{hostname}}.{{domain}}","DNS:{{hostname}}","IP:{{inventory_hostname}}"]}
-  - {ca: "Kubernetes CA" , path: "/etc/kubernetes/pki" , name: "kube-proxy" , common_name: "system:kube-proxy",organization_name: "system:node-proxier",
+  worker_2: {ca: "Kubernetes CA" , path: "/etc/kubernetes/pki" , name: "kube-proxy" , common_name: "system:kube-proxy",organization_name: "system:node-proxier",
     san: ["DNS:{{hostname}}.{{domain}}","DNS:{{hostname}}","IP:{{inventory_hostname}}"]}
-  - {ca: "Kubernetes CA" , path: "/etc/kubernetes/pki" , name: 'calico-cni', common_name: 'calico-cni',organization_name: 'calico-cni',
+  worker_3: {ca: "Kubernetes CA" , path: "/etc/kubernetes/pki" , name: 'calico-cni', common_name: 'calico-cni',organization_name: 'calico-cni',
     san: ["DNS:{{hostname}}.{{domain}}","DNS:{{hostname}}","IP:{{inventory_hostname}}"]}
