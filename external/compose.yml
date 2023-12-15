@@ -14,5 +14,15 @@ services:
     ports:
       - 5555:5000
     volumes:
-      - ./files/config.yml:/etc/docker/registry/config.yml
+      - ./config.yml:/etc/docker/registry/config.yml
       - /srv/cache:/registry
+
+  squid:
+    build:
+      dockerfile: ./Dockerfile-squid
+    ports:
+      - 3128:3128
+    volumes:
+      - ./files/squid.conf:/etc/squid/squid.conf
+      - ./files/ca.pem:/etc/squid/ca.pem
+      - /srv/squid:/srv/squid

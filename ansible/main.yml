@@ -3,15 +3,17 @@
   roles:
     - rsyslog
   tags: [ LOG ]
+  environment: "{{ environment_ALL }}"
 
 - hosts: haproxy
-  gather_facts: no
+  gather_facts: yes
   roles:
     - haproxy
     - keepalive
     - bind
     - bird
   tags: [ LB, HA, BGP, DNS ]
+  environment: "{{ environment_ALL }}"
 
 - hosts: all
   gather_facts: yes
@@ -20,18 +22,21 @@
     - common
     - node_explorer
   tags: [ ]
+  environment: "{{ environment_ALL }}"
 
 - hosts: exabgp
   gather_facts: no
   roles:
     - exabgp
   tags: [ EXABGP ]
+  environment: "{{ environment_ALL }}"
 
 - hosts: controlplane
   gather_facts: no
   roles:
     - ca
   tags: [ CA ]
+  environment: "{{ environment_ALL }}"
 
 - hosts: monit
   gather_facts: no
@@ -41,6 +46,7 @@
     - grafana
     - nginx
   tags: [ PROMETHEUS ]
+  environment: "{{ environment_ALL }}"
 
 - hosts: nodeK8S
   gather_facts: no
@@ -51,12 +57,14 @@
     - kube-proxy
     - calico
   tags: [ nodeK8S ]
+  environment: "{{ environment_ALL }}"
 
 - hosts: etcd
   gather_facts: no
   roles:
     - etcd_pod
   tags: [ ETCD ]
+
 
 - hosts: controlplane
   gather_facts: no
@@ -66,12 +74,14 @@
     - kube-controller-manager_pod
     - cloud-controller-manager
   tags: [ CP ]
+  environment: "{{ environment_ALL }}"
 
 - hosts: controlplane
   gather_facts: no
   roles:
     - cluster_init
   tags: [ INIT ]
+
 
 - hosts: controlplane
   gather_facts: no

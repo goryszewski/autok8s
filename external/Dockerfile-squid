@@ -1,0 +1,2 @@
+FROM ubuntu/squid
+run  apt update && apt install -y squid-openssl

@@ -10,6 +10,3 @@ DOTO:
 * falco
 * testunit
 * cloud controller manager "autok8s" - testing / build repo
-
-Next step:
-* kube-apiserver kube-controller-manager static pod / manifest
