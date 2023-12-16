@@ -18,6 +18,17 @@
   loop:
     - /var/lib/bind/zones
 
+- name: Template a file to dns.db2.j2
+  ansible.builtin.template:
+    src: dns.db2.j2
+    dest: /var/lib/bind/{{item}}.zone
+    owner: bind
+    group: bind
+    mode: '0644'
+  loop: "{{ domains }}"
+  notify:
+    - Restart bind9
+
 - name: Template a file to dns.db.j2
   ansible.builtin.template:
     src: dns.db.j2

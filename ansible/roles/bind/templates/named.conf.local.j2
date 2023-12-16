@@ -3,3 +3,13 @@ zone "{{domain}}" {
     file "/var/lib/bind/{{domain}}.zone";
     allow-transfer { none; };
 };
+
+{% for item in domains %}
+
+zone "{{item}}" {
+    type master;
+    file "/var/lib/bind/{{item}}.zone";
+    allow-transfer { none; };
+};
+
+{% endfor %}

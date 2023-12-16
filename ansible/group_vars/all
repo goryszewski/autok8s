@@ -21,7 +21,3 @@ cert_organization_name: "Kubernetes"
 cert_organizational_unit_name: "IT"
 cert_state_or_province_name: "Mazovia"
 email_address: "goryszewski@gmail.com"
-
-environment_ALL:
-  http_proxy: http://192.168.100.10:3128
-  https_proxy: http://192.168.100.10:3128

@@ -1,0 +1,13 @@
+$TTL    604800
+@       IN      SOA     ns1.{{ item }}. admin.{{ item }}. (
+			      3		; Serial
+			 604800		; Refresh
+			  86400		; Retry
+			2419200		; Expire
+			 604800 )	; Negative Cache TTL
+;
+; name servers - NS records
+     IN      NS      ns1.{{ item }}.
+; alias servers - cname records
+; name servers - A records
+*	IN A  {{ KUBERNETES_PUBLIC_ADDRESS }}
