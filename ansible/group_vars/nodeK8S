@@ -1,4 +1,6 @@
 firewall:
+  nodeK8s_1:
+    port: 179
   nodeK8s_2:
     port: 10256
   nodeK8s_3:
@@ -17,3 +19,9 @@ firewall:
     port: 6443 # kapi
   nodeK8s_10:
     port: 443
+  etcd_1:
+    port: 2379
+    hosts: "{{  groups['controlplane'] + groups['etcd'] + groups['monit']|default([])}} "
+  etcd_2:
+    port: 2380
+    hosts: "{{groups['etcd'] + groups['monit']|default([]) }}"

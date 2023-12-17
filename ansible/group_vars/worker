@@ -1,17 +1,3 @@
-firewall:
-  worker_1:
-    port: 179
-  worker_2:
-    port: 10256
-  worker_3:
-    port: 5473
-  worker_4:
-    port: 10250
-  worker_5:
-    port: 30080
-  worker_6:
-    port: 30443
-
 certs:
   worker_1: {ca: "Kubernetes CA" , path: "/etc/kubernetes/pki" , name: "node_{{hostname}}" , common_name: "system:node:{{hostname}}",organization_name: "system:nodes" ,
     san: ["DNS:{{hostname}}.{{domain}}","DNS:{{hostname}}","IP:{{inventory_hostname}}"]}
