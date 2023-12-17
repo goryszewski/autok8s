@@ -1,4 +1,6 @@
 firewall:
-    - port: 22
-    - port: 514
-      type: 'udp'
+  syslog_1:
+    port: 22
+  syslog_2:
+    port: 514
+    type: 'udp'

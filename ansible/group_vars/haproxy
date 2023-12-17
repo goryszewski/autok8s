@@ -1,12 +1,18 @@
 firewall:
-    - port: 80
-    - port: 443
-    - port: 6443
-    - port: 53
-      type: 'udp'
-    - port: 53
-    - port: 179
-      hosts: "{{groups['haproxy']}}"
+  haproxy_1:
+    port: 80
+  haproxy_2:
+    port: 443
+  haproxy_3:
+    port: 6443
+  haproxy_4:
+    port: 53
+    type: 'udp'
+  haproxy_5:
+    port: 53
+  haproxy_6:
+    port: 179
+    hosts: "{{groups['haproxy']}}"
 
 cname:
   grafana: prometheus

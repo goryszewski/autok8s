@@ -7,7 +7,6 @@
 
 - name: kubectl apply crds.yaml
   ansible.builtin.command: kubectl apply -f /etc/kubernetes/config/crds.yaml
-  when: touch_crds.changed
   ignore_errors: true
   run_once: true
 
@@ -35,7 +34,6 @@
 
 - name: kubectl apply calico01_RBAC
   ansible.builtin.command: kubectl apply -f /etc/kubernetes/config/calico01_RBAC.yml
-  when: touch_calico01_RBAC.changed
   ignore_errors: true
   run_once: true
 

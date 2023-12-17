@@ -38,7 +38,6 @@
     state: present
     filename: 'docker'
 
-# tasks file for containerd
 - name: Add repositories key gvisor
   apt_key:
     url: 'https://gvisor.dev/archive.key'
@@ -46,7 +45,7 @@
 
 - name: Add repositories gvisor
   apt_repository:
-    repo: 'deb [arch=amd64] https://storage.googleapis.com/gvisor/releases 20231204 main'
+    repo: 'deb [arch=amd64] https://storage.googleapis.com/gvisor/releases release main'
     state: present
     filename: 'gvisor'
 

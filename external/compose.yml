@@ -1,8 +1,10 @@
 services:
   registry:
+    restart: always
     image: registry
     volumes:
       - /srv/store:/registry
+
     ports:
       - 5000:5000
     environment:
@@ -10,14 +12,16 @@ services:
       - STORAGE_PATH=/registry
 
   mirror:
+    restart: always
     image: registry
     ports:
       - 5555:5000
     volumes:
-      - ./config.yml:/etc/docker/registry/config.yml
+      - ./files/config.yml:/etc/docker/registry/config.yml
       - /srv/cache:/registry
 
   squid:
+    restart: always
     build:
       dockerfile: ./Dockerfile-squid
     ports:

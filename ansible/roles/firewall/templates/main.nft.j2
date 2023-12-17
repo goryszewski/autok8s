@@ -16,7 +16,7 @@ table inet firewall {
         elements = { ssh, 9100 }
     }
 
-{% for item in hostvars[inventory_hostname].firewall %}
+{% for name,item in hostvars[inventory_hostname].firewall.items()  %}
     set allowed_port_{{item['port']}}_{{item['type']|default('tcp')}} {
         type inet_service
         elements = { {{item['port']}} }
@@ -39,7 +39,7 @@ table inet firewall {
     }
 
     chain to_generate {
-{% for item in hostvars[inventory_hostname].firewall %}
+{% for name,item in hostvars[inventory_hostname].firewall.items() %}
         {% if "hosts" in item %}ip saddr @allowed_hosts_to_{{item['port']}}_{{item['type']|default('tcp')}}  {% endif %}{{item['type']|default('tcp')}} dport @allowed_port_{{item['port']}}_{{item['type']|default('tcp')}}  accept
 {% endfor %}
     }

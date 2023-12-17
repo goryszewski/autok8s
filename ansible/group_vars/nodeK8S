@@ -1,0 +1,19 @@
+firewall:
+  nodeK8s_2:
+    port: 10256
+  nodeK8s_3:
+    port: 5473
+  nodeK8s_4:
+    port: 10250 # kublet
+  nodeK8s_5:
+    port: 30080 # service
+  nodeK8s_6:
+    port: 30443 # service
+  nodeK8s_7:
+    port: 10257 # kube-controll
+  nodeK8s_8:
+    port: 10259 # /kube-schedule
+  nodeK8s_9:
+    port: 6443 # kapi
+  nodeK8s_10:
+    port: 443
