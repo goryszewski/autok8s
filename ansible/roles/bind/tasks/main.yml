@@ -21,11 +21,11 @@
 - name: Template a file to dns.db2.j2
   ansible.builtin.template:
     src: dns.db2.j2
-    dest: /var/lib/bind/{{item}}.zone
+    dest: /var/lib/bind/{{ item.key }}.zone
     owner: bind
     group: bind
     mode: '0644'
-  loop: "{{ domains }}"
+  loop: "{{ domains | dict2items  }}"
   notify:
     - Restart bind9
 
@@ -64,3 +64,4 @@
     name: bind9
     enabled: true
     daemon_reload: true
+    state: started

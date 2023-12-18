@@ -18251,7 +18251,7 @@ spec:
   #     - www.mm.local
   #   secretName: www-mm-local
   rules:
-  - host: argocd.autok8s.xyz
+  - host: argocd.mgmt.autok8s.ext
     http:
       paths:
         - path: /

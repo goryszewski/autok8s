@@ -28,6 +28,16 @@
   loop_control:
     loop_var: element
 
+- name: "[Cluster] - Wait for kube-apiserver Pod is UP"
+  ansible.builtin.uri:
+    url: "https://{{ inventory_hostname }}:6443/version"
+    return_content: true
+    validate_certs: false
+  register: register_result_kube_apiserver
+  until: register_result_kube_apiserver.status == 200
+  retries: 20
+  delay: 5
+
 - import_tasks: 02_k8s.yml
 - import_tasks: 03_calico.yml
 

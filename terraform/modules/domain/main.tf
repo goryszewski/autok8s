@@ -64,11 +64,6 @@ resource "libvirt_domain" "node" {
     destination = "/tmp/prep.sh"
   }
 
-  provisioner "file" {
-    source      = "${path.module}/files/ca.crt"
-    destination = "/usr/local/share/ca-certificates/ca.crt"
-  }
-
   provisioner "remote-exec" {
     inline = [
       "chmod a+x /tmp/prep.sh",

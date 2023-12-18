@@ -18,13 +18,10 @@ cname:
   grafana: prometheus
 
 domains:
-  - prod.autok8s.ext
-  - mgmt.autok8s.ext
-  - dev.autok8s.ext
+  prod.autok8s.ext: {}
+  mgmt.autok8s.ext: {}
+  dev.autok8s.ext: {}
 
-a_record:
-  argocd: 10.17.3.2
-  repo: "{{ global_repo | default('127.0.0.1') }}"
 
 haproxy:
   - name: http

@@ -9,6 +9,9 @@
   notify:
     - Restart rsyslog
 
+- name: Force all notified handlers to run at this point, not waiting for normal sync points
+  ansible.builtin.meta: flush_handlers
+
 - name: Install Default Software
   ansible.builtin.apt:
     pkg:

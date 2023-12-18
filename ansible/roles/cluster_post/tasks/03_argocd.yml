@@ -27,6 +27,13 @@
   ignore_errors: true
   run_once: true
 
+- name: "[Cluster] - Wait for crds applications.argoproj.io"
+  ansible.builtin.command: kubectl get customresourceDefinition applications.argoproj.io
+  register: register_result_crds
+  until: register_result_crds.rc == 0
+  retries: 20
+  delay: 5
+
 ###
 
 - name: watch is all running

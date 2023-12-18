@@ -4,7 +4,7 @@ zone "{{domain}}" {
     allow-transfer { none; };
 };
 
-{% for item in domains %}
+{% for item,value in domains.items() %}
 
 zone "{{item}}" {
     type master;

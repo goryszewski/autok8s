@@ -20,6 +20,3 @@ k8sapi.{{ domain }}. IN A {{ KUBERNETES_PUBLIC_ADDRESS }}
 {{ hostvars[item]['hostname'] }} IN A {{ item }}
 {% endfor %}
 {% endfor %}
-{% for k,v in a_record.items()%}
-{{ k }} IN A {{ v }}
-{% endfor %}

@@ -1,22 +1,20 @@
 ---
-# tasks file for etcd_pod
-
-- name: Download etcd
+- name: "[ETCD POD] - Download etcd"
   ansible.builtin.get_url:
     url: "https://github.com/etcd-io/etcd/releases/download/{{etcd['version']}}/etcd-{{etcd['version']}}-{{etcd['platform']}}.tar.gz"
     dest: /tmp
     mode: 'u=rwx,g=rx,o=rx'
     checksum: sha256:https://github.com/etcd-io/etcd/releases/download/{{etcd['version']}}/SHA256SUMS
 
-- name: unarchive etcd
+- name: "[ETCD POD] - unarchive etcd"
   ansible.builtin.unarchive:
-    src: /tmp/etcd-{{etcd['version']}}-{{etcd['platform']}}.tar.gz
+    src: /tmp/etcd-{{ etcd['version'] }}-{{ etcd['platform'] }}.tar.gz
     dest: /tmp
     remote_src: yes
 
-- name: Copy etcd
+- name: "[ETCD POD] - Copy etcd"
   ansible.builtin.copy:
-    src: /tmp/etcd-{{etcd['version']}}-{{etcd['platform']}}/{{item}}
+    src: /tmp/etcd-{{ etcd['version'] }}-{{ etcd['platform'] }}/{{ item }}
     dest: /usr/local/bin
     mode: '0555'
     remote_src: yes
@@ -24,7 +22,7 @@
    - etcdctl
    - etcd
 
-- name: Creates directory /etc/kubernetes/manifests
+- name: "[ETCD POD] - Creates directory /etc/kubernetes/manifests"
   file:
     path: "/etc/kubernetes/manifests"
     state: directory
@@ -32,7 +30,7 @@
     group: root
     mode: '0700'
 
-- name: Creates directory /etc/etcd
+- name: "[ETCD POD] - Creates directory /etc/etcd"
   file:
     path: /etc/etcd
     state: directory
@@ -40,22 +38,31 @@
     group: root
     mode: '0700'
 
-- name: Manifest ETCD
+- name: "[ETCD POD] - Manifest ETCD"
   ansible.builtin.template:
     src: manifest.yml.j2
     dest: /etc/kubernetes/manifests/etcd.yml
 
-- name: 15 second pause - downlaod ETCD image
-  pause:
-    seconds: 15
+- name: "[ETCD POD] - Wait for ETCD Pod is UP"
+  ansible.builtin.uri:
+    url: "https://{{ inventory_hostname }}:2379/version"
+    return_content: true
+    ca_path: "/etc/etcd/ssl/ETCD_CA.pem"
+    client_cert: "/etc/etcd/ssl/check_health.pem"
+    client_key: "/etc/etcd/ssl/check_health.key"
+    validate_certs: false
+  register: register_result_etcd
+  until: register_result_etcd.status == 200
+  retries: 20
+  delay: 5
 
-- name: "[{{hostname}}] DEBUG ETCD"
+- name: "[ETCD POD][{{ hostname }}] - DEBUG ETCD"
   include_tasks:
     file: ./_share/_run_debug.yml
   vars:
-    _CMD: "{{item}}"
+    _CMD: "ETCDCTL_API=3 etcdctl --write-out=table --endpoints={{ etcd['members'] }} {{ item }} --cacert=/etc/etcd/ssl/ETCD_CA.pem --cert=/etc/etcd/ssl/check_health.pem --key=/etc/etcd/ssl/check_health.key"
     _NAME: "ETCDTOOL"
   loop:
-  - "ETCDCTL_API=3 etcdctl --write-out=table --endpoints={{etcd['members']}} member list  --cacert=/etc/etcd/ssl/ETCD_CA.pem --cert=/etc/etcd/ssl/check_health.pem --key=/etc/etcd/ssl/check_health.key"
-  - "ETCDCTL_API=3 etcdctl --write-out=table --endpoints={{etcd['members']}} endpoint status  --cacert=/etc/etcd/ssl/ETCD_CA.pem --cert=/etc/etcd/ssl/check_health.pem --key=/etc/etcd/ssl/check_health.key"
-  - "ETCDCTL_API=3 etcdctl --write-out=table --endpoints={{etcd['members']}} endpoint health  --cacert=/etc/etcd/ssl/ETCD_CA.pem --cert=/etc/etcd/ssl/check_health.pem --key=/etc/etcd/ssl/check_health.key"
+  - " member list"
+  - " endpoint status"
+  - " endpoint health"

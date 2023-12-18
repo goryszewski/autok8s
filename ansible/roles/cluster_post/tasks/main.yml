@@ -16,18 +16,3 @@
 - import_tasks: 04_deploy_app.yml
   delegate_to: '{{groups.init[0]}}'
   run_once: true
-
-- name: "[localhost] kubectl local"
-  delegate_to: 'localhost'
-  run_once: true
-  ansible.builtin.command: scp root@{{groups.init[0]}}:/root/.kube/config ~/.kube/config
-
-- name: "[localhost] kubectl test"
-  delegate_to: 'localhost'
-  run_once: true
-  ansible.builtin.command: kubectl get nodes -o wide
-  register: output_test
-
-- name: "[localhost] etcdctl debug "
-  debug:
-    msg: "{{output_test}}"

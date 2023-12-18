@@ -4,9 +4,17 @@
     dest: /etc/rsyslog.d/01_tcp.conf
   notify:
     - Restart rsyslog
+
 - name: Config rsyslog
   copy:
     src: 10_template.conf
     dest: /etc/rsyslog.d/10_template.conf
   notify:
     - Restart rsyslog
+
+- name: Enable service rsyslog
+  ansible.builtin.systemd:
+    name: rsyslog
+    enabled: true
+    daemon_reload: true
+    state: started
