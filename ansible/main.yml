@@ -71,12 +71,5 @@
 - hosts: controlplane
   gather_facts: no
   roles:
-    - cluster_init
-  tags: [ INIT ]
-
-
-- hosts: controlplane
-  gather_facts: no
-  roles:
-    - cluster_post
-  tags: [ POST ]
+    - cluster
+  tags: [ CLUSTER ]
