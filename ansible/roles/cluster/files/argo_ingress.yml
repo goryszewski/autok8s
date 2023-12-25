@@ -1,0 +1,26 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: haproxy-ingress
+  namespace: argocd
+spec:
+  project: default
+  source:
+    chart: kubernetes-ingress
+    repoURL: https://haproxytech.github.io/helm-charts
+    targetRevision: 1.30.6
+    helm:
+      values: |
+        controller:
+          kind: DaemonSet
+          service:
+            type: NodePort
+            enablePorts:
+              http: true
+              https: true
+            nodePorts:
+              http: 30081
+              https: 30444
+  destination:
+    server: "https://kubernetes.default.svc"
+    namespace: default

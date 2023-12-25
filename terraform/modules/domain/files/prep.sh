@@ -1,6 +1,6 @@
  #!/bin/bash
 
- hostnamectl set-hostname  $1
+ hostnamectl set-hostname $1
  /bin/rm -v /etc/ssh/ssh_host_*
  dpkg-reconfigure openssh-server
  rm /etc/machine-id
