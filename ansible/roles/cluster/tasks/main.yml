@@ -58,7 +58,7 @@
   delegate_to: '{{groups.init[0]}}'
   run_once: true
 
-- import_tasks: 01_helm.yml
+# - import_tasks: 01_helm.yml
 
 
 - import_tasks: 02_ingress.yml
