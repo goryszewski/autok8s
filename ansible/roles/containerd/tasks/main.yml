@@ -74,9 +74,9 @@
     state: directory
     recurse: true
 
-- name: containerd - Creates directory repo.mgmt.autok8s.ext
+- name: containerd - Creates directory repo.mgmt.autok8s.ext:5000
   ansible.builtin.file:
-    path: /etc/containerd/certs.d/repo.mgmt.autok8s.ext/
+    path: /etc/containerd/certs.d/repo.mgmt.autok8s.ext:5000/
     state: directory
     recurse: true
 
@@ -91,7 +91,7 @@
 - name: repo.mgmt.autok8s.ext
   ansible.builtin.template:
     src: internal.toml
-    dest: "/etc/containerd/certs.d/repo.mgmt.autok8s.ext/hosts.toml"
+    dest: "/etc/containerd/certs.d/repo.mgmt.autok8s.ext:5000/hosts.toml"
   when: global_repo is defined
   notify:
     - Restart-service-containerd

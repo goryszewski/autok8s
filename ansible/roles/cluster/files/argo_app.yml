@@ -35,7 +35,7 @@ spec:
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: app-DEV
+  name: app-dev
   namespace: argocd
 spec:
   project: default
@@ -52,7 +52,7 @@ spec:
           image: repo.mgmt.autok8s.ext:5000/webui:latest
   destination:
     server: "https://kubernetes.default.svc"
-    namespace: default
+    namespace: dev
   syncPolicy:
     automated: # automated sync by default retries failed attempts 5 times with following delays between attempts ( 5s, 10s, 20s, 40s, 80s ); retry controlled using `retry` field.
       prune: true # Specifies if resources should be pruned during auto-syncing ( false by default ).
@@ -76,7 +76,7 @@ spec:
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: app-PROD
+  name: app-prod
   namespace: argocd
 spec:
   project: default
@@ -93,7 +93,7 @@ spec:
           image: repo.mgmt.autok8s.ext:5000/webui:latest
   destination:
     server: "https://kubernetes.default.svc"
-    namespace: default
+    namespace: prod
   syncPolicy:
     automated: # automated sync by default retries failed attempts 5 times with following delays between attempts ( 5s, 10s, 20s, 40s, 80s ); retry controlled using `retry` field.
       prune: true # Specifies if resources should be pruned during auto-syncing ( false by default ).

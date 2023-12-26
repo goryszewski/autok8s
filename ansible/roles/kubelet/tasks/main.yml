@@ -1,27 +1,31 @@
 ---
 # tasks file for kubelet
 
-- name: Check that the kubelet/kubectl exist
-  stat:
-    path: /usr/local/bin/{{ item }}
-  register: stats
-  loop:
-    - "kubelet"
-    - "kubectl"
+- name: Check that the kubectl exist
+  ansible.builtin.stat:
+    path: /usr/local/bin/kubectl
+  register: stats_kubectl
 
-- name: DEBUG
-  debug:
-    var: stats
-
-- name: Download files
+- name: Download file kubectl
   ansible.builtin.get_url:
-    url: "https://dl.k8s.io/release/v{{k8s_version}}/bin/linux/amd64/{{item}}"
+    url: "https://dl.k8s.io/release/v{{ k8s_version }}/bin/linux/amd64/kubectl"
     dest: /usr/local/bin/
-    mode: 'u=rwx,g=rx,o=rx'
-    checksum: sha256:https://dl.k8s.io/release/v{{k8s_version}}/bin/linux/amd64/{{item}}.sha256
-  loop:
-    - "kubelet"
-    - "kubectl"
+    mode: "u=rwx,g=rx,o=rx"
+    checksum: sha256:https://dl.k8s.io/release/v{{ k8s_version }}/bin/linux/amd64/kubectl.sha256
+  when: not stats_kubectl.stat.exists
+
+- name: Check that the kubelet exist
+  ansible.builtin.stat:
+    path: /usr/local/bin/kubelet
+  register: stats_kubelet
+
+- name: Download file kubelet
+  ansible.builtin.get_url:
+    url: "https://dl.k8s.io/release/v{{ k8s_version }}/bin/linux/amd64/kubelet"
+    dest: /usr/local/bin/
+    mode: "u=rwx,g=rx,o=rx"
+    checksum: sha256:https://dl.k8s.io/release/v{{ k8s_version }}/bin/linux/amd64/kubelet.sha256
+  when: not stats_kubelet.stat.exists
 
 - name: Creates directory /etc/kubernetes/*
   file:
@@ -30,7 +34,7 @@
     recurse: true
     owner: root
     group: root
-    mode: '0700'
+    mode: "0700"
   loop:
     - "/etc/kubernetes/manifests"
     - "/etc/kubernetes/config"
@@ -43,7 +47,7 @@
     _crt: "{{element._crt}}"
     _IP: "{{KUBERNETES_PUBLIC_ADDRESS}}"
   loop:
-    - {_name: 'system:node:{{hostname}}',_crt: "node_{{hostname}}"}
+    - { _name: "system:node:{{hostname}}", _crt: "node_{{hostname}}" }
   loop_control:
     loop_var: element
 
@@ -53,7 +57,7 @@
     state: directory
     owner: root
     group: root
-    mode: '0700'
+    mode: "0700"
 
 - name: Template a file to kubelet-config.yaml
   ansible.builtin.template:

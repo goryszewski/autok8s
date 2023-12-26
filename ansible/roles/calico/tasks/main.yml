@@ -6,7 +6,7 @@
     state: directory
     owner: root
     group: root
-    mode: '0700'
+    mode: "0700"
   loop:
     - /etc/cni
     - /opt/cni
@@ -17,7 +17,7 @@
   ansible.builtin.get_url:
     url: "{{item}}"
     dest: /usr/local/bin/
-    mode: 'u=rwx,g=rx,o=rx'
+    mode: "u=rwx,g=rx,o=rx"
   loop:
     - https://github.com/containernetworking/plugins/releases/download/v1.3.0/cni-plugins-linux-amd64-v1.3.0.tgz
   register: touchcni
@@ -35,7 +35,7 @@
     _crt: "{{element._crt}}"
     _IP: "{{KUBERNETES_PUBLIC_ADDRESS}}"
   loop:
-    - {_name: 'calico-cni',_crt: "calico-cni"}
+    - { _name: "calico-cni", _crt: "calico-cni" }
   loop_control:
     loop_var: element
 
@@ -43,12 +43,12 @@
   ansible.builtin.get_url:
     url: https://github.com/projectcalico/cni-plugin/releases/download/v{{calico_version_cni}}/calico-amd64
     dest: /opt/cni/bin/calico
-    mode: 'u=rwx,g=rx,o=rx'
+    mode: "u=rwx,g=rx,o=rx"
 - name: Download files /opt/cni/bin/calico-ipam
   ansible.builtin.get_url:
     url: https://github.com/projectcalico/cni-plugin/releases/download/v{{calico_version_cni}}/calico-ipam-amd64
     dest: /opt/cni/bin/calico-ipam
-    mode: 'u=rwx,g=rx,o=rx'
+    mode: "u=rwx,g=rx,o=rx"
 
 - name: Template a file to 10-calico.conflist
   ansible.builtin.copy:

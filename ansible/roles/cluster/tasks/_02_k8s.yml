@@ -20,6 +20,7 @@
 
 - name: Is exist calico-typha-certs
   ansible.builtin.shell: kubectl get secret -A | grep calico-typha-certs
+  ignore_errors: true
   register: register_result_calico_typha_certs
 
 - name: If not Exist  calico-typha-certs
@@ -31,6 +32,7 @@
 
 - name: Is exist calico-node-certs
   ansible.builtin.shell: kubectl get secret -A | grep calico-node-certs
+  ignore_errors: true
   register: register_result_calico_node_certs
 
 - name: If not Exist  calico-node-certs
@@ -42,6 +44,7 @@
 
 - name: Is exist calico-typha-ca
   ansible.builtin.shell: kubectl get configmap -A | grep calico-typha-ca
+  ignore_errors: true
   register: register_result_calico_typha_ca
 
 - name: If not Exist  calico-typha-ca

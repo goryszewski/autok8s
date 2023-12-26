@@ -67,7 +67,6 @@
     - etcd_pod
   tags: [ETCD]
 
-
 - name: Roles for controlplane servers
   hosts: controlplane
   gather_facts: false

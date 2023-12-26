@@ -3,7 +3,7 @@
   ansible.builtin.get_url:
     url: "https://dl.k8s.io/release/v{{k8s_version}}/bin/linux/amd64/kubectl"
     dest: /usr/local/bin/
-    mode: 'u=rwx,g=rx,o=rx'
+    mode: "u=rwx,g=rx,o=rx"
     checksum: sha256:https://dl.k8s.io/release/v{{k8s_version}}/bin/linux/amd64/kubectl.sha256
 
 - name: Creates directory
@@ -12,7 +12,7 @@
     state: directory
     owner: root
     group: root
-    mode: '0700'
+    mode: "0700"
   loop:
     - /root/.kube/
 
@@ -25,9 +25,18 @@
     _IP: "{{KUBERNETES_PUBLIC_ADDRESS}}"
     _path: "/root/.kube/config"
   loop:
-    - {_name: 'admin',_crt: "admin"}
+    - { _name: "admin", _crt: "admin" }
   loop_control:
     loop_var: element
+
+- name: Get local kubeconfig
+  fetch:
+    src: /root/.kube/config
+    dest: ~/.kube
+    flat: True
+  delegate_to: "{{groups.init[0]}}"
+  ignore_errors: true
+  run_once: true
 
 - name: "[Cluster] - Wait for kube-apiserver Pod is UP"
   ansible.builtin.uri:
@@ -42,33 +51,22 @@
 - import_tasks: _02_k8s.yml
 - import_tasks: _03_calico.yml
 
-
-- name: Get local kubeconfig
-  fetch:
-    src: /root/.kube/config
-    dest: ~/.kube
-    flat: True
-  delegate_to: '{{groups.init[0]}}'
-  ignore_errors: true
-  run_once: true
-
 # post
 
 - import_tasks: 00_calico_dns.yml
-  delegate_to: '{{groups.init[0]}}'
+  delegate_to: "{{groups.init[0]}}"
   run_once: true
 
 # - import_tasks: 01_helm.yml
 
-
 - import_tasks: 02_ingress.yml
-  delegate_to: '{{groups.init[0]}}'
+  delegate_to: "{{groups.init[0]}}"
   run_once: true
 
 - import_tasks: 03_argocd.yml
-  delegate_to: '{{groups.init[0]}}'
+  delegate_to: "{{groups.init[0]}}"
   run_once: true
 
 - import_tasks: 04_deploy_app.yml
-  delegate_to: '{{groups.init[0]}}'
+  delegate_to: "{{groups.init[0]}}"
   run_once: true
