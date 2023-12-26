@@ -1,4 +1,3 @@
-
 cluster_cidr: 10.10.0.0/16 # pod_cidr pod-cidr=10.200.${i}.0/24
 network_servers: 10.17.3.0/24 # node_network  10.240.0.0/24
 service_cluster_ip_range: 10.32.0.0/24 # address range (10.32.0.0/24) reserved for internal cluster
@@ -21,3 +20,12 @@ cert_organization_name: "Kubernetes"
 cert_organizational_unit_name: "IT"
 cert_state_or_province_name: "Mazovia"
 email_address: "goryszewski@gmail.com"
+
+domains:
+  prod.autok8s.ext: {}
+  mgmt.autok8s.ext:
+    a:
+      - name: repo
+        ip: 192.168.100.10
+
+  dev.autok8s.ext: {}

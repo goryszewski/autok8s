@@ -1,4 +1,3 @@
-
 - name: Download files crds.yaml
   ansible.builtin.get_url:
     url: https://raw.githubusercontent.com/projectcalico/calico/v{{calico_version}}/manifests/crds.yaml
@@ -17,18 +16,40 @@
   retries: 20
   delay: 5
 
-# file
-- name: kubectl create --form-file
-  ansible.builtin.command: "{{ item }}"
-  ignore_errors: true
+# file calico-typha-certs
+
+- name: Is exist calico-typha-certs
+  ansible.builtin.shell: kubectl get secret -A | grep calico-typha-certs
+  register: register_result_calico_typha_certs
+
+- name: If not Exist  calico-typha-certs
+  ansible.builtin.command: "kubectl create secret generic -n kube-system calico-typha-certs --from-file=/etc/kubernetes/pki/typha.key       --from-file=/etc/kubernetes/pki/typha.pem"
   run_once: true
-  loop:
-    - kubectl create secret generic -n kube-system calico-typha-certs --from-file=/etc/kubernetes/pki/typha.key       --from-file=/etc/kubernetes/pki/typha.pem
-    - kubectl create secret generic -n kube-system calico-node-certs  --from-file=/etc/kubernetes/pki/calico-node.key --from-file=/etc/kubernetes/pki/calico-node.pem
-    - kubectl create configmap      -n kube-system calico-typha-ca    --from-file=/etc/kubernetes/pki/ca_typha.pem
+  when: register_result_calico_typha_certs.rc == 1
+
+# file calico-node-certs
+
+- name: Is exist calico-node-certs
+  ansible.builtin.shell: kubectl get secret -A | grep calico-node-certs
+  register: register_result_calico_node_certs
+
+- name: If not Exist  calico-node-certs
+  ansible.builtin.command: "kubectl create secret generic -n kube-system calico-node-certs  --from-file=/etc/kubernetes/pki/calico-node.key --from-file=/etc/kubernetes/pki/calico-node.pem"
+  run_once: true
+  when: register_result_calico_node_certs.rc == 1
+
+# file calico-typha-ca
+
+- name: Is exist calico-typha-ca
+  ansible.builtin.shell: kubectl get configmap -A | grep calico-typha-ca
+  register: register_result_calico_typha_ca
+
+- name: If not Exist  calico-typha-ca
+  ansible.builtin.command: "kubectl create configmap  -n kube-system calico-typha-ca    --from-file=/etc/kubernetes/pki/ca_typha.pem"
+  run_once: true
+  when: register_result_calico_typha_ca.rc == 1
 
 # end FILE
-
 
 # BEGIN RBAC
 
@@ -42,5 +63,4 @@
   ansible.builtin.command: kubectl apply -f /etc/kubernetes/config/calico01_RBAC.yml
   ignore_errors: true
   run_once: true
-
 # END RBAC

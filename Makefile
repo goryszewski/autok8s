@@ -18,7 +18,7 @@ Terraform_VARS= -var-file="debian12.tfvars"\
 
 inventory=-i ./scripts/libvirt_inventory.py
 
-extra-vars="domain=$(CONF_domain) global_repo=192.168.100.10 calico_version=3.26.0 calico_version_cni=3.20.6 k8s_version=1.27.3 ENCRYPTION_KEY=rfjKhlyYRN9WNr026VIKRaRrPZ2GEzqrU3ry2SvDIvs="
+extra-vars="domain=$(CONF_domain) global_repo=repo.mgmt.autok8s.ext calico_version=3.26.0 calico_version_cni=3.20.6 k8s_version=1.27.3 ENCRYPTION_KEY=rfjKhlyYRN9WNr026VIKRaRrPZ2GEzqrU3ry2SvDIvs="
 
 #end config
 

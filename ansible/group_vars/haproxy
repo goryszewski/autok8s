@@ -7,7 +7,7 @@ firewall:
     port: 6443
   haproxy_4:
     port: 53
-    type: 'udp'
+    type: "udp"
   haproxy_5:
     port: 53
   haproxy_6:
@@ -16,12 +16,6 @@ firewall:
 
 cname:
   grafana: prometheus
-
-domains:
-  prod.autok8s.ext: {}
-  mgmt.autok8s.ext: {}
-  dev.autok8s.ext: {}
-
 
 haproxy:
   - name: http

@@ -1,75 +1,86 @@
-- hosts: syslog
-  gather_facts: yes
+---
+- name: Roles for syslog servers
+  hosts: syslog
+  gather_facts: true
   roles:
     - rsyslog
-  tags: [ LOG ]
+  tags: [LOG]
 
-- hosts: haproxy
-  gather_facts: yes
+- name: Roles for haproxy/lb servers
+  hosts: haproxy
+  gather_facts: true
   roles:
     - haproxy
     - keepalive
     - bind
     - bird
-  tags: [ LB, HA, BGP, DNS ]
+  tags: [LB, HA, BGP, DNS]
 
-- hosts: all
-  gather_facts: yes
+- name: Roles for all servers
+  hosts: all
+  gather_facts: true
   roles:
     - firewall
     - common
     - node_explorer
-  tags: [ ]
+  tags: []
 
-- hosts: exabgp
-  gather_facts: no
+- name: Roles for exabgp servers
+  hosts: exabgp
+  gather_facts: false
   roles:
     - exabgp
-  tags: [ EXABGP ]
+  tags: [EXABGP]
 
-- hosts: controlplane
-  gather_facts: no
+- name: Roles for CA servers
+  hosts: controlplane
+  gather_facts: false
   roles:
     - ca
-  tags: [ CA ]
+  tags: [CA]
 
-- hosts: monit
-  gather_facts: no
+- name: Roles for monit servers
+  hosts: monit
+  gather_facts: false
   roles:
     - crt
     - prometheus
     - grafana
     - nginx
-  tags: [ PROMETHEUS ]
+  tags: [PROMETHEUS]
 
-- hosts: nodeK8S
-  gather_facts: no
+- name: Roles for nodeK8S servers
+  hosts: nodeK8S
+  gather_facts: false
   roles:
     - crt
     - containerd
     - kubelet
     - kube-proxy
     - calico
-  tags: [ nodeK8S ]
+  tags: [nodeK8S]
 
-- hosts: etcd
-  gather_facts: no
+- name: Roles for etcd servers
+  hosts: etcd
+  gather_facts: false
   roles:
     - etcd_pod
-  tags: [ ETCD ]
+  tags: [ETCD]
 
 
-- hosts: controlplane
-  gather_facts: no
+- name: Roles for controlplane servers
+  hosts: controlplane
+  gather_facts: false
   roles:
     - kube-apiserver_pod
     - kube-scheduler_pod
     - kube-controller-manager_pod
     - cloud-controller-manager
-  tags: [ CP ]
+  tags: [CP]
 
-- hosts: controlplane
-  gather_facts: no
+- name: Prep cluster
+  hosts: controlplane
+  gather_facts: false
   roles:
     - cluster
-  tags: [ CLUSTER ]
+  tags: [CLUSTER]

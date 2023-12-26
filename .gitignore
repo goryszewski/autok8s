@@ -10,5 +10,7 @@ __pycache__
 *.key
 *.pem
 
+.vscode
+
 # DOTO fix static bin
 ansible/roles/cloud-controller-manager/files/cloud-controller-manager

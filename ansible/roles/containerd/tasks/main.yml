@@ -28,71 +28,85 @@
     - sysctl--system
 
 - name: Add repositories key docker
-  apt_key:
-    url: 'https://download.docker.com/linux/debian/gpg'
+  ansible.builtin.apt_key:
+    url: "https://download.docker.com/linux/debian/gpg"
     state: present
 
 - name: Add repositories docker
-  apt_repository:
-    repo: 'deb [arch=amd64] https://download.docker.com/linux/debian buster stable'
+  ansible.builtin.apt_repository:
+    repo: "deb [arch=amd64] https://download.docker.com/linux/debian buster stable"
     state: present
-    filename: 'docker'
+    filename: "docker"
 
 - name: Add repositories key gvisor
-  apt_key:
-    url: 'https://gvisor.dev/archive.key'
+  ansible.builtin.apt_key:
+    url: "https://gvisor.dev/archive.key"
     state: present
 
 - name: Add repositories gvisor
-  apt_repository:
-    repo: 'deb [arch=amd64] https://storage.googleapis.com/gvisor/releases release main'
+  ansible.builtin.apt_repository:
+    repo: "deb [arch=amd64] https://storage.googleapis.com/gvisor/releases release main"
     state: present
-    filename: 'gvisor'
+    filename: "gvisor"
 
 - name: Add repositories key k8s
-  apt_key:
-    url: 'https://packages.cloud.google.com/apt/doc/apt-key.gpg'
+  ansible.builtin.apt_key:
+    url: "https://packages.cloud.google.com/apt/doc/apt-key.gpg"
     state: present
 
 - name: Add repositories k8s
-  apt_repository:
-    repo: 'deb https://apt.kubernetes.io/ kubernetes-xenial main'
+  ansible.builtin.apt_repository:
+    repo: "deb https://apt.kubernetes.io/ kubernetes-xenial main"
     state: present
-    filename: 'k8s'
+    filename: "k8s"
 
 - name: containerd-  Update the repository cache and install containerd
   ansible.builtin.apt:
     state: latest
-    update_cache: yes
+    update_cache: true
     allow_change_held_packages: true
     pkg:
       - containerd.io=1.6.21-1
 
-- name: containerd - Creates directory
-  file:
+- name: containerd - Creates directory - docker.io
+  ansible.builtin.file:
     path: /etc/containerd/certs.d/docker.io/
     state: directory
-    recurse: yes
+    recurse: true
 
-- name: repo local
-  template:
+- name: containerd - Creates directory repo.mgmt.autok8s.ext
+  ansible.builtin.file:
+    path: /etc/containerd/certs.d/repo.mgmt.autok8s.ext/
+    state: directory
+    recurse: true
+
+- name: repo proxy
+  ansible.builtin.template:
     src: repo.toml
-    dest: '/etc/containerd/certs.d/docker.io/hosts.toml'
+    dest: "/etc/containerd/certs.d/docker.io/hosts.toml"
+  when: global_repo is defined
+  notify:
+    - Restart-service-containerd
+
+- name: repo.mgmt.autok8s.ext
+  ansible.builtin.template:
+    src: internal.toml
+    dest: "/etc/containerd/certs.d/repo.mgmt.autok8s.ext/hosts.toml"
   when: global_repo is defined
   notify:
     - Restart-service-containerd
 
 - name: gVisor - Install sunsc
   ansible.builtin.apt:
-    update_cache: yes
+    update_cache: true
     allow_change_held_packages: true
     pkg:
       - runsc
 
 - name: gVisor - config
-  copy:
+  ansible.builtin.copy:
     src: config.toml
-    dest: '/etc/containerd/config.toml'
+    dest: "/etc/containerd/config.toml"
   notify:
     - Restart-service-containerd
 
@@ -101,11 +115,11 @@
   # https://docs.ansible.com/ansible/latest/collections/ansible/builtin/meta_module.html#meta-module
 
 - name: Install crictl Software
-  apt:
+  ansible.builtin.apt:
     pkg:
       - cri-tools
 
 - name: crictl - crictl.yaml
-  copy:
+  ansible.builtin.copy:
     src: crictl.yaml
-    dest: '/etc/crictl.yaml'
+    dest: "/etc/crictl.yaml"
