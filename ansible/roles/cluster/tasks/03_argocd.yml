@@ -7,6 +7,10 @@
   ansible.builtin.copy:
     src: argocd_pre.yml
     dest: /etc/kubernetes/config/argocd_pre.yml
+    owner: root
+    group: root
+    mode: '0644'
+    backup: yes
   register: touch_argocd_yml
 
 - name: kubectl apply argocd_pre.yml
@@ -19,6 +23,10 @@
   ansible.builtin.copy:
     src: argocd.yml
     dest: /etc/kubernetes/config/argocd.yml
+    owner: root
+    group: root
+    mode: '0644'
+    backup: yes
   register: touch_argocd_yml
 
 - name: kubectl apply argocd.yml

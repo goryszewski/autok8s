@@ -1,8 +1,12 @@
-
+---
 - name: Copy /etc/kubernetes/config/ingres.yml
   ansible.builtin.copy:
     src: ingres.yml
     dest: /etc/kubernetes/config/ingres.yml
+    owner: root
+    group: root
+    mode: '0644'
+    backup: yes
   register: touch_ingres_yml
 
 - name: helm install ingress

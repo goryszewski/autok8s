@@ -2,6 +2,10 @@
   ansible.builtin.copy:
     src: argo_app.yml
     dest: /etc/kubernetes/config/argo_app.yml
+    owner: root
+    group: root
+    mode: '0644'
+    backup: yes
   register: touch_argo_app_yml
 
 - name: kubectl apply argo_app.yml
@@ -14,6 +18,10 @@
   ansible.builtin.copy:
     src: argo_ingress.yml
     dest: /etc/kubernetes/config/argo_ingress.yml
+    owner: root
+    group: root
+    mode: '0644'
+    backup: yes
   register: touch_argo_ingress_yml
 
 - name: kubectl apply argo_ingress.yml

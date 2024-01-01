@@ -6,14 +6,14 @@
     mode: 'u=rwx,g=rx,o=rx'
 
 - name: calicoctl - test
-  ansible.builtin.shell:  calicoctl get nodes --allow-version-mismatch
+  ansible.builtin.shell: calicoctl get nodes --allow-version-mismatch
   register: calicoctl_output
   environment:
     DATASTORE_TYPE: kubernetes
 
 - name: debug calicoctl
   debug:
-    msg: "{{calicoctl_output.stdout_lines}}"
+    msg: "{{ calicoctl_output.stdout_lines }}"
 
 - name: Template a file to calico_IPPool_address.yml
   ansible.builtin.template:
@@ -29,7 +29,7 @@
 
 - name: debug calicoctl
   debug:
-    msg: "{{calicoctl_output.stdout_lines}}"
+    msg: "{{ calicoctl_output.stdout_lines }}"
 
 - name: calicoctl create -f /etc/kubernetes/config/calico_IPPool_address.yml
   ansible.builtin.shell: calicoctl create -f /etc/kubernetes/config/calico_IPPool_address.yml --allow-version-mismatch
