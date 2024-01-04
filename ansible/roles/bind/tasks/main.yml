@@ -1,4 +1,4 @@
-- name: Install
+- name: Install packages
   ansible.builtin.apt:
     update_cache: true
     allow_change_held_packages: true
@@ -8,7 +8,7 @@
       - bind9-doc
 
 - name: Creates directory /var/lib/bind/zones
-  file:
+  ansible.builtin.file:
     path: /var/lib/bind/zones
     state: directory
     owner: bind

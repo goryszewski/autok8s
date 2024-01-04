@@ -1,9 +1,9 @@
 - name: "[{{hostname}}] birdc "
   ansible.builtin.shell: "{{_CMD}}"
-  register: etcd_output
+  register: register_output
 
 - name: "[{{hostname}}] birdc debug "
   debug:
     msg:
     - "{{_CMD}}"
-    - "{{etcd_output.stdout_lines}}"
+    - "{{register_output.stdout_lines}}"

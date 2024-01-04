@@ -1,10 +1,10 @@
 - name: "Add dumy CA host"
-  add_host:
+  ansible.builtin.add_host:
     name:   "INIT_CA_HOST"
     data:  []
 
 - name: "Creates directory"
-  file:
+  ansible.builtin.file:
     path: "{{path_ca}}"
     state: directory
     recurse: yes

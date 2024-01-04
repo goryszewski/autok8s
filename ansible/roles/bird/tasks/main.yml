@@ -5,7 +5,7 @@
     state: present
 
 - name: sysctl for bird2
-  copy:
+  ansible.builtin.copy:
     content: |
       net.ipv4.conf.all.forwarding=1
     dest: /etc/sysctl.d/98-bird2.conf
@@ -13,12 +13,12 @@
     - sysctl--system
 
 - name: "[bird] configuration file"
-  template:
+  ansible.builtin.template:
     src: "bird.conf.j2"
     dest: "/etc/bird/bird.conf"
 
 - name: "[{{hostname}}] DEBUG birdc"
-  include_tasks:
+  ansible.builtin.include_tasks:
     file: _run_debug.yml
   vars:
     _CMD: "{{item}}"
