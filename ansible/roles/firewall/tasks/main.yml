@@ -8,10 +8,15 @@
       dest: /etc/nftables.conf
     notify: load-new-config
 
-  - name: Run and Enable Service nftables
-    ansible.builtin.service:
-      name: nftables
-      enabled: yes
-      state: started
+  - name: Copy file to nftable.service
+    ansible.builtin.template:
+      src: nftable.service
+      dest: /etc/systemd/system/nftable.service
 
+  - name: Enable service nftables
+    ansible.builtin.systemd:
+      name: nftables
+      enabled: true
+      daemon_reload: true
+      state: started
   when: "'firewall' in hostvars[inventory_hostname]"

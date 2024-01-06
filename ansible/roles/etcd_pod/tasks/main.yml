@@ -23,7 +23,7 @@
    - etcd
 
 - name: "[ETCD POD] - Creates directory /etc/kubernetes/manifests"
-  file:
+  ansible.builtin.file:
     path: "/etc/kubernetes/manifests"
     state: directory
     owner: root
@@ -31,7 +31,7 @@
     mode: '0700'
 
 - name: "[ETCD POD] - Creates directory /etc/etcd"
-  file:
+  ansible.builtin.file:
     path: /etc/etcd
     state: directory
     owner: root
@@ -57,7 +57,7 @@
   delay: 5
 
 - name: "[ETCD POD][{{ hostname }}] - DEBUG ETCD"
-  include_tasks:
+  ansible.builtin.include_tasks:
     file: ./_share/_run_debug.yml
   vars:
     _CMD: "ETCDCTL_API=3 etcdctl --write-out=table --endpoints={{ etcd['members'] }} {{ item }} --cacert=/etc/etcd/ssl/ETCD_CA.pem --cert=/etc/etcd/ssl/check_health.pem --key=/etc/etcd/ssl/check_health.key"

@@ -1,7 +1,7 @@
 ---
 # tasks file for calico
 - name: Creates directory
-  file:
+  ansible.builtin.file:
     path: "{{item}}"
     state: directory
     owner: root
@@ -28,7 +28,7 @@
     - touchcni.changed
 
 - name: "KubeConfig calico-cni"
-  include_tasks:
+  ansible.builtin.include_tasks:
     file: ./_share/_.kubeconfig.yml
   vars:
     _name: "{{element._name}}"
