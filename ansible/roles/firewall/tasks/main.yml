@@ -9,7 +9,7 @@
     notify: load-new-config
 
   - name: Copy file to nftable.service
-    ansible.builtin.template:
+    ansible.builtin.copy:
       src: nftable.service
       dest: /etc/systemd/system/nftable.service
 

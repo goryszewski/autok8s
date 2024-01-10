@@ -1,6 +1,6 @@
 
 {% for host in groups['haproxy'] %}
-nameserver {{host}}
+nameserver {{  hostvars[host]['ansible_host']  }}
 {% endfor %}
 
 {% for domain in domains %}

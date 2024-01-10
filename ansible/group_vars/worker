@@ -1,7 +1,7 @@
 certs:
   worker_1: {ca: "Kubernetes CA" , path: "/etc/kubernetes/pki" , name: "node_{{hostname}}" , common_name: "system:node:{{hostname}}",organization_name: "system:nodes" ,
-    san: ["DNS:{{hostname}}.{{domain}}","DNS:{{hostname}}","IP:{{inventory_hostname}}"]}
+    san: ["DNS:{{hostname}}.{{domain}}","DNS:{{hostname}}","IP:{{ hostvars[inventory_hostname]['ansible_host'] }}"]}
   worker_2: {ca: "Kubernetes CA" , path: "/etc/kubernetes/pki" , name: "kube-proxy" , common_name: "system:kube-proxy",organization_name: "system:node-proxier",
-    san: ["DNS:{{hostname}}.{{domain}}","DNS:{{hostname}}","IP:{{inventory_hostname}}"]}
+    san: ["DNS:{{hostname}}.{{domain}}","DNS:{{hostname}}","IP:{{ hostvars[inventory_hostname]['ansible_host'] }}"]}
   worker_3: {ca: "Kubernetes CA" , path: "/etc/kubernetes/pki" , name: 'calico-cni', common_name: 'calico-cni',organization_name: 'calico-cni',
-    san: ["DNS:{{hostname}}.{{domain}}","DNS:{{hostname}}","IP:{{inventory_hostname}}"]}
+    san: ["DNS:{{hostname}}.{{domain}}","DNS:{{hostname}}","IP:{{ hostvars[inventory_hostname]['ansible_host'] }}"]}

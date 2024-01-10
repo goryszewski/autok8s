@@ -12,7 +12,7 @@ log syslog all;
 
 # Set router ID. It is a unique identification of your router, usually one of
 # IPv4 addresses of the router. It is recommended to configure it explicitly.
-router id {{inventory_hostname}};
+router id {{ hostvars[inventory_hostname]['ansible_host'] }};
 
 # Turn on global debugging of all protocols (all messages or just selected classes)
 # debug protocols all;
@@ -142,8 +142,8 @@ protocol static {
 {% for host in groups['exabgp'] %}
 protocol bgp exabgp_{{host|replace(".","_")}} {
         description "auto_k8s_{{host|replace(".","_")}}_exabgp";
-        local {{inventory_hostname}} as {{AS}};
-        neighbor {{host}} as {{AS}};
+        local {{ hostvars[inventory_hostname]['ansible_host'] }} as {{AS}};
+        neighbor {{ hostvars[host]['ansible_host'] }} as {{AS}};
         hold time 90;           # Default is 240
 #
         ipv4 {                  # regular IPv4 unicast (1/1)
@@ -158,8 +158,8 @@ protocol bgp exabgp_{{host|replace(".","_")}} {
 {% if host != inventory_hostname %}
 protocol bgp uplink_{{host|replace(".","_")}} {
        description "auto_k8s_{{host|replace(".","_")}}_bird";
-       local {{inventory_hostname}} as {{AS}};
-       neighbor {{host}} as {{AS}};
+       local {{ hostvars[inventory_hostname]['ansible_host'] }} as {{AS}};
+       neighbor {{ hostvars[host]['ansible_host'] }} as {{AS}};
        hold time 90;           # Default is 240
        password "secret";      # Password used for MD5 authentication
 #

@@ -5,3 +5,5 @@
  dpkg-reconfigure openssh-server
  rm /etc/machine-id
  systemd-machine-id-setup
+
+ apt update

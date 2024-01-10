@@ -9,6 +9,8 @@ HOSTS={"master01" : { memoryMB: "4096" , "tags" : ["nodeK8S","controlplane","ini
 	"haproxy01" : { "tags" : ["bgp","haproxy","master"] , memoryMB: "2048"},\
 	"haproxy02" : { "tags" : ["bgp","haproxy"] , memoryMB: "2048"}, \
 	"syslog" : { "tags" : ["syslog"] , memoryMB: "2048"}, \
+	"vault01" : { "tags" : ["vault"] , memoryMB: "2048"}, \
+	"vault02" : { "tags" : ["vault"] , memoryMB: "2048"}, \
 	"prometheus": {"tags" : ["monit"] , memoryMB: "2048"} \
  }
 
@@ -18,7 +20,7 @@ Terraform_VARS= -var-file="debian12.tfvars"\
 
 inventory=-i ./scripts/libvirt_inventory.py
 
-extra-vars="domain=$(CONF_domain) global_repo=repo.mgmt.autok8s.ext calico_version=3.26.0 calico_version_cni=3.20.6 k8s_version=1.27.3 ENCRYPTION_KEY=rfjKhlyYRN9WNr026VIKRaRrPZ2GEzqrU3ry2SvDIvs="
+extra-vars="domain=$(CONF_domain) global_repo=repo.mgmt.autok8s.ext calico_version=3.26.0 calico_version_cni=3.20.6 k8s_version=1.28.5 ENCRYPTION_KEY=rfjKhlyYRN9WNr026VIKRaRrPZ2GEzqrU3ry2SvDIvs="
 
 #end config
 
