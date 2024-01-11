@@ -2,21 +2,28 @@
 # tasks file for vault
 
 - name: Add repositories key
-  apt_key:
+  ansible.builtin.apt_key:
     url: https://apt.releases.hashicorp.com/gpg
     state: present
 
 
 - name: Add repositories
-  apt_repository:
+  ansible.builtin.apt_repository:
     repo: 'deb [arch=amd64] https://apt.releases.hashicorp.com bullseye main'
     state: present
     filename: 'hashicorp.list'
 
 
-- name: vault - Install
+- name: Install
   ansible.builtin.apt:
-    update_cache: yes
+    update_cache: true
     allow_change_held_packages: true
     pkg:
       - vault
+
+- name: Copy config
+  ansible.builtin.template:
+    src: config-vault.hcl
+    dest: /etc/vault.d/vault.hcl
+  notify:
+    - Restart-service-vault

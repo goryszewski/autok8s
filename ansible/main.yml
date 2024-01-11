@@ -1,81 +1,88 @@
-# ---
-# - name: Roles for syslog servers
-#   hosts: syslog
-#   gather_facts: false
-#   roles:
-#     - rsyslog
-#   tags: [LOG]
+---
+- name: Roles for syslog servers
+  hosts: syslog
+  gather_facts: false
+  roles:
+    - rsyslog
+  tags: [LOG]
 
-# - name: Roles for haproxy/lb servers
-#   hosts: haproxy
-#   gather_facts: false
-#   roles:
-#     - haproxy
-#     - keepalive
-#     - bind
-#     - bird
-#   tags: [LB, HA, BGP, DNS]
+- name: Roles for haproxy/lb servers
+  hosts: haproxy
+  gather_facts: false
+  roles:
+    - haproxy
+    - keepalive
+    - bind
+    - bird
+  tags: [LB, HA, BGP, DNS]
 
-# - name: Roles for all servers
-#   hosts: all
-#   gather_facts: true
-#   roles:
-#     - common
-#     - node_explorer
-#     - firewall
-#   tags: []
+- name: Roles for all servers
+  hosts: all
+  gather_facts: true
+  roles:
+    - common
+    - node_explorer
+    - firewall
+  tags: []
 
-# - name: Roles for exabgp servers
-#   hosts: exabgp
-#   gather_facts: false
-#   roles:
-#     - exabgp
-#   tags: [EXABGP]
+- name: Install Vault
+  hosts: vault
+  gather_facts: false
+  roles:
+    - vault
+  tags: [VAULT]
 
-# - name: Roles for CA servers
-#   hosts: controlplane
-#   gather_facts: false
-#   roles:
-#     - ca
-#   tags: [CA]
+- name: Roles for exabgp servers
+  hosts: exabgp
+  gather_facts: false
+  roles:
+    - exabgp
+  tags: [EXABGP]
 
-# - name: Roles for monit servers
-#   hosts: monit
-#   gather_facts: false
-#   roles:
-#     - crt
-#     - prometheus
-#     - grafana
-#     - nginx
-#   tags: [PROMETHEUS]
+- name: Roles for CA servers
+  hosts: controlplane
+  gather_facts: false
+  roles:
+    - ca
+  tags: [CA]
 
-# - name: Roles for nodeK8S servers
-#   hosts: nodeK8S
-#   gather_facts: false
-#   roles:
-#     - crt
-#     - containerd
-#     - kubelet
-#     - kube-proxy
-#     - calico
-#   tags: [nodeK8S]
+- name: Roles for monit servers
+  hosts: monit
+  gather_facts: false
+  roles:
+    - crt
+    - prometheus
+    - grafana
+    - nginx
+  tags: [PROMETHEUS]
 
-# - name: Roles for etcd servers
-#   hosts: etcd
-#   gather_facts: false
-#   roles:
-#     - etcd_pod
-#   tags: [ETCD]
+- name: Roles for nodeK8S servers
+  hosts: nodeK8S
+  gather_facts: false
+  roles:
+    - crt
+    - containerd
+    - kubelet
+    - kube-proxy
+    - calico
+  tags: [nodeK8S]
 
-# - name: Roles for controlplane servers
-#   hosts: controlplane
-#   gather_facts: false
-#   roles:
-#     - kube-apiserver_pod
-#     - kube-scheduler_pod
-#     - kube-controller-manager_pod
-#     - cloud-controller-manager
-#   tags: [CP]
+- name: Roles for etcd servers
+  hosts: etcd
+  gather_facts: false
+  roles:
+    - etcd_pod
+  tags: [ETCD]
+
+- name: Roles for controlplane servers
+  hosts: controlplane
+  gather_facts: false
+  roles:
+    - kube-apiserver_pod
+    - kube-scheduler_pod
+    - kube-controller-manager_pod
+    - cloud-controller-manager
+  tags: [CP]
 
 - name: Prep cluster
   hosts: controlplane
