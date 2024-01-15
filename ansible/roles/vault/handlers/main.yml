@@ -1,6 +1,3 @@
----
-# handlers file for vault
----
 # handlers file for vault
   - name: Restart-service-vault
     ansible.builtin.service:

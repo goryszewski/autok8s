@@ -25,5 +25,5 @@
   ansible.builtin.template:
     src: config-vault.hcl
     dest: /etc/vault.d/vault.hcl
-  notify:
-    - Restart-service-vault
+  # notify:
+  #   - Restart-service-vault

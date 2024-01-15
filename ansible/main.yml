@@ -10,10 +10,10 @@
   hosts: haproxy
   gather_facts: false
   roles:
-    - haproxy
-    - keepalive
     - bind
+    - keepalive
     - bird
+    - haproxy
   tags: [LB, HA, BGP, DNS]
 
 - name: Roles for all servers
@@ -23,14 +23,7 @@
     - common
     - node_explorer
     - firewall
-  tags: []
-
-- name: Install Vault
-  hosts: vault
-  gather_facts: false
-  roles:
-    - vault
-  tags: [VAULT]
+  tags: [ALL]
 
 - name: Roles for exabgp servers
   hosts: exabgp
@@ -45,6 +38,14 @@
   roles:
     - ca
   tags: [CA]
+
+- name: Install Vault
+  hosts: vault
+  gather_facts: false
+  roles:
+    - crt
+    - vault
+  tags: [VAULT]
 
 - name: Roles for monit servers
   hosts: monit

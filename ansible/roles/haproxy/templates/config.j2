@@ -25,14 +25,14 @@ defaults
         option  dontlognull
 
 {% for item in haproxy %}
-frontend public_{{item.name}}
-        bind *:{{item.port.public}}
-        default_backend backend_{{item.name}}
+frontend public_{{ item.name }}
+        bind *:{{ item.port.public }}
+        default_backend backend_{{ item.name }}
 
 backend backend_{{item.name}}
         balance roundrobin
 {% for host in groups[item.hosts] %}
-        server {{item.name}}-{{host}} {{host}}:{{item.port.target}} check
+        server {{ item.name }}-{{ host }} {{ hostvars[host]['ansible_host'] }}:{{ item.port.target }} check
 {% endfor %}
 
 {% endfor %}
