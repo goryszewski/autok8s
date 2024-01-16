@@ -25,5 +25,81 @@
   ansible.builtin.template:
     src: config-vault.hcl
     dest: /etc/vault.d/vault.hcl
-  # notify:
-  #   - Restart-service-vault
+  notify:
+    - Restart-service-vault
+
+- name: Enable service and started
+  ansible.builtin.systemd:
+    name: vault.service
+    enabled: true
+    daemon_reload: true
+    state: started
+
+##
+
+- name: vault GET status
+  ansible.builtin.uri:
+    url: "https://{{ inventory_hostname }}:8200/v1/sys/health"
+    ca_path: /etc/ssl/Kubernetes_CA.pem
+    method: GET
+    validate_certs: false
+    status_code: [429,200,501,503]
+    return_content: true
+  register: output_status_vault
+  # environment:
+  #   VAULT_ADDR: 'https://{{ inventory_hostname }}:8200'
+
+- name: status
+  debug:
+    var: output_status_vault['json']
+
+- name: vault init
+  ansible.builtin.uri:
+    url: "https://{{ inventory_hostname }}:8200/v1/sys/init"
+    ca_path: /etc/ssl/Kubernetes_CA.pem
+    method: POST
+    validate_certs: false
+    status_code: [429,200,501,503]
+    return_content: true
+    body_format: json
+    body:
+        "secret_shares": 1
+        "secret_threshold": 1
+
+  register: output_init_vault
+  when:  output_status_vault['json']['initialized'] == false
+
+- name: status
+  debug:
+    var: output_init_vault
+  when:  output_status_vault['json']['initialized'] == false
+
+- name: unseal
+  ansible.builtin.uri:
+    url: "https://{{ inventory_hostname }}:8200/v1/sys/unseal"
+    ca_path: /etc/ssl/Kubernetes_CA.pem
+    method: POST
+    validate_certs: false
+    status_code: [429,200,501,400]
+    return_content: true
+    body_format: json
+    body:
+        "key": "{{item}}"
+  loop: "{{output_init_vault['json']['keys']|list}}"
+
+- name: vault GET status  2
+  ansible.builtin.uri:
+    url: "https://{{ inventory_hostname }}:8200/v1/sys/health"
+    ca_path: /etc/ssl/Kubernetes_CA.pem
+    method: GET
+    validate_certs: false
+    status_code: [429,200,501]
+    return_content: true
+  register: output_status_vault
+
+- name: status  2
+  debug:
+    var: output_status_vault['json']
+
+#doto save output keys and token
+# problem cluster init

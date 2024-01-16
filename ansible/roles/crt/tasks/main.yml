@@ -13,5 +13,6 @@
     _key_usage: "{{item.value.keyUsage|default(['keyCertSign','keyEncipherment'])}}"
     _extendedKeyUsage: "{{item.value.extendedKeyUsage|default(['serverAuth','clientAuth'])}}"
     _ca: "{{item.value.ca}}"
+    _owner: "{{item.value.owner|default('root')}}"
   loop: "{{ certs | dict2items }}"
   when: certs is defined

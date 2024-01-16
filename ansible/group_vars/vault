@@ -1,6 +1,13 @@
 certs:
-  vault: {ca: "Kubernetes CA" , path: "/etc/ssl" , name: "node_{{hostname}}" , common_name: "vault:node:{{hostname}}",organization_name: "vault:nodes" ,
-    san: ["DNS:{{hostname}}.{{domain}}","DNS:{{hostname}}","IP:{{ hostvars[inventory_hostname]['ansible_host'] }}"]}
+  vault:
+    ca: "Kubernetes CA"
+    path: "/etc/ssl"
+    name: "node_{{hostname}}"
+    common_name: "vault:node:{{hostname}}"
+    organization_name: "vault:nodes"
+    san: ["DNS:{{hostname}}.{{domain}}","DNS:{{hostname}}","IP:{{ hostvars[inventory_hostname]['ansible_host'] }}"]
+    owner: vault
+
 firewall:
   vault_1:
     port: 8200

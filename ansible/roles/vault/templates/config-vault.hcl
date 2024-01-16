@@ -5,9 +5,9 @@ ui                      = true
 listener "tcp" {
    address              = "0.0.0.0:8200"
    cluster_addr         = "0.0.0.0:8201"
-   tls_client_ca_file   = "/etc/kubernetes/pki/Kubernetes_CA.pem"
-   tls_cert_file        = "/etc/kubernetes/pki/node_{{hostname}}.pem"
-   tls_key_file         = "/etc/kubernetes/pki/node_{{hostname}}.key"
+   tls_client_ca_file   = "/etc/ssl/Kubernetes_CA.pem"
+   tls_cert_file        = "/etc/ssl/node_{{hostname}}.pem"
+   tls_key_file         = "/etc/ssl/node_{{hostname}}.key"
    tls_disable          = false
 }
 

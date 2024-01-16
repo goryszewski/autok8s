@@ -9,6 +9,11 @@
   community.crypto.openssl_privatekey:
     path: "{{ _path_key }}"
 
+- name: "Manage owner private key for {{_common_name}}"
+  ansible.builtin.file:
+    owner: "{{ _owner }}"
+    path: "{{ _path_key }}"
+
 - name: Check whether certificate exists for {{_common_name}}
   stat:
     path: "{{_path_crt}}"
@@ -61,7 +66,7 @@
   delegate_to: "{{groups['init'][0]}}"
 
 - name: Write certificate file for {{_common_name}}
-  copy:
+  ansible.builtin.copy:
     dest: "{{_path_crt}}"
     content: "{{ certificate.certificate }}"
   when: certificate is changed
@@ -73,6 +78,19 @@
   delegate_to: "{{groups['init'][0]}}"
 
 - name: Write ca
-  copy:
+  ansible.builtin.copy:
     dest: "{{ _path }}/{{_ca|replace(' ','_')}}.pem"
     content: "{{ tmp_cert['content']|b64decode  }}"
+
+- name: Write ca trust
+  ansible.builtin.copy:
+    dest: "/usr/local/share/ca-certificates/{{_ca|replace(' ','_')}}.crt"
+    content: "{{ tmp_cert['content']|b64decode  }}"
+
+- name: apply ca
+  ansible.builtin.command: update-ca-certificates
+  register: output_apply
+
+- name: debug
+  debug:
+    var: output_apply
