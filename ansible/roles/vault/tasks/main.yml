@@ -37,69 +37,161 @@
 
 ##
 
-- name: vault GET status
-  ansible.builtin.uri:
-    url: "https://{{ inventory_hostname }}:8200/v1/sys/health"
-    ca_path: /etc/ssl/Kubernetes_CA.pem
-    method: GET
-    validate_certs: false
-    status_code: [429,200,501,503]
-    return_content: true
-  register: output_status_vault
-  # environment:
-  #   VAULT_ADDR: 'https://{{ inventory_hostname }}:8200'
 
-- name: status
-  debug:
-    var: output_status_vault['json']
 
-- name: vault init
+- name: "Add dumy Vault host"
+  ansible.builtin.add_host:
+    name: "INIT_Vault_HOST"
+    keys: []
+    root_token: false
+  changed_when: false
+
+- name: Block load secret
+  block:
+  - name: Check file
+    stat:
+      path: "/root/.secret"
+    register: register_secret
+
+  - name: Cat file
+    shell: "cat /root/.secret"
+    when: register_secret.stat.exists
+    register: data
+
+  - name: set fact vault root_token
+    set_fact:
+      "root_token": "{{ data['stdout'] }}"
+    delegate_to: "INIT_Vault_HOST"
+    delegate_facts: True
+    when: register_secret.stat.exists
+
+  delegate_to: '{{ groups.vault[0] }}'
+  run_once: true
+
+- name: GET status initialized
   ansible.builtin.uri:
     url: "https://{{ inventory_hostname }}:8200/v1/sys/init"
     ca_path: /etc/ssl/Kubernetes_CA.pem
-    method: POST
+    method: GET
     validate_certs: false
     status_code: [429,200,501,503]
     return_content: true
-    body_format: json
-    body:
-        "secret_shares": 1
-        "secret_threshold": 1
+  register: output_status_initialized
 
-  register: output_init_vault
-  when:  output_status_vault['json']['initialized'] == false
+- name: Status is false
+  block:
+    - name: B01:debug
+      debug:
+        var:  output_status_initialized['json']
 
-- name: status
-  debug:
-    var: output_init_vault
-  when:  output_status_vault['json']['initialized'] == false
+    - name: vault init
+      ansible.builtin.uri:
+        url: "https://{{ inventory_hostname }}:8200/v1/sys/init"
+        ca_path: /etc/ssl/Kubernetes_CA.pem
+        method: POST
+        validate_certs: false
+        status_code: [429,200,501,503]
+        return_content: true
+        body_format: json
+        body:
+            "secret_shares": 1
+            "secret_threshold": 1
+      register: output_init_vault
 
-- name: unseal
-  ansible.builtin.uri:
-    url: "https://{{ inventory_hostname }}:8200/v1/sys/unseal"
-    ca_path: /etc/ssl/Kubernetes_CA.pem
-    method: POST
-    validate_certs: false
-    status_code: [429,200,501,400]
-    return_content: true
-    body_format: json
-    body:
-        "key": "{{item}}"
-  loop: "{{output_init_vault['json']['keys']|list}}"
+    - name: set fact vault keys
+      set_fact:
+        "keys": "{{ output_init_vault['json']['keys'] | default([]) }}"
+      delegate_to: "INIT_Vault_HOST"
+      delegate_facts: True
 
-- name: vault GET status  2
+    - name: set fact vault root_token
+      set_fact:
+        "root_token": "{{ output_init_vault['json']['root_token'] }}"
+      delegate_to: "INIT_Vault_HOST"
+      delegate_facts: True
+
+    - name: Save secret
+      template:
+        src: secret.j2
+        dest: "/root/.secret"
+
+    - name: Status output_init_vault
+      ansible.builtin.debug:
+        var: output_init_vault
+
+    - name: Unseal
+      ansible.builtin.uri:
+        url: "https://{{ inventory_hostname }}:8200/v1/sys/unseal"
+        ca_path: /etc/ssl/Kubernetes_CA.pem
+        method: POST
+        validate_certs: false
+        status_code: [429,200,501,400]
+        return_content: true
+        body_format: json
+        body:
+            "key": "{{item}}"
+      register: testUnseal
+      loop: "{{ hostvars['INIT_Vault_HOST']['keys'] }}"
+
+    - name: Make sure service has time to init
+      pause:
+        seconds: 20
+
+  when:  output_status_initialized['json']['initialized'] == false
+  delegate_to: '{{ groups.vault[0] }}'
+  run_once: true
+
+
+- name: Seated - prgetint status
   ansible.builtin.uri:
     url: "https://{{ inventory_hostname }}:8200/v1/sys/health"
     ca_path: /etc/ssl/Kubernetes_CA.pem
     method: GET
     validate_certs: false
-    status_code: [429,200,501]
+    status_code: [429,200,501,503]
     return_content: true
   register: output_status_vault
 
-- name: status  2
+- name: Seated - print status
   debug:
-    var: output_status_vault['json']
+    var: output_status_vault['json']['sealed']
 
-#doto save output keys and token
-# problem cluster init
+- name: sealed is true
+  block:
+  - name: Unseal
+    ansible.builtin.uri:
+      url: "https://{{ inventory_hostname }}:8200/v1/sys/unseal"
+      ca_path: /etc/ssl/Kubernetes_CA.pem
+      method: POST
+      validate_certs: false
+      status_code: [429,200,501,400]
+      return_content: true
+      body_format: json
+      body:
+          "key": "{{item}}"
+    register: testUnseal
+    loop: "{{ hostvars['INIT_Vault_HOST']['keys'] }}"
+
+  - name: Make sure service has time to init
+    pause:
+      seconds: 20
+  when:  output_status_vault['json']['sealed'] == true
+
+- name: Get config via root_token
+  block:
+  - name: GET status raft
+    ansible.builtin.uri:
+      url: "https://{{ inventory_hostname }}:8200/v1/sys/storage/raft/configuration"
+      ca_path: /etc/ssl/Kubernetes_CA.pem
+      method: GET
+      headers:
+        X-Vault-Token: "{{ hostvars['INIT_Vault_HOST']['root_token'] }}"
+      validate_certs: false
+      status_code: [429,200,501,503]
+      return_content: true
+    register: output_status_vault
+
+  - name: Status raft
+    ansible.builtin.debug:
+      var: output_status_vault
+  when: hostvars['INIT_Vault_HOST']['root_token'] is not false

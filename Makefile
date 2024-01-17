@@ -56,6 +56,10 @@ ansible_k8s_kubeadm:
 
 ansible: ansible_k8s
 
+vault:
+	@echo "[MAKE] Vault"
+	cd ./ansible && ansible-playbook vault.yaml $(inventory) --extra-vars $(extra-vars)  --skip-tags SKIP
+
 ansible_buffer_clean:
 	@echo "[MAKE] Ansible buffer clean"
 
