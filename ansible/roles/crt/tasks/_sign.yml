@@ -12,6 +12,7 @@
 - name: "Manage owner private key for {{_common_name}}"
   ansible.builtin.file:
     owner: "{{ _owner }}"
+    mode: "{{ _mode }}"
     path: "{{ _path_key }}"
 
 - name: Check whether certificate exists for {{_common_name}}

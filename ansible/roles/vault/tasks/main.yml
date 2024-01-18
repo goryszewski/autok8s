@@ -47,50 +47,72 @@
   changed_when: false
 
 - name: Block load secret
-  block:
-  - name: Check file
-    stat:
-      path: "/root/.secret"
-    register: register_secret
-
-  - name: Cat file
-    shell: "cat /root/.secret"
-    when: register_secret.stat.exists
-    register: data
-
-  - name: set fact vault root_token
-    set_fact:
-      "root_token": "{{ data['stdout'] }}"
-    delegate_to: "INIT_Vault_HOST"
-    delegate_facts: True
-    when: register_secret.stat.exists
-
   delegate_to: '{{ groups.vault[0] }}'
   run_once: true
+  block:
+    - name: Check file
+      ansible.builtin.stat:
+        path: "/root/.secret"
+      register: register_secret
+
+    - name: Cat file
+      ansible.builtin.shell: "cat /root/.secret"
+      when: register_secret.stat.exists
+      register: data
+
+    - name: Set fact vault root_token
+      ansible.builtin.set_fact:
+        "root_token": "{{ data['stdout'] }}"
+      delegate_to: "INIT_Vault_HOST"
+      delegate_facts: true
+      when: register_secret.stat.exists
+
+    - name: Slurp hosts file
+      ansible.builtin.slurp:
+        src: /root/.secret1
+      register: slurpfile
+      when: register_secret.stat.exists
+
+    - name: Parse
+      ansible.builtin.set_fact:
+        "keys": "{{ slurpfile['content'] | b64decode | regex_replace(\"'\", '\"') }}"
+      delegate_to: "INIT_Vault_HOST"
+      delegate_facts: true
+      when: register_secret.stat.exists
+
+    - name: Prep
+      ansible.builtin.set_fact:
+        "keys": "{{ hostvars['INIT_Vault_HOST']['keys']['keys'] }}"
+      delegate_to: "INIT_Vault_HOST"
+      delegate_facts: true
+      when: register_secret.stat.exists
 
 - name: GET status initialized
   ansible.builtin.uri:
-    url: "https://{{ inventory_hostname }}:8200/v1/sys/init"
+    url: "https://127.0.0.1:8200/v1/sys/init"
     ca_path: /etc/ssl/Kubernetes_CA.pem
     method: GET
     validate_certs: false
-    status_code: [429,200,501,503]
+    status_code: [429, 200, 501, 503]
     return_content: true
   register: output_status_initialized
 
 - name: Status is false
+  when: output_status_initialized['json']['initialized'] == false
+  delegate_to: '{{ groups.vault[0] }}'
+  run_once: true
   block:
     - name: B01:debug
-      debug:
+      ansible.builtin.debug:
         var:  output_status_initialized['json']
 
     - name: vault init
       ansible.builtin.uri:
-        url: "https://{{ inventory_hostname }}:8200/v1/sys/init"
+        url: "https://127.0.0.1:8200/v1/sys/init"
         ca_path: /etc/ssl/Kubernetes_CA.pem
         method: POST
         validate_certs: false
-        status_code: [429,200,501,503]
+        status_code: [429, 200, 501, 503]
         return_content: true
         body_format: json
         body:
@@ -102,18 +124,23 @@
       set_fact:
         "keys": "{{ output_init_vault['json']['keys'] | default([]) }}"
       delegate_to: "INIT_Vault_HOST"
-      delegate_facts: True
+      delegate_facts: true
 
     - name: set fact vault root_token
       set_fact:
         "root_token": "{{ output_init_vault['json']['root_token'] }}"
       delegate_to: "INIT_Vault_HOST"
-      delegate_facts: True
+      delegate_facts: true
 
     - name: Save secret
       template:
         src: secret.j2
         dest: "/root/.secret"
+
+    - name: Save secret2
+      template:
+        src: payload.j2
+        dest: "/root/.secret1"
 
     - name: Status output_init_vault
       ansible.builtin.debug:
@@ -121,11 +148,11 @@
 
     - name: Unseal
       ansible.builtin.uri:
-        url: "https://{{ inventory_hostname }}:8200/v1/sys/unseal"
+        url: "https://127.0.0.1:8200/v1/sys/unseal"
         ca_path: /etc/ssl/Kubernetes_CA.pem
         method: POST
         validate_certs: false
-        status_code: [429,200,501,400]
+        status_code: [429, 200, 501, 503]
         return_content: true
         body_format: json
         body:
@@ -134,21 +161,16 @@
       loop: "{{ hostvars['INIT_Vault_HOST']['keys'] }}"
 
     - name: Make sure service has time to init
-      pause:
+      ansible.builtin.pause:
         seconds: 20
-
-  when:  output_status_initialized['json']['initialized'] == false
-  delegate_to: '{{ groups.vault[0] }}'
-  run_once: true
-
 
 - name: Seated - prgetint status
   ansible.builtin.uri:
-    url: "https://{{ inventory_hostname }}:8200/v1/sys/health"
+    url: "https://127.0.0.1:8200/v1/sys/health"
     ca_path: /etc/ssl/Kubernetes_CA.pem
     method: GET
     validate_certs: false
-    status_code: [429,200,501,503]
+    status_code: [429, 200, 501, 503]
     return_content: true
   register: output_status_vault
 
@@ -157,41 +179,42 @@
     var: output_status_vault['json']['sealed']
 
 - name: sealed is true
+  when: output_status_vault['json']['sealed'] == true
   block:
-  - name: Unseal
-    ansible.builtin.uri:
-      url: "https://{{ inventory_hostname }}:8200/v1/sys/unseal"
-      ca_path: /etc/ssl/Kubernetes_CA.pem
-      method: POST
-      validate_certs: false
-      status_code: [429,200,501,400]
-      return_content: true
-      body_format: json
-      body:
-          "key": "{{item}}"
-    register: testUnseal
-    loop: "{{ hostvars['INIT_Vault_HOST']['keys'] }}"
+    - name: Unseal
+      ansible.builtin.uri:
+        url: "https://127.0.0.1:8200/v1/sys/unseal"
+        ca_path: /etc/ssl/Kubernetes_CA.pem
+        method: POST
+        validate_certs: false
+        status_code: [429, 200, 501, 503]
+        return_content: true
+        body_format: json
+        body:
+          "key": "{{ item }}"
+      register: testUnseal
+      loop: "{{ hostvars['INIT_Vault_HOST']['keys'] }}"
 
-  - name: Make sure service has time to init
-    pause:
-      seconds: 20
-  when:  output_status_vault['json']['sealed'] == true
+    - name: Make sure service has time to init
+      ansible.builtin.pause:
+        seconds: 20
+
 
 - name: Get config via root_token
-  block:
-  - name: GET status raft
-    ansible.builtin.uri:
-      url: "https://{{ inventory_hostname }}:8200/v1/sys/storage/raft/configuration"
-      ca_path: /etc/ssl/Kubernetes_CA.pem
-      method: GET
-      headers:
-        X-Vault-Token: "{{ hostvars['INIT_Vault_HOST']['root_token'] }}"
-      validate_certs: false
-      status_code: [429,200,501,503]
-      return_content: true
-    register: output_status_vault
-
-  - name: Status raft
-    ansible.builtin.debug:
-      var: output_status_vault
   when: hostvars['INIT_Vault_HOST']['root_token'] is not false
+  block:
+    - name: GET status raft
+      ansible.builtin.uri:
+        url: "https://127.0.0.1:8200/v1/sys/storage/raft/configuration"
+        ca_path: /etc/ssl/Kubernetes_CA.pem
+        method: GET
+        headers:
+          X-Vault-Token: "{{ hostvars['INIT_Vault_HOST']['root_token'] }}"
+        validate_certs: false
+        status_code: [429, 200, 501, 503]
+        return_content: true
+      register: output_status_vault
+
+    - name: Status raft
+      ansible.builtin.debug:
+        var: output_status_vault

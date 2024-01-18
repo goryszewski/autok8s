@@ -6,7 +6,8 @@ certs:
     common_name: "vault:node:{{hostname}}"
     organization_name: "vault:nodes"
     san: ["DNS:{{hostname}}.{{domain}}","DNS:{{hostname}}","IP:{{ hostvars[inventory_hostname]['ansible_host'] }}"]
-    owner: vault
+    owner: root
+    mode: 644
 
 firewall:
   vault_1:

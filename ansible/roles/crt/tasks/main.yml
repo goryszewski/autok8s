@@ -14,5 +14,6 @@
     _extendedKeyUsage: "{{item.value.extendedKeyUsage|default(['serverAuth','clientAuth'])}}"
     _ca: "{{item.value.ca}}"
     _owner: "{{item.value.owner|default('root')}}"
+    _mode: "{{item.value.mode|default('600')}}"
   loop: "{{ certs | dict2items }}"
   when: certs is defined
