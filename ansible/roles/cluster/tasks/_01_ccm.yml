@@ -1,7 +1,7 @@
 - name: Copy ccm
   ansible.builtin.copy:
     src: ccm.yml
-    dest: /etc/kubernetes/config/ccm.yml
+    dest: /etc/kubernetes/config/ccm.yaml
     owner: root
     group: root
     mode: '0644'

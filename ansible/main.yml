@@ -82,7 +82,6 @@
     - kube-apiserver_pod
     - kube-scheduler_pod
     - kube-controller-manager_pod
-    - cloud-controller-manager
   tags: [CP]
 
 - name: Prep cluster
