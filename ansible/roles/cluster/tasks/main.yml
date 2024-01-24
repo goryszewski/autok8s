@@ -47,6 +47,7 @@
   retries: 20
   delay: 5
 
+- ansible.builtin.import_tasks: _01_ccm.yml
 - ansible.builtin.import_tasks: _02_k8s.yml
 - ansible.builtin.import_tasks: _03_calico.yml
 

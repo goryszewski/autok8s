@@ -1,0 +1,14 @@
+- name: Copy ccm
+  ansible.builtin.copy:
+    src: ccm.yml
+    dest: /etc/kubernetes/config/ccm.yml
+    owner: root
+    group: root
+    mode: '0644'
+    backup: yes
+
+
+- name: kubectl apply crds.yaml
+  ansible.builtin.command: kubectl apply -f /etc/kubernetes/config/ccm.yaml
+  ignore_errors: true
+  run_once: true

@@ -2,7 +2,7 @@ cluster_cidr: 10.10.0.0/16 # pod_cidr pod-cidr=10.200.${i}.0/24
 network_servers: 10.17.3.0/24 # node_network  10.240.0.0/24
 service_cluster_ip_range: 10.32.0.0/24 # address range (10.32.0.0/24) reserved for internal cluster
 
-# cloud_provider: autok8s
+cloud_provider: autok8s
 
 callico_yaml: https://raw.githubusercontent.com/projectcalico/calico/v3.25.0/manifests/calico.yaml
 http: 30080
