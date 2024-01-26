@@ -68,17 +68,11 @@
     - calico
   tags: [nodeK8S]
 
-- name: Roles for etcd servers
-  hosts: etcd
-  gather_facts: false
-  roles:
-    - etcd_pod
-  tags: [ETCD]
-
 - name: Roles for controlplane servers
   hosts: controlplane
   gather_facts: false
   roles:
+    - etcd_pod
     - kube-apiserver_pod
     - kube-scheduler_pod
     - kube-controller-manager_pod

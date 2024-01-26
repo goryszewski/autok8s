@@ -6,6 +6,10 @@ ca:
   - { _common_name: "ca_typha" , _ca_sign: "Intermidiate CA"}
 
 certs:
+  etcd_1: {ca: "ETCD CA" , path: "/etc/etcd/ssl" , name: "certificate-etcd" , common_name: "system:node:{{hostname}}",organization_name: "system:nodes" ,
+    san: ["DNS:{{hostname}}.{{domain}}","DNS:{{hostname}}","IP:{{ hostvars[inventory_hostname]['ansible_host'] }}","IP:127.0.0.1"]}
+  etcd_2: {ca: "ETCD CA" , path: "/etc/etcd/ssl" , name: "check_health" , common_name: "system:node:{{hostname}}",organization_name: "system:nodes" ,
+    san: ["DNS:{{hostname}}.{{domain}}","DNS:{{hostname}}","IP:{{ hostvars[inventory_hostname]['ansible_host'] }}","IP:127.0.0.1"]}
   cp_1: {ca: "ETCD CA" , path: "/etc/kubernetes/pki" , name: "kube-apiserver-client-etcd" ,
     common_name: "kube-apiserver-client-etcd", organization_name: "etcd"}
   cp_2: {ca: "Kubernetes CA" , path: "/etc/kubernetes/pki" , name: "node_{{hostname}}" , common_name: "system:node:{{hostname}}",organization_name: "system:nodes" ,

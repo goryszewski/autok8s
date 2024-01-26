@@ -2,8 +2,7 @@
 CONF_domain=autok8s.xyz
 HOSTS={"master01" : { memoryMB: "4096" , "tags" : ["nodeK8S","controlplane","init"] },\
 	"master02" : { memoryMB: "4096" , "tags" : ["nodeK8S","controlplane"] },\
-	"etcd01"   : { memoryMB: "4096" , "tags" : ["nodeK8S","etcd"] },\
-	"etcd02"   : { memoryMB: "4096" , "tags" : ["nodeK8S","etcd"] },\
+	"master03"   : { memoryMB: "4096" , "tags" : ["nodeK8S","controlplane"] },\
 	"worker01" : { "tags" : ["nodeK8S","worker"]  , memoryMB: "8192"}, \
 	"worker02" : { "tags" : ["nodeK8S","worker"]  , memoryMB: "8192"}, \
 	"haproxy01" : { "tags" : ["bgp","haproxy","master"] , memoryMB: "2048"},\
@@ -55,6 +54,10 @@ ansible_k8s_kubeadm:
 	cd ./ansible && ansible-playbook k8s_kubeadm.yml $(inventory) --extra-vars $(extra-vars) --skip-tags SKIP
 
 ansible: ansible_k8s
+
+cluster:
+	@echo "[MAKE] Ansible Kubernetes"
+	cd ./ansible && ansible-playbook main.yml $(inventory) --extra-vars $(extra-vars)  --tags CLUSTER
 
 vault:
 	@echo "[MAKE] Vault"
