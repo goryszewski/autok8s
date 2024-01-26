@@ -1,8 +1,9 @@
 #VAR
 CONF_domain=autok8s.xyz
-HOSTS={"master01" : { memoryMB: "4096" , "tags" : ["nodeK8S","controlplane","init"] },\
-	"master02" : { memoryMB: "4096" , "tags" : ["nodeK8S","controlplane"] },\
-	"master03"   : { memoryMB: "4096" , "tags" : ["nodeK8S","controlplane"] },\
+HOSTS={\
+	"master01" : { memoryMB: "4096" , "tags" : ["etcd","nodeK8S","controlplane","init"] },\
+	"master02" : { memoryMB: "4096" , "tags" : ["etcd","nodeK8S","controlplane"] },\
+	"master03" : { memoryMB: "4096" , "tags" : ["etcd","nodeK8S","controlplane"] },\
 	"worker01" : { "tags" : ["nodeK8S","worker"]  , memoryMB: "8192"}, \
 	"worker02" : { "tags" : ["nodeK8S","worker"]  , memoryMB: "8192"}, \
 	"haproxy01" : { "tags" : ["bgp","haproxy","master"] , memoryMB: "2048"},\
