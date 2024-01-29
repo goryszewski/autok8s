@@ -1,0 +1,35 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    component: cloud-controller-manager
+    tier: control-plane
+  name: cloud-controller-manager
+  namespace: kube-system
+spec:
+  serviceAccountName: cloud-controller-manager
+  hostNetwork: true
+  containers:
+    - name: cloud-controller-manager
+      imagePullPolicy: Always
+      image: repo.mgmt.autok8s.ext:5000/cloud-controller-manager:latest
+      command:
+        - /app/cloud-controller-manager
+      args:
+        - --cloud-provider=autok8s
+        - --v=5
+        - --kubeconfig
+        - /root/.kube/config
+      volumeMounts:
+        - mountPath: /root/.kube
+          name: config
+          readOnly: true
+  tolerations:
+    - key: node.cloudprovider.kubernetes.io/uninitialized
+      value: "true"
+      effect: NoSchedule
+  volumes:
+    - hostPath:
+        path: /root/.kube
+        type: DirectoryOrCreate
+      name: config

@@ -1,0 +1,16 @@
+---
+
+- name: Copy cloud-controller-manager-sa-role
+  ansible.builtin.template:
+    src: cloud-controller-manager-sa-role.yml
+    dest: /etc/kubernetes/config/cloud-controller-manager-sa-role.yml
+
+- name: kubectl apply cloud-controller-manager-sa-role
+  ansible.builtin.command: kubectl apply -f /etc/kubernetes/config/cloud-controller-manager-sa-role.yml
+  ignore_errors: true
+  run_once: true
+
+- name: Manifest ccm
+  ansible.builtin.template:
+    src: manifest.yml.j2
+    dest: /etc/kubernetes/manifests/cloud-controller-manager.yml
