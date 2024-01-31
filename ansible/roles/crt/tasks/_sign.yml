@@ -91,6 +91,8 @@
 - name: apply ca
   ansible.builtin.command: update-ca-certificates
   register: output_apply
+  async: 45
+  poll: 0
 
 - name: debug
   debug:
