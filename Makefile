@@ -14,13 +14,21 @@ HOSTS={\
 	"prometheus": {"tags" : ["monit"] , memoryMB: "2048"} \
  }
 
+ HOSTS_test={\
+	"master01" : { memoryMB: "4096" , "tags" : ["etcd","nodeK8S","controlplane","init"] },\
+	"master02" : { memoryMB: "4096" , "tags" : ["etcd","nodeK8S","controlplane"] },\
+	"syslog" : { "tags" : ["syslog"] , memoryMB: "2048"}, \
+	"worker01" : { "tags" : ["nodeK8S","worker"]  , memoryMB: "8192"}, \
+	"haproxy01" : { "tags" : ["bgp","haproxy","master"] , memoryMB: "2048"},\
+ }
+
 Terraform_VARS= -var-file="debian12.tfvars"\
 				-var 'domain=$(CONF_domain)' \
-				-var 'hosts=$(HOSTS)'
+				-var 'hosts=$(HOSTS_test)'
 
 inventory=-i ./scripts/libvirt_inventory.py
 
-extra-vars="domain=$(CONF_domain) global_repo=repo.mgmt.autok8s.ext calico_version=3.26.0 calico_version_cni=3.20.6 k8s_version=1.29.1 ENCRYPTION_KEY=rfjKhlyYRN9WNr026VIKRaRrPZ2GEzqrU3ry2SvDIvs="
+extra-vars="domain=$(CONF_domain) global_repo=repo.mgmt.autok8s.ext calico_version=3.26.0 calico_version_cni=3.20.6 k8s_version=1.28.6 ENCRYPTION_KEY=rfjKhlyYRN9WNr026VIKRaRrPZ2GEzqrU3ry2SvDIvs="
 
 #end config
 

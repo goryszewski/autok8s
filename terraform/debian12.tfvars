@@ -1,1 +1,1 @@
-template = "/var/lib/libvirt/images/debian12.qcow2"
+template = "/var/lib/libvirt/images/deb12.qcow2"
