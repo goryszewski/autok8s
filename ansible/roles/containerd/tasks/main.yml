@@ -68,6 +68,12 @@
     pkg:
       - containerd.io=1.6.21-1
 
+- name: containerd - Creates directory - registry.k8s.io
+  ansible.builtin.file:
+    path: /etc/containerd/certs.d/registry.k8s.io/
+    state: directory
+    recurse: true
+
 - name: containerd - Creates directory - docker.io
   ansible.builtin.file:
     path: /etc/containerd/certs.d/docker.io/
@@ -80,7 +86,15 @@
     state: directory
     recurse: true
 
-- name: repo proxy
+- name: repo proxy registry.k8s.io
+  ansible.builtin.template:
+    src: gcp.toml
+    dest: "/etc/containerd/certs.d/registry.k8s.io/hosts.toml"
+  when: global_repo is defined
+  notify:
+    - Restart-service-containerd
+
+- name: repo proxy docker.io
   ansible.builtin.template:
     src: repo.toml
     dest: "/etc/containerd/certs.d/docker.io/hosts.toml"

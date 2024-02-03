@@ -16,15 +16,15 @@ HOSTS={\
 
  HOSTS_test={\
 	"master01" : { memoryMB: "4096" , "tags" : ["etcd","nodeK8S","controlplane","init"] },\
-	"master02" : { memoryMB: "4096" , "tags" : ["etcd","nodeK8S","controlplane"] },\
-	"syslog" : { "tags" : ["syslog"] , memoryMB: "2048"}, \
 	"worker01" : { "tags" : ["nodeK8S","worker"]  , memoryMB: "8192"}, \
 	"haproxy01" : { "tags" : ["bgp","haproxy","master"] , memoryMB: "2048"},\
  }
 
 Terraform_VARS= -var-file="debian12.tfvars"\
 				-var 'domain=$(CONF_domain)' \
-				-var 'hosts=$(HOSTS_test)'
+				-var 'hosts=$(HOSTS)'
+
+Terraform_VARS_Mini=-var-file="debian12.tfvars" -var 'domain=$(CONF_domain)' -var 'hosts=$(HOSTS_test)'
 
 inventory=-i ./scripts/libvirt_inventory.py
 
@@ -43,6 +43,10 @@ terraform_plan: terraform_init
 terraform_apply: terraform_plan
 	@echo "[MAKE] Terraform Apply"
 	cd ./terraform && terraform apply --auto-approve $(Terraform_VARS)
+
+terraform_mini: terraform_plan
+	@echo "[MAKE] Terraform Apply"
+	cd ./terraform && terraform apply --auto-approve $(Terraform_VARS_Mini)
 
 terraform_destroy: terraform_init
 	@echo "[MAKE] Terraform Destroy"
@@ -63,6 +67,10 @@ ansible_k8s_kubeadm:
 	cd ./ansible && ansible-playbook k8s_kubeadm.yml $(inventory) --extra-vars $(extra-vars) --skip-tags SKIP
 
 ansible: ansible_k8s
+
+ansible_mini:
+	@echo "[MAKE] Ansible Kubernetes Mini"
+	cd ./ansible && ansible-playbook main.yml $(inventory) --extra-vars $(extra-vars)  --skip-tags SKIP,LOG
 
 cluster:
 	@echo "[MAKE] Ansible Kubernetes"
