@@ -84,4 +84,4 @@
   gather_facts: false
   roles:
     - cluster
-  tags: [CLUSTER,SKIP]
+  tags: [CLUSTER]

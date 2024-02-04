@@ -67,3 +67,17 @@
   ignore_errors: true
   run_once: true
 # END RBAC
+
+# BEGIN RuntimeClass
+
+- name: Copy a file to RuntimeClass.yaml
+  ansible.builtin.copy:
+    src: RuntimeClass.yaml
+    dest: /etc/kubernetes/config/RuntimeClass.yaml
+
+
+- name: kubectl apply RuntimeClass.yaml
+  ansible.builtin.command: kubectl apply -f /etc/kubernetes/config/RuntimeClass.yaml
+  ignore_errors: true
+  run_once: true
+# END RuntimeClass
