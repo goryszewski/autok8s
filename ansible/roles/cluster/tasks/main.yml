@@ -7,20 +7,24 @@
   ignore_errors: true
   run_once: true
 
-- ansible.builtin.import_tasks: _02_k8s.yml
-- ansible.builtin.import_tasks: _03_calico.yml
 
-# post
+- name: Block fix skip reqiure
+  # tags: [SKIP]
+  block:
+    - ansible.builtin.import_tasks: _02_k8s.yml
+    - ansible.builtin.import_tasks: _03_calico.yml
 
-- ansible.builtin.import_tasks: 00_calico_dns.yml
-  delegate_to: "{{ groups.init[0] }}"
-  run_once: true
+    # post
+
+    - ansible.builtin.import_tasks: 00_calico_dns.yml
+      delegate_to: "{{ groups.init[0] }}"
+      run_once: true
 
 
-- ansible.builtin.import_tasks: 03_argocd.yml
-  delegate_to: "{{ groups.init[0] }}"
-  run_once: true
+    - ansible.builtin.import_tasks: 03_argocd.yml
+      delegate_to: "{{ groups.init[0] }}"
+      run_once: true
 
-- ansible.builtin.import_tasks: 04_deploy_app.yml
-  delegate_to: "{{ groups.init[0] }}"
-  run_once: true
+    - ansible.builtin.import_tasks: 04_deploy_app.yml
+      delegate_to: "{{ groups.init[0] }}"
+      run_once: true
