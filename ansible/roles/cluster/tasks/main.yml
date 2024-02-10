@@ -25,6 +25,6 @@
       delegate_to: "{{ groups.init[0] }}"
       run_once: true
 
-    # - ansible.builtin.import_tasks: 04_deploy_app.yml
-    #   delegate_to: "{{ groups.init[0] }}"
-    #   run_once: true
+    - ansible.builtin.import_tasks: 04_deploy_app.yml
+      delegate_to: "{{ groups.init[0] }}"
+      run_once: true

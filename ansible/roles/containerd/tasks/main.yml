@@ -45,7 +45,7 @@
 
 - name: Add repositories gvisor
   ansible.builtin.apt_repository:
-    repo: "deb [arch=amd64] https://storage.googleapis.com/gvisor/releases release main"
+    repo: "deb [arch=amd64] https://storage.googleapis.com/gvisor/releases {{ version['runsc'] }} main"
     state: present
     filename: "gvisor"
 
@@ -115,7 +115,7 @@
     update_cache: true
     allow_change_held_packages: true
     pkg:
-      - runsc
+      - runsc={{ version['runsc'] }}.0
 
 - name: gVisor - config
   ansible.builtin.copy:

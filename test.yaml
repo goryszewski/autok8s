@@ -1,55 +1,45 @@
 apiVersion: node.k8s.io/v1
 kind: RuntimeClass
 metadata:
-  # The name the RuntimeClass will be referenced by.
-  # RuntimeClass is a non-namespaced resource.
   name: gvisor
-# The name of the corresponding CRI configuration
 handler: runsc
-
 ---
 apiVersion: v1
 kind: Pod
 metadata:
-  namespace: argocd
-  name: nginxw
-  labels:
-    app.kubernetes.io/name: proxy
+  name: test
 spec:
   runtimeClassName: gvisor
   containers:
   - name: nginxw
     image: nginx:stable
-    ports:
-      - containerPort: 80
-        name: http-web-svc
 
-# ---
-# apiVersion: v1
-# kind: Service
-# metadata:
-#   name: nginxservice
-# spec:
-#   selector:
-#     app.kubernetes.io/name: proxy
-#   type: LoadBalancer
-#   ports:
-#   - name: name-of-service-port
-#     protocol: TCP
-#     port: 443
-#     targetPort: http-web-svc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginxservice
+spec:
+  selector:
+    app.kubernetes.io/name: proxy
+  type: LoadBalancer
+  ports:
+  - name: name-of-service-port
+    protocol: TCP
+    port: 443
+    targetPort: http-web-svc
 
-# ---
-# apiVersion: v1
-# kind: Service
-# metadata:
-#   name: nginx-service3
-# spec:
-#   selector:
-#     app.kubernetes.io/name: proxy
-#   type: LoadBalancer
-#   ports:
-#   - name: name-of-service-port
-#     protocol: TCP
-#     port: 443
-#     targetPort: http-web-svc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-service3
+spec:
+  selector:
+    app.kubernetes.io/name: proxy
+  type: LoadBalancer
+  ports:
+  - name: name-of-service-port
+    protocol: TCP
+    port: 443
+    targetPort: http-web-svc
