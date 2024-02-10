@@ -2,6 +2,7 @@ version:
   k8s_version: 1.28.6
   calico_version_cni: 3.20.6
   calico_version: 3.26.0
+  containerd: 1.7.13
 
 cluster_cidr: 10.10.0.0/16 # pod_cidr pod-cidr=10.200.${i}.0/24
 network_servers: 10.17.3.0/24 # node_network  10.240.0.0/24
