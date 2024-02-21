@@ -18,6 +18,11 @@
     mode: '0644'
     backup: yes
 
+- name: Download file metrics-server components.yaml
+  ansible.builtin.get_url:
+    url: https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
+    dest: /etc/kubernetes/config/
+
 - name: Kubectl apply
   ansible.builtin.command: "kubectl apply -f {{ item }}"
   ignore_errors: true
@@ -25,6 +30,7 @@
   loop:
     - /etc/kubernetes/config/calico.yml
     - /etc/kubernetes/config/dns.yml
+    - /etc/kubernetes/config/components.yaml
 
 - name: Watch is all running
   ansible.builtin.shell: kubectl get pods -n kube-system -o=jsonpath="{ range .items[*] }{.status.phase}{'\n'}{end} " | grep -v -E '^$'  | grep -i -v running -c

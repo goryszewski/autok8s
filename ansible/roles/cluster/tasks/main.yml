@@ -16,7 +16,7 @@
 
     # post
 
-    - ansible.builtin.import_tasks: 00_calico_dns.yml
+    - ansible.builtin.import_tasks: 00.yml
       delegate_to: "{{ groups.init[0] }}"
       run_once: true
 
