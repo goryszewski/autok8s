@@ -18,10 +18,14 @@
     mode: '0644'
     backup: yes
 
-- name: Download file metrics-server components.yaml
-  ansible.builtin.get_url:
-    url: https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
-    dest: /etc/kubernetes/config/
+- name: Copy file metrics-server components.yaml
+  ansible.builtin.copy:
+    src: components.yaml
+    dest: /etc/kubernetes/config/components.yaml
+    owner: root
+    group: root
+    mode: '0644'
+    backup: yes
 
 - name: Kubectl apply
   ansible.builtin.command: "kubectl apply -f {{ item }}"
