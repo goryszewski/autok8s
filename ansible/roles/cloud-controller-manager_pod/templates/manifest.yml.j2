@@ -16,7 +16,7 @@ spec:
       command:
         - /app/cloud-controller-manager
       args:
-        - --cloud-provider=autok8s
+        - --cloud-provider={{cloud_provider}}
         - --v=5
         - --kubeconfig
         - /root/.kube/config

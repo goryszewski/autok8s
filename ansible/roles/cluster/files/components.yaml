@@ -130,15 +130,18 @@ spec:
       labels:
         k8s-app: metrics-server
     spec:
-      # hostNetwork: true
+      hostNetwork: true
       containers:
       - args:
         - --cert-dir=/tmp
-        - --secure-port=10250
+        - --secure-port=10600
         - --kubelet-preferred-address-types=InternalIP,ExternalIP,Hostname
         - --kubelet-use-node-status-port
         - --metric-resolution=15s
+        command:
+        - /metrics-server
         - --kubelet-insecure-tls
+        - --kubelet-preferred-address-types=InternalIP
         image: registry.k8s.io/metrics-server/metrics-server:v0.7.0
         imagePullPolicy: IfNotPresent
         livenessProbe:
@@ -150,7 +153,7 @@ spec:
           periodSeconds: 10
         name: metrics-server
         ports:
-        - containerPort: 10250
+        - containerPort: 10600
           name: https
           protocol: TCP
         readinessProbe:
