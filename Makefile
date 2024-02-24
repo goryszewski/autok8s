@@ -70,7 +70,7 @@ ansible: ansible_k8s
 
 ansible_mini:
 	@echo "[MAKE] Ansible Kubernetes Mini"
-	cd ./ansible && ansible-playbook main.yml $(inventory) --extra-vars $(extra-vars)  --skip-tags SKIP,LOG
+	cd ./ansible && ansible-playbook main.yml $(inventory) --extra-vars $(extra-vars)  --skip-tags SKIP,LOG,mini
 
 cluster:
 	@echo "[MAKE] Ansible Kubernetes"

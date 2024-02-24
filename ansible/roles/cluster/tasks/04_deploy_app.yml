@@ -13,6 +13,7 @@
   when: touch_argo_app_yml.changed
   ignore_errors: true
   run_once: true
+  tags: [mini]
 
 - name: Copy argo_ingress.yml
   ansible.builtin.copy:
