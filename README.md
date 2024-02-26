@@ -2,11 +2,12 @@
 Inspiration <a rel="license" href="https://github.com/kelseyhightower/kubernetes-the-hard-way">kelseyhightower kubernetes-the-hard-way</a> and  <a rel="license" href="https://docs.tigera.io/calico/latest/getting-started/kubernetes/hardway/">Calico Hard way</a>
 
 DOTO:
-* new ca
+* new ca - acme free
 * prometheus monitoring sd kubernetes apiserver argocd calico
 * Description
-* BGP + calico
+* BGP + calico + ccm lb
 * hardening nftable ebpf
 * falco
-* testunit
-* cloud controller manager "autok8s" - testing / build repo
+* apparmor
+* trivy / Admisssion controller - test image
+* testunit / testinfo / sonarqube?
