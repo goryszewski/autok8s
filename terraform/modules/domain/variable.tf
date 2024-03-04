@@ -7,7 +7,7 @@ variable "template" {}
 variable "tags" {}
 
 variable "pool" {
-    default = "default"
+    default = "vm"
 }
 variable "memoryMB" { default = 4096 }
 variable "cpu" { default = 2 }
