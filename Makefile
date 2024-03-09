@@ -24,7 +24,7 @@ Terraform_VARS= -var-file="debian12.tfvars"\
 				-var 'domain=$(CONF_domain)' \
 				-var 'hosts=$(HOSTS)'
 
-Terraform_VARS_Mini=-var-file="debian12.tfvars" -var 'domain=$(CONF_domain)' -var 'hosts=$(HOSTS_test)'
+Terraform_VARS_Mini=-var-file="ubuntu2204.tfvars" -var 'domain=$(CONF_domain)' -var 'hosts=$(HOSTS_test)'
 
 inventory=-i ./scripts/libvirt_inventory.py
 
