@@ -24,7 +24,9 @@ Terraform_VARS= -var-file="debian12.tfvars"\
 				-var 'domain=$(CONF_domain)' \
 				-var 'hosts=$(HOSTS)'
 
-Terraform_VARS_Mini=-var-file="ubuntu2204.tfvars" -var 'domain=$(CONF_domain)' -var 'hosts=$(HOSTS_test)'
+Terraform_VARS_Mini=-var-file="debian12.tfvars" -var 'domain=$(CONF_domain)' -var 'hosts=$(HOSTS_test)'
+
+Terraform_VARS_ubuntu=-var-file="ubuntu2204.tfvars" -var 'domain=$(CONF_domain)' -var 'hosts=$(HOSTS_test)'
 
 inventory=-i ./scripts/libvirt_inventory.py
 
@@ -47,6 +49,10 @@ terraform_apply: terraform_plan
 terraform_mini: terraform_plan
 	@echo "[MAKE] Terraform Apply"
 	cd ./terraform && terraform apply --auto-approve $(Terraform_VARS_Mini)
+
+terraform_ubuntu: terraform_plan
+	@echo "[MAKE] Terraform Apply"
+	cd ./terraform && terraform apply --auto-approve $(Terraform_VARS_ubuntu)
 
 terraform_destroy: terraform_init
 	@echo "[MAKE] Terraform Destroy"

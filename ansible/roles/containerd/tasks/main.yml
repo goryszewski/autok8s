@@ -51,16 +51,16 @@
 
 - name: Add repositories key k8s
   ansible.builtin.apt_key:
-    url: "https://packages.cloud.google.com/apt/doc/apt-key.gpg"
+    url: "https://pkgs.k8s.io/core:/stable:/v1.29/deb/Release.key"
     state: present
 
 - name: Add repositories k8s
   ansible.builtin.apt_repository:
-    repo: "deb https://apt.kubernetes.io/ kubernetes-xenial main"
+    repo: "deb https://pkgs.k8s.io/core:/stable:/v1.29/deb/ /"
     state: present
     filename: "k8s"
 
-- name: containerd-  Update the repository cache and install containerd
+- name: containerd - Update the repository cache and install containerd
   ansible.builtin.apt:
     state: latest
     update_cache: true
@@ -68,47 +68,35 @@
     pkg:
       - containerd.io={{ version['containerd'] }}
 
-- name: containerd - Creates directory - registry.k8s.io
-  ansible.builtin.file:
-    path: /etc/containerd/certs.d/registry.k8s.io/
-    state: directory
-    recurse: true
-
-- name: containerd - Creates directory - docker.io
-  ansible.builtin.file:
-    path: /etc/containerd/certs.d/docker.io/
-    state: directory
-    recurse: true
-
-- name: containerd - Creates directory repo.mgmt.autok8s.ext:5000
-  ansible.builtin.file:
-    path: /etc/containerd/certs.d/repo.mgmt.autok8s.ext:5000/
-    state: directory
-    recurse: true
-
-- name: repo proxy registry.k8s.io
-  ansible.builtin.template:
-    src: gcp.toml
-    dest: "/etc/containerd/certs.d/registry.k8s.io/hosts.toml"
+- name: Proxy repo
   when: global_repo is defined
-  notify:
-    - Restart-service-containerd
+  block:
+    - name: Containerd - Creates directory loop
+      ansible.builtin.file:
+        path: "/etc/containerd/certs.d/{{ item }}/"
+        state: directory
+        recurse: true
+      loop:
+        - registry.k8s.io
+        - docker.io
+        - repo.mgmt.autok8s.ext:5000
 
-- name: repo proxy docker.io
-  ansible.builtin.template:
-    src: repo.toml
-    dest: "/etc/containerd/certs.d/docker.io/hosts.toml"
-  when: global_repo is defined
-  notify:
-    - Restart-service-containerd
+    - name: repo proxy loop
+      ansible.builtin.template:
+        src: "{{ item }}"
+        dest: "/etc/containerd/certs.d/{{ item }}/hosts.toml"
+      notify:
+        - Restart-service-containerd
+      loop:
+        - registry.k8s.io
+        - docker.io
 
-- name: repo.mgmt.autok8s.ext
-  ansible.builtin.template:
-    src: internal.toml
-    dest: "/etc/containerd/certs.d/repo.mgmt.autok8s.ext:5000/hosts.toml"
-  when: global_repo is defined
-  notify:
-    - Restart-service-containerd
+    - name: repo.mgmt.autok8s.ext
+      ansible.builtin.template:
+        src: internal.toml
+        dest: "/etc/containerd/certs.d/repo.mgmt.autok8s.ext:5000/hosts.toml"
+      notify:
+        - Restart-service-containerd
 
 - name: gVisor - Install sunsc
   ansible.builtin.apt:
