@@ -16,20 +16,28 @@ spec:
       command:
         - /app/cloud-controller-manager
       args:
-        - --cloud-provider={{cloud_provider}}
+        - --cloud-provider={{ cloud_provider }}
         - --v=5
         - --kubeconfig
         - /root/.kube/config
+        - --config /root/ccm-config.ini
       volumeMounts:
         - mountPath: /root/.kube
-          name: config
+          name: kubeconfig
+          readOnly: true
+        - mountPath: /root/ccm-config.ini
+          name: config_ccm
           readOnly: true
   tolerations:
     - key: node.cloudprovider.kubernetes.io/uninitialized
       value: "true"
       effect: NoSchedule
   volumes:
-    - hostPath:
+    - name: config_ccm
+      hostPath:
+        path: /etc/kubernetes/config/ccm-config.ini
+        type: File
+    - name: kubeconfig
+      hostPath:
         path: /root/.kube
-        type: DirectoryOrCreate
-      name: config
+        type: Directory

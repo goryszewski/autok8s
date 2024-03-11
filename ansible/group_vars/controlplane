@@ -6,6 +6,11 @@ ca:
   - { _common_name: "ca_typha" , _ca_sign: "Intermidiate CA"}
   - { _common_name: "front_proxy_CA" , _ca_sign: "Intermidiate CA"}
 
+ccm:
+  Username: ccm
+  Password: ccm
+  URL: http://10.17.3.1:8050
+
 certs:
   etcd_1: {ca: "ETCD CA" , path: "/etc/etcd/ssl" , name: "certificate-etcd" , common_name: "system:node:{{hostname}}",organization_name: "system:nodes" ,
     san: ["DNS:{{hostname}}.{{domain}}","DNS:{{hostname}}","IP:{{ hostvars[inventory_hostname]['ansible_host'] }}","IP:127.0.0.1"]}
