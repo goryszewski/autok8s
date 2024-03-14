@@ -1,0 +1,46 @@
+# run
+# ansbile-playbook ansible-local.yaml --extra-vars '{"hostname":""}'
+
+- name: "Prepare host"
+  hosts: localhost
+  connection: local
+  tasks:
+    - name: "Set Hostname"
+      ansible.builtin.hostname:
+        name: "{{ hostname }}"
+
+    - name: "Delete ssh kery"
+      ansible.builtin.shell: rm -v /etc/ssh/ssh_host_*
+
+    - name: "reconfigure openssh"
+      ansible.builtin.shell: " dpkg-reconfigure openssh-server"
+
+    - name: remove /etc/machine-id
+      ansible.builtin.file:
+        path: /etc/machine-id
+        state: absent
+
+    - name: remove /var/lib/dbus/machine-id
+      ansible.builtin.file:
+        path: /var/lib/dbus/machine-id
+        state: absent
+
+    - name: generate new machine-id
+      ansible.builtin.command: systemd-machine-id-setup
+
+    - name: Run apt update
+      ansible.builtin.apt:
+        update_cache: yes
+
+    - name: Remove useless packages from the cache
+      ansible.builtin.apt:
+        autoclean: yes
+
+    - name: Remove dependencies that are no longer required and purge their configuration files
+      ansible.builtin.apt:
+        autoremove: yes
+        purge: true
+
+    - name: Run the equivalent of "apt-get clean" as a separate step
+      apt:
+        clean: yes

@@ -64,12 +64,19 @@ resource "libvirt_domain" "node" {
     destination = "/tmp/prep.sh"
   }
 
+  # provisioner "remote-exec" {
+  #   inline = [
+  #     "chmod a+x /tmp/prep.sh",
+  #     "sudo /tmp/prep.sh ${var.hostname}"
+  #   ]
+  # }
+
   provisioner "remote-exec" {
     inline = [
-      "chmod a+x /tmp/prep.sh",
-      "sudo /tmp/prep.sh ${var.hostname}"
+      "ansbile-playbook ansible-local.yaml --connection=local  --inventory 127.0.0.1, --extra-vars '{\"hostname\":\"${var.hostname}\"}' "
     ]
   }
+
   provisioner "local-exec" {
     command = "${path.module}/files/local.sh ${self.network_interface[0].addresses[0]} ${var.hostname}.${var.domain}"
     on_failure = continue

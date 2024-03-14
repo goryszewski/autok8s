@@ -16,7 +16,7 @@ $TTL    604800
 ns1.{{ domain }}. IN A {{ KUBERNETES_PUBLIC_ADDRESS }}
 k8sapi.{{ domain }}. IN A {{ KUBERNETES_PUBLIC_ADDRESS }}
 {% for host,v in groups.items() if host not in ['all','ungrouped'] %}
-{% for item in v %}
+{%   for item in v %}
 {{ hostvars[item]['hostname'] }} IN A {{ hostvars[item]['ansible_host']}}
-{% endfor %}
+{%   endfor %}
 {% endfor %}
