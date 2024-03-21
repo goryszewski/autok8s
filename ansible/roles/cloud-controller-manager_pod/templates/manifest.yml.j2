@@ -20,20 +20,21 @@ spec:
         - --v=5
         - --kubeconfig
         - /root/.kube/config
-        - --config /root/ccm-config.ini
+        - --cloud-config
+        - /etc/kubernetes/config/ccm-config.ini
       volumeMounts:
         - mountPath: /root/.kube
           name: kubeconfig
           readOnly: true
-        - mountPath: /root/ccm-config.ini
-          name: config_ccm
+        - mountPath: /etc/kubernetes/config/ccm-config.ini
+          name: config-ccm
           readOnly: true
   tolerations:
     - key: node.cloudprovider.kubernetes.io/uninitialized
       value: "true"
       effect: NoSchedule
   volumes:
-    - name: config_ccm
+    - name: config-ccm
       hostPath:
         path: /etc/kubernetes/config/ccm-config.ini
         type: File

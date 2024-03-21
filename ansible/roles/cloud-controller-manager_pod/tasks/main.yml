@@ -1,4 +1,8 @@
 ---
+- name: Copy cloud-controller-manager config
+  ansible.builtin.template:
+    src: ccm-config.j2
+    dest: /etc/kubernetes/config/ccm-config.ini
 
 - name: Copy cloud-controller-manager-sa-role
   ansible.builtin.template:

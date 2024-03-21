@@ -20,6 +20,8 @@ HOSTS={\
 	"haproxy01" : { "tags" : ["bgp","haproxy","master"] , memoryMB: "2048"},\
  }
 
+HOSTS_single={"master01" : { "template":"rh93", memoryMB: "8192" , "tags" : ["etcd","nodeK8S","controlplane","init","worker"] }}
+
 Terraform_VARS= -var-file="debian12.tfvars"\
 				-var 'domain=$(CONF_domain)' \
 				-var 'hosts=$(HOSTS)'
@@ -28,11 +30,15 @@ Terraform_VARS_Mini=-var-file="debian12.tfvars" -var 'domain=$(CONF_domain)' -va
 
 Terraform_VARS_ubuntu=-var-file="ubuntu2204.tfvars" -var 'domain=$(CONF_domain)' -var 'hosts=$(HOSTS_test)'
 
+Terraform_VARS_redhat=-var-file="rh93.tfvars" -var 'domain=$(CONF_domain)' -var 'hosts=$(HOSTS_single)'
+
 inventory=-i ./scripts/libvirt_inventory.py
 
 extra-vars="domain=$(CONF_domain) global_repo=repo.mgmt.autok8s.ext calico_version=3.26.0 calico_version_cni=3.20.6 k8s_version=1.29.1 ENCRYPTION_KEY=rfjKhlyYRN9WNr026VIKRaRrPZ2GEzqrU3ry2SvDIvs="
 
 #end config
+
+# BEGIN terraform
 
 terraform_init:
 	@echo "[MAKE] Terraform Init"
@@ -54,10 +60,15 @@ terraform_ubuntu: terraform_plan
 	@echo "[MAKE] Terraform Apply"
 	cd ./terraform && terraform apply --auto-approve $(Terraform_VARS_ubuntu)
 
+terraform_redhat: terraform_plan
+	@echo "[MAKE] Terraform Apply"
+	cd ./terraform && terraform apply --auto-approve $(Terraform_VARS_redhat)
+
 terraform_destroy: terraform_init
 	@echo "[MAKE] Terraform Destroy"
 	cd ./terraform && terraform destroy --auto-approve $(Terraform_VARS)
 
+# END terraform
 
 ansible_ping:
 	@echo "[MAKE] Ansible All ping"
@@ -76,7 +87,7 @@ ansible: ansible_k8s
 
 ansible_mini:
 	@echo "[MAKE] Ansible Kubernetes Mini"
-	cd ./ansible && ansible-playbook main.yml $(inventory) --extra-vars $(extra-vars)  --skip-tags SKIP,LOG,mini
+	cd ./ansible && ansible-playbook main.yml $(inventory) --extra-vars $(extra-vars)  --skip-tags SKIP,LOG,ArgoCD
 
 cluster:
 	@echo "[MAKE] Ansible Kubernetes"
