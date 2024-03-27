@@ -85,3 +85,11 @@
   roles:
     - cluster
   tags: [CLUSTER]
+
+- name: Install lbexternal
+  hosts: lbexternal
+  gather_facts: false
+  roles:
+    - docker
+    - lbexternal
+  tags: [lbexternal]

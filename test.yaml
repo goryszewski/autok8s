@@ -50,6 +50,10 @@ spec:
     protocol: TCP
     port: 80
     targetPort: http-web-svc
+  - name: name-of-service-port2
+    protocol: TCP
+    port: 442
+    targetPort: http-web-svc
 ---
 # apiVersion: v1
 # kind: Service

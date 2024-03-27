@@ -1,0 +1,4 @@
+{
+  "registry-mirrors": ["http://repo.mgmt.autok8s.ext:5555", "http://repo.mgmt.autok8s.ext:5000"],
+  "insecure-registries": ["http://repo.mgmt.autok8s.ext:5555", "http://repo.mgmt.autok8s.ext:5000"]
+}

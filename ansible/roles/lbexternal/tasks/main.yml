@@ -1,0 +1,19 @@
+- name: copy config  # DOTO fix to ttemplate
+  ansible.builtin.copy:
+    src: config.json
+    dest: /etc/lb.json
+
+- name: pull an image haproxy
+  docker_image:
+    name: haproxy
+    source: pull
+
+- name: run container
+  docker_container:
+    name: lbexternal
+    image: repo.mgmt.autok8s.ext:5000/loadbalancer-external:latest
+    network_mode: host
+    log_driver: syslog
+    volumes:
+      - /etc/lb.json:/app/config.json
+      - /tmp:/tmp

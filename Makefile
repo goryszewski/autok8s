@@ -18,6 +18,7 @@ HOSTS={\
 	"master01" : { memoryMB: "8192" , "tags" : ["etcd","nodeK8S","controlplane","init"] },\
 	"worker01" : { "tags" : ["nodeK8S","worker"]  , memoryMB: "8192"}, \
 	"haproxy01" : { "tags" : ["bgp","haproxy","master"] , memoryMB: "2048"},\
+	"lbexternal01" : { "tags" : ["lbexternal"] , memoryMB: "2048"},\
  }
 
 HOSTS_single={"master01" : { "template":"rh93", memoryMB: "8192" , "tags" : ["etcd","nodeK8S","controlplane","init","worker"] }}
