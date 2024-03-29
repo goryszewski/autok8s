@@ -41,8 +41,15 @@
       - ipset
       - curl
       - sudo
+      - chrony
     state: latest
     update_cache: yes
+
+- name: Start service chrony, if not started
+  ansible.builtin.service:
+    name: chrony
+    state: started
+    enabled: yes
 
 - name: Install apt by OS
   ansible.builtin.apt:

@@ -33,6 +33,13 @@ rule_files:
 
 scrape_configs:
 ## DOTO sd for kubernetes
+  - job_name: k8s
+    kubernetes_sd_configs:
+    - role: node
+      kubeconfig_file: /etc/prometheus/k8s.kubeconfig
+    scheme: https
+    # tls_config:
+    #   insecure_skip_verify: true
   - job_name: all_host
     static_configs:
     - targets: [ {{ all | join(",") }} ]

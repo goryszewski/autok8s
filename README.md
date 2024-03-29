@@ -10,7 +10,7 @@ DOTO:
 * new ca - acme free
 * prometheus monitoring sd kubernetes apiserver argocd calico
 * Description
-* BGP + calico + ccm lb
+* BGP + calico
 * hardening nftable ebpf
 * falco
 * apparmor
