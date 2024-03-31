@@ -6,6 +6,14 @@
     - rsyslog
   tags: [LOG]
 
+- name: Roles for storage
+  hosts: nfs
+  gather_facts: false
+  roles:
+    - nfs
+  tags: [NFS]
+
+
 - name: Roles for haproxy/lb servers
   hosts: haproxy
   gather_facts: false

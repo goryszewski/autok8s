@@ -1,0 +1,17 @@
+- name: install nfs
+  ansible.builtin.package:
+    name: nfs-kernel-server
+    status: present
+    update_cache: yes
+
+- name: Directory
+  ansible.builtin.file:
+    path: "/var/nfs/storage1"
+    state: directory
+    recurse: true
+
+- name: nfs exports
+  ansible.builtin.template:
+    src: exports.j2
+    dest: "/etc/exports"
+  notify: Restart nfs-kernel-server

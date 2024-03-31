@@ -14,5 +14,9 @@ DOTO:
 * hardening nftable ebpf
 * falco
 * apparmor
+* nfs + VDO?
+* router core/edge
+* dynamic + route do external-loadbalancer
+* csi ?
 * trivy / Admisssion controller - test image
 * testunit / testinfo / sonarqube?

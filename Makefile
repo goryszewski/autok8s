@@ -12,6 +12,8 @@ HOSTS={\
 	"vault01" : { "tags" : ["vault"] , memoryMB: "2048"}, \
 	"vault02" : { "tags" : ["vault"] , memoryMB: "2048"}, \
 	"prometheus": {"tags" : ["monit"] , memoryMB: "2048"} \
+	"lbexternal01" : { "tags" : ["lbexternal"] , memoryMB: "2048"},\
+	"nfs01" : { "tags" : ["nfs"] , memoryMB: "2048"},\
  }
 
  HOSTS_test={\
@@ -19,6 +21,7 @@ HOSTS={\
 	"worker01" : { "tags" : ["nodeK8S","worker"]  , memoryMB: "8192"}, \
 	"haproxy01" : { "tags" : ["bgp","haproxy","master"] , memoryMB: "2048"},\
 	"lbexternal01" : { "tags" : ["lbexternal"] , memoryMB: "2048"},\
+	"nfs01" : { "tags" : ["nfs"] , memoryMB: "2048"},\
  }
 
 HOSTS_single={"master01" : { "template":"rh93", memoryMB: "8192" , "tags" : ["etcd","nodeK8S","controlplane","init","worker"] }}
