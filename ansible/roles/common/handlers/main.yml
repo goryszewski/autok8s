@@ -1,6 +1,12 @@
 ---
-# handlers file for keepalive
+
 - name: Restart rsyslog
   ansible.builtin.service:
     name: rsyslog
+    state: restarted
+
+
+- name: Restart-autofs
+  ansible.builtin.service:
+    name: autofs
     state: restarted

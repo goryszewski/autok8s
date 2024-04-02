@@ -9,17 +9,32 @@ cluster_cidr: 10.10.0.0/16 # pod_cidr pod-cidr=10.200.${i}.0/24
 network_servers: 10.17.3.0/24 # node_network  10.240.0.0/24
 service_cluster_ip_range: 10.32.0.0/24 # address range (10.32.0.0/24) reserved for internal cluster
 
-KUBERNETES_PUBLIC_ADDRESS: 10.17.3.2
+KUBERNETES_PUBLIC_ADDRESS: 10.17.3.2 # // TODO use externalloadbalancer terraform-libvirtapi
 clusterDNS: 10.32.0.10
 clusterIP: 10.32.0.1
 
 cloud_provider: autok8s
 
 callico_yaml: https://raw.githubusercontent.com/projectcalico/calico/v3.25.0/manifests/calico.yaml
+
+ingress:
+  http: 30080
+  https: 30443
+
 http: 30080
 https: 30443
 
 CERT_PATH: "/etc/kubernetes/pki"
+
+groups:
+  - name: sysadm
+
+users:
+  - name: user01
+    groups:
+      - sysadm
+  - name: user02
+
 
 # cert
 CA_name: "AUTO K8S CA"

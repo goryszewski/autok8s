@@ -64,3 +64,11 @@
     name: "{{ item }}"
   with_items: "{{ common.pip }}"
   when: common.pip is defined
+
+## autofs
+
+- name: Install autofs
+  ansible.builtin.apt:
+    name: authofs
+    state: latest
+    update_cache: yes
