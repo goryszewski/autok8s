@@ -1,1 +1,3 @@
-/var/nfs/storage1    {% groups['nodeK8S'] | join (',') %}(rw,sync,no_subtree_check)
+/var/nfs/storage1  {% for host in groups["nodeK8S"] %} {{ host }}(rw,sync,no_subtree_check) {% endfor %}
+
+/var/nfs/all    *(rw,sync,no_subtree_check)

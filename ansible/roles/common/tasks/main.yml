@@ -65,10 +65,37 @@
   with_items: "{{ common.pip }}"
   when: common.pip is defined
 
-## autofs
+## autofs # TODO separate
 
 - name: Install autofs
   ansible.builtin.apt:
-    name: authofs
+    name: autofs
     state: latest
     update_cache: yes
+
+- name: "configuration file auto.master"
+  template:
+    src: "auto.master.j2"
+    dest: "/etc/auto.master"
+  notify: Restart-autofs
+
+- name: "configuration file auto-map"
+  template:
+    src: "auto-map.j2"
+    dest: "/etc/auto-map"
+  notify: Restart-autofs
+
+- name: Enable service autofs
+  ansible.builtin.systemd:
+    name: autofs
+    enabled: true
+    daemon_reload: true
+    state: started
+
+## users # TODO separate
+
+- name: Add the users
+  ansible.builtin.user:
+    name: "{{ item.name }}"
+    comment: "some test"
+  with_items: "{{ users }}"

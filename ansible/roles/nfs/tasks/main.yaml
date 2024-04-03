@@ -1,14 +1,17 @@
 - name: install nfs
   ansible.builtin.package:
     name: nfs-kernel-server
-    status: present
+    state: present
     update_cache: yes
 
 - name: Directory
   ansible.builtin.file:
-    path: "/var/nfs/storage1"
+    path: "/var/nfs/{{ item }}"
     state: directory
     recurse: true
+  loop:
+    - storage1
+    - all
 
 - name: nfs exports
   ansible.builtin.template:
