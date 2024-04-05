@@ -27,14 +27,21 @@
     mode: '0644'
     backup: yes
 
+- name: Opa Gatekeeper
+  ansible.builtin.get_url:
+    url: https://raw.githubusercontent.com/open-policy-agent/gatekeeper/v3.15.0/deploy/gatekeeper.yaml
+    dest: /etc/kubernetes/config/
+  register: touch_crds
+
 - name: Kubectl apply
-  ansible.builtin.command: "kubectl apply -f {{ item }}"
+  ansible.builtin.command: "kubectl apply -f /etc/kubernetes/config/{{ item }}"
   ignore_errors: true
   run_once: true
   loop:
-    - /etc/kubernetes/config/calico.yml
-    - /etc/kubernetes/config/dns.yml
-    - /etc/kubernetes/config/components.yaml
+    - calico.yml
+    - dns.yml
+    - components.yaml
+    - gatekeeper.yaml
 
 - name: Watch is all running
   ansible.builtin.shell: kubectl get pods -n kube-system -o=jsonpath="{ range .items[*] }{.status.phase}{'\n'}{end} " | grep -v -E '^$'  | grep -i -v running -c

@@ -56,7 +56,7 @@ terraform_apply: terraform_plan
 	@echo "[MAKE] Terraform Apply"
 	cd ./terraform && terraform apply --auto-approve $(Terraform_VARS)
 
-terraform_mini: terraform_plan
+terraform_mini:
 	@echo "[MAKE] Terraform Apply"
 	cd ./terraform && terraform apply --auto-approve $(Terraform_VARS_Mini)
 
