@@ -16,6 +16,12 @@ HOSTS={\
 	"nfs01" : { "tags" : ["nfs"] , memoryMB: "2048"},\
  }
 
+ HOSTS_s={\
+	"master01" : { memoryMB: "8192" , "tags" : ["etcd","nodeK8S","controlplane","init"] },\
+	"worker01" : { "tags" : ["nodeK8S","worker"]  , memoryMB: "8192"}, \
+	"haproxy01" : { "tags" : ["bgp","haproxy","master"] , memoryMB: "2048"},\
+ }
+
  HOSTS_test={\
 	"master01" : { memoryMB: "8192" , "tags" : ["etcd","nodeK8S","controlplane","init"] },\
 	"worker01" : { "tags" : ["nodeK8S","worker"]  , memoryMB: "8192"}, \
@@ -33,6 +39,8 @@ Terraform_VARS= -var-file="debian12.tfvars"\
 Terraform_VARS_Mini=-var-file="debian12.tfvars" -var 'domain=$(CONF_domain)' -var 'hosts=$(HOSTS_test)'
 
 Terraform_VARS_ubuntu=-var-file="ubuntu2204.tfvars" -var 'domain=$(CONF_domain)' -var 'hosts=$(HOSTS_test)'
+
+Terraform_VARS_bsd=-var-file="freebsd14.tfvars" -var 'domain=$(CONF_domain)' -var 'hosts=$(HOSTS_s)'
 
 Terraform_VARS_redhat=-var-file="rh93.tfvars" -var 'domain=$(CONF_domain)' -var 'hosts=$(HOSTS_single)'
 
@@ -59,6 +67,10 @@ terraform_apply: terraform_plan
 terraform_mini:
 	@echo "[MAKE] Terraform Apply"
 	cd ./terraform && terraform apply --auto-approve $(Terraform_VARS_Mini)
+
+terraform_bsd:
+	@echo "[MAKE] Terraform Apply"
+	cd ./terraform && terraform apply --auto-approve $(Terraform_VARS_bsd)
 
 terraform_ubuntu: terraform_plan
 	@echo "[MAKE] Terraform Apply"

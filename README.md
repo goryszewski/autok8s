@@ -7,6 +7,7 @@ vm requires:
  * enable dhcp ens1-4
 
 DOTO:
+* ! use bsd
 * new ca - acme free
 * prometheus monitoring sd kubernetes apiserver argocd calico
 * Description
