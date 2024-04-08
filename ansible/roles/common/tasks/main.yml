@@ -94,8 +94,16 @@
 
 ## users # TODO separate
 
+- name: Add groups
+  ansible.builtin.group:
+    name: "{{ item.name }}"
+    state: present
+    gid: {{ item.uid }}
+  with_items: "{{ groups }}"
+
 - name: Add the users
   ansible.builtin.user:
     name: "{{ item.name }}"
     comment: "some test"
+    uid: {{ item.uid }}
   with_items: "{{ users }}"

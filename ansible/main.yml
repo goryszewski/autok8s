@@ -13,7 +13,6 @@
     - nfs
   tags: [NFS]
 
-
 - name: Roles for haproxy/lb servers
   hosts: haproxy
   gather_facts: false

@@ -28,6 +28,7 @@ CERT_PATH: "/etc/kubernetes/pki"
 
 groups:
   - name: sysadm
+    gid: 3000
 
 users:
   - name: user01
