@@ -1,0 +1,42 @@
+- name: Install lvm2 dependency
+  package:
+    name: lvm2
+    state: present
+
+- name: Create a new primary partition for LVM
+  community.general.parted:
+    device: /dev/sdb
+    number: 1
+    flags: [ lvm ]
+    state: present
+
+- name: task for volume group
+  lvg:
+      vg: vg-ansible
+      pvs: /dev/sdb1
+      pesize: 16
+
+- name: task for creating logical volume
+  lvol:
+      vg: vg-ansible
+      lv:  data01
+      size: 1g
+      force: yes
+
+- name: format the xfs filesystem
+  filesystem:
+    fstype: xfs
+    dev: /dev/vg-ansible/data01
+
+- name: Create directory data1 if does not exist
+  file:
+    path: /data01
+    state: directory
+    mode: '0755'
+
+- name: mount the lv on /data1
+  mount:
+    path: /data01
+    src: /dev/vg-ansible/data01
+    fstype: xfs
+    state: mounted
