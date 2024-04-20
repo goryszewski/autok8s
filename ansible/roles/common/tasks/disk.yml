@@ -1,42 +1,75 @@
-- name: Install lvm2 dependency
-  package:
-    name: lvm2
-    state: present
+- name: Block disk
+  when: ansible_devices["vdb"]["partitions"] | length == 0
+  block:
+    - name: Install specific version of parted package
+      when: ansible_os_family == "Debian"
+      ansible.builtin.apt:
+        name: parted
+        state: present
 
-- name: Create a new primary partition for LVM
-  community.general.parted:
-    device: /dev/sdb
-    number: 1
-    flags: [ lvm ]
-    state: present
+    - name: Create a new primary partition for LVM
+      community.general.parted:
+        device: /dev/vdb
+        number: 1
+        flags: [lvm]
+        state: present
 
-- name: task for volume group
-  lvg:
-      vg: vg-ansible
-      pvs: /dev/sdb1
-      pesize: 16
 
-- name: task for creating logical volume
-  lvol:
-      vg: vg-ansible
-      lv:  data01
-      size: 1g
-      force: yes
+    - name: Create a volume group on top of /dev/vdb1 with physical extent size = 32MB
+      community.general.lvg:
+        vg: vg-ansible
+        pvs: /dev/vdb1
+        pesize: 8
 
-- name: format the xfs filesystem
-  filesystem:
-    fstype: xfs
-    dev: /dev/vg-ansible/data01
+    - name: Extend the logical volume to 1024m.
+      community.general.lvol:
+        vg: vg-ansible
+        lv: test-ansible
+        size: 1024
 
-- name: Create directory data1 if does not exist
-  file:
-    path: /data01
-    state: directory
-    mode: '0755'
+    - name: Extra 10G
+      when: ansible_lvm["vgs"]["vg-ansible"] is defined and ansible_lvm["vgs"]["vg-ansible"]["free_g"]| int > 10
+      block:
+        - name: create 10G
+          community.general.lvol:
+            vg: vg-ansible
+            lv: test-ansible10G
+            size: 10G
+          register: extra10G
+        - debug: msg={{extra10G}}
 
-- name: mount the lv on /data1
-  mount:
-    path: /data01
-    src: /dev/vg-ansible/data01
-    fstype: xfs
-    state: mounted
+        - name: When extra10G
+          when: extra10G['changed']
+          community.general.filesystem:
+            fstype: ext4
+            dev: /dev/mapper/vg--ansible-test--ansible10G
+
+        - name: Create a directory if it does not exist
+          when: extra10G['changed']
+          ansible.builtin.file:
+            path: /srv/test
+            state: directory
+            mode: '0755'
+
+        - name: Mount up device by UUID
+          when: extra10G['changed']
+          ansible.posix.mount:
+            path: /srv/test
+            src: /dev/mapper/vg--ansible-test--ansible10G
+            fstype: ext4
+            state: mounted
+
+    - name: Create a ext4 filesystem on /dev/mapper/vg--ansible-test--ansible
+      community.general.filesystem:
+        fstype: ext4
+        dev: /dev/mapper/vg--ansible-test--ansible
+
+    - name: Mount up device by UUID
+      ansible.posix.mount:
+        path: /mnt
+        src: /dev/mapper/vg--ansible-test--ansible
+        fstype: ext4
+        state: mounted
+      register: tmp
+
+    - debug: msg={{tmp}}
