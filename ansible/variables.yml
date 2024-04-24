@@ -1,7 +1,7 @@
 general:
-  domain: autokk8s.xyz
+  domain: autok8s.xyz
   global_repo: repo.mgmt.autok8s.ext 
   calico: 
     version: 3.26.0 
-  c cni: 3.20.6 
+    cni: 3.20.6 
   k8s_version:  1.29.1
