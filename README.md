@@ -8,6 +8,7 @@ vm requires:
 
 DOTO:
 * ! use bsd
+* ! create swift -> https://docs.openstack.org/swift/latest/development_saio.html
 * new ca - acme free
 * prometheus monitoring sd kubernetes apiserver argocd calico
 * Description

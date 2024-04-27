@@ -1,0 +1,27 @@
+---
+# tasks file for swift
+
+#Installing dependencies
+- name: Install packages
+  ansible.builtin.apt:
+    update_cache: true
+    allow_change_held_packages: true
+    pkg: def_soft_Debian
+
+#Configuring storage
+
+#Getting the code
+
+#Setting up rsync
+
+#Starting memcached
+
+#Optional: Setting up rsyslog for individual logging
+
+#Configuring each node
+
+#Setting up scripts for running Swift
+
+#Configure environment variables for Swift
+
+#Constructing initial rings
