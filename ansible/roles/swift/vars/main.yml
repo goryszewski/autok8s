@@ -1,6 +1,7 @@
 ---
 # vars file for swift
 def_soft_Debian:
+      - parted
       - curl
       - gcc
       - memcached
