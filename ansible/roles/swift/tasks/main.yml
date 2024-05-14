@@ -1,14 +1,25 @@
 ---
 # tasks file for swift
 
-#Installing dependencies
+- name: Ensure group "swift" exists
+  ansible.builtin.group:
+    name: swift
+    state: present
+
+- name: Add the user 'swift' with a specific uid and a primary group of 'swift'
+  ansible.builtin.user:
+    name: swift
+    group: swift
+    shell: /bin/bash
+
+# Installing dependencies
 - name: Install packages
   ansible.builtin.apt:
     update_cache: true
     allow_change_held_packages: true
     pkg: def_soft_Debian
 
-#Configuring storage
+# Configuring storage
 
 - name: Create a new primary partition for LVM
   community.general.parted:
@@ -35,7 +46,38 @@
     fstype: xfs
     state: present
 
+# Common Post-Device Setup
+
+- name: Create a directory if it does not exist /mnt/vdb1/1-4
+  ansible.builtin.file:
+    path: /mnt/vdb1/{{ item }}
+    state: directory
+    mode: '0755'
+    owner: swift
+    group: swift
+  loop: [1,2,3,4]
+
+- name: Create a directory if it does not exist /var/cache/swift1-4
+  ansible.builtin.file:
+    path: /var/cache/swift{{ item }}
+    state: directory
+    mode: '0755'
+    owner: swift
+    group: swift
+  loop: [1,2,3,4]
+
+- name: Create a symbolic link/ mnt/vdb1/1-4
+  ansible.builtin.file:
+    src: /mnt/vdb1/{{ item }}
+    dest: /srv/{{ item }}
+    owner: swift
+    group: swift
+    state: link
+  loop: [1,2,3,4]
+
 #Getting the code
+
+
 
 #Setting up rsync
 
