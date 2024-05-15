@@ -77,7 +77,25 @@
 
 #Getting the code
 
+- name: Git checkout python-swiftclient.git
+  ansible.builtin.git:
+    repo: 'https://opendev.org/openstack/python-swiftclient.git'
+    dest: /opt
 
+- name: Install specified python requirements /opt/python-swiftclient/requirements.txt
+  ansible.builtin.pip:
+    requirements: /opt/python-swiftclient/requirements.txt
+    virtualenv: /my_app/venv
+
+- name: Git checkout swift.git
+  ansible.builtin.git:
+    repo: 'https://github.com/openstack/swift.git'
+    dest: /opt
+
+- name: Install specified python requirements /opt/swift/requirements.txt
+  ansible.builtin.pip:
+    requirements: /opt/swift/requirements.txt
+    virtualenv: /my_app/venv
 
 #Setting up rsync
 
