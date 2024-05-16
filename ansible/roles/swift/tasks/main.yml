@@ -99,7 +99,35 @@
 
 #Setting up rsync
 
+- name: Template a file to /etc/rsyncd.conf
+  ansible.builtin.template:
+    src: rsyncd.conf.j2
+    dest: /etc/rsyncd.conf
+    owner: swift
+    group: swift
+    mode: '0644'
+
+- name: Ensure RSYNC_ENABLE=true
+
+  ansible.builtin.lineinfile:
+    path: /etc/default/rsync
+    regexp: '^RSYNC_ENABLE='
+    line: RSYNC_ENABLE=true
+
+
+- name: Restart service rsyncd, in all cases
+  ansible.builtin.service:
+    name: rsyncd
+    state: restart
+    enabled: yes
+
 #Starting memcached
+
+- name: Restart service memcached, in all cases
+  ansible.builtin.service:
+    name: memcached
+    state: restart
+    enabled: yes
 
 #Optional: Setting up rsyslog for individual logging
 
