@@ -99,7 +99,7 @@
 
 #Setting up rsync
 
-- name: Template a file to /etc/rsyncd.conf
+- name: Template a file to /etc/swift/account-server/1.conf
   ansible.builtin.template:
     src: rsyncd.conf.j2
     dest: /etc/rsyncd.conf
@@ -132,6 +132,71 @@
 #Optional: Setting up rsyslog for individual logging
 
 #Configuring each node
+
+- name: Template a file to /etc/swift/swift.conf
+  ansible.builtin.template:
+    src: swift.conf.j2
+    dest: /etc/swift/swift.conf
+    owner: swift
+    group: swift
+    mode: '0644'
+
+- name: Template a file to /etc/swift/proxy-server.conf
+  ansible.builtin.template:
+    src: proxy-server.conf.j2
+    dest: /etc/swift/proxy-server.conf
+    owner: swift
+    group: swift
+    mode: '0644'
+
+- name: Template a file to /etc/swift/object-expirer.conf
+  ansible.builtin.template:
+    src: object-expirer.conf.j2
+    dest: /etc/swift/object-expirer.conf
+    owner: swift
+    group: swift
+    mode: '0644'
+
+- name: Template a file to /etc/swift/container-sync-realms.conf
+  ansible.builtin.template:
+    src: container-sync-realms.conf.j2
+    dest: /etc/swift/container-sync-realms.conf
+    owner: swift
+    group: swift
+    mode: '0644'
+
+- name: block loop 1-4
+  block:
+    - name: Template a file to account-server
+      ansible.builtin.template:
+        src: account-server_n.conf
+        dest: /etc/swift/account-server/{{item}}.conf
+        owner: swift
+        group: swift
+        mode: '0644'
+    - name: Template a file to container-server
+      ansible.builtin.template:
+        src: container-server_n.conf
+        dest: /etc/swift/container-server/{{item}}.conf
+        owner: swift
+        group: swift
+        mode: '0644'
+    - name: Template a file to container-reconciler
+      ansible.builtin.template:
+        src: container-reconciler_n.conf
+        dest: /etc/swift/container-reconciler/{{item}}.conf
+        owner: swift
+        group: swift
+        mode: '0644'
+    - name: Template a file to object-server
+      ansible.builtin.template:
+        src: object-server_n.conf
+        dest: /etc/swift/object-server/{{item}}.conf
+        owner: swift
+        group: swift
+        mode: '0644'
+
+  loop: [1,2,3,4]
 
 #Setting up scripts for running Swift
 
