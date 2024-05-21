@@ -17,7 +17,7 @@
   ansible.builtin.apt:
     update_cache: true
     allow_change_held_packages: true
-    pkg: def_soft_Debian
+    pkg: "{{def_soft_Debian}}"
 
 # Configuring storage
 
@@ -174,6 +174,8 @@
         owner: swift
         group: swift
         mode: '0644'
+      loop: [1,2,3,4]
+
     - name: Template a file to container-server
       ansible.builtin.template:
         src: container-server_n.conf
@@ -181,6 +183,8 @@
         owner: swift
         group: swift
         mode: '0644'
+      loop: [1,2,3,4]
+
     - name: Template a file to container-reconciler
       ansible.builtin.template:
         src: container-reconciler_n.conf
@@ -188,6 +192,8 @@
         owner: swift
         group: swift
         mode: '0644'
+      loop: [1,2,3,4]
+
     - name: Template a file to object-server
       ansible.builtin.template:
         src: object-server_n.conf
@@ -195,8 +201,9 @@
         owner: swift
         group: swift
         mode: '0644'
+      loop: [1,2,3,4]
 
-  loop: [1,2,3,4]
+
 
 #Setting up scripts for running Swift
 

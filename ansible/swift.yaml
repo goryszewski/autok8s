@@ -1,0 +1,6 @@
+- name: Install swift
+  hosts: swift
+  gather_facts: true
+  roles:
+    - swift
+  tags: [swift]

@@ -30,6 +30,9 @@ HOSTS={\
 	"nfs01" : { "tags" : ["nfs"] , memoryMB: "2048"},\
  }
 
+HOSTS_swift={"node01" : { memoryMB: "8192" , "tags" : ["swift"] }}
+Terraform_Swift= -var-file="debian12.tfvars" -var 'domain=$(CONF_domain)' -var 'hosts=$(HOSTS_swift)'
+
 HOSTS_single={"master01" : { "template":"rh93", memoryMB: "8192" , "tags" : ["etcd","nodeK8S","controlplane","init","worker"] }}
 
 Terraform_VARS= -var-file="debian12.tfvars"\
@@ -51,6 +54,13 @@ extra-vars="domain=$(CONF_domain) global_repo=repo.mgmt.autok8s.ext calico_versi
 #end config
 
 # BEGIN terraform
+swift:
+	@echo "[MAKE] Terraform Swift"
+	cd ./terraform && terraform apply --auto-approve $(Terraform_Swift)
+
+swift_ansible:
+	@echo "[MAKE] Ansible Kubernetes"
+	cd ./ansible && ansible-playbook swift.yaml $(inventory) --skip-tags SKIP
 
 terraform_init:
 	@echo "[MAKE] Terraform Init"
