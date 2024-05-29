@@ -36,4 +36,5 @@
     src: docker
     dest: /etc/docker/daemon.json
   notify:
+    - Restart-systemd
     - Restart-service-docker

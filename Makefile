@@ -49,7 +49,7 @@ Terraform_VARS_redhat=-var-file="rh93.tfvars" -var 'domain=$(CONF_domain)' -var 
 
 inventory=-i ./scripts/libvirt_inventory.py
 
-extra-vars="domain=$(CONF_domain) global_repo=repo.mgmt.autok8s.ext calico_version=3.26.0 calico_version_cni=3.20.6 k8s_version=1.29.1"
+
 
 #end config
 
@@ -57,6 +57,10 @@ extra-vars="domain=$(CONF_domain) global_repo=repo.mgmt.autok8s.ext calico_versi
 swift:
 	@echo "[MAKE] Terraform Swift"
 	cd ./terraform && terraform apply --auto-approve $(Terraform_Swift)
+
+swift_destroy:
+	@echo "[MAKE] Terraform Swift"
+	cd ./terraform && terraform destroy --auto-approve $(Terraform_Swift)
 
 swift_ansible:
 	@echo "[MAKE] Ansible Kubernetes"
@@ -103,7 +107,7 @@ ansible_ping:
 
 ansible_k8s:
 	@echo "[MAKE] Ansible Kubernetes"
-	cd ./ansible && ansible-playbook main.yml $(inventory) --extra-vars @variables.yml --extra-vars @secret.yaml --vault-password-file .secret --skip-tags SKIP
+	cd ./ansible && ansible-playbook main.yml $(inventory) --extra-vars @variables.yml --extra-vars @secret.yaml  --skip-tags SKIP
 
 ansible_k8s_kubeadm:
 	@echo "[MAKE] Ansible Kubernetes"
@@ -113,7 +117,7 @@ ansible: ansible_k8s
 
 ansible_mini:
 	@echo "[MAKE] Ansible Kubernetes Mini"
-	cd ./ansible && ansible-playbook main.yml $(inventory) --extra-vars @variables.yml --extra-vars @secret.yaml --vault-password-file .secret --skip-tags SKIP,LOG,ArgoCD
+	cd ./ansible && ansible-playbook main.yml $(inventory) --extra-vars @variables.yml --extra-vars @secret.yaml --vault-password-file .secret  --skip-tags SKIP,LOG,ArgoCD
 
 cluster:
 	@echo "[MAKE] Ansible Kubernetes"
