@@ -1,0 +1,14 @@
+---
+# tasks file for iscsi-target
+- name: "ISCSI TARGET Install"
+  ansible.builtin.package:
+    name: targetcli
+    state: present
+    update_cache: yes
+
+- name: "ISCSI TARGET Enable service"
+  ansible.builtin.systemd:
+    name: target
+    enabled: true
+    daemon_reload: true
+

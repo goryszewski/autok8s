@@ -52,7 +52,7 @@ spec:
     targetPort: http-web-svc
   - name: name-of-service-port2
     protocol: TCP
-    port: 442
+    port: 443
     targetPort: http-web-svc
 ---
 # apiVersion: v1

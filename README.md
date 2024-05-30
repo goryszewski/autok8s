@@ -7,7 +7,6 @@ vm requires:
  * enable dhcp ens1-4
 
 DOTO:
-* ! use bsd
 * ! create swift -> https://docs.openstack.org/swift/latest/development_saio.html
 * new ca - acme free
 * prometheus monitoring sd kubernetes apiserver argocd calico
@@ -19,6 +18,6 @@ DOTO:
 * nfs + VDO?
 * router core/edge
 * dynamic + route do external-loadbalancer
-* csi ?
+* csi + 1. use iscsi 2. nfs
 * trivy / Admisssion controller - test image
 * testunit / testinfo / sonarqube?
