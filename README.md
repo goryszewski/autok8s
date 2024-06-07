@@ -7,6 +7,7 @@ vm requires:
  * enable dhcp ens1-4
 
 DOTO:
+* use Jenkins to deploy autok8s
 * ! create swift -> https://docs.openstack.org/swift/latest/development_saio.html
 * new ca - acme free
 * prometheus monitoring sd kubernetes apiserver argocd calico
