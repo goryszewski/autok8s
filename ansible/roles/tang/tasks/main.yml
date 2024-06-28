@@ -1,0 +1,14 @@
+---
+# tasks file for tang
+
+- name: "Install"
+  ansible.builtin.package:
+    name: tang
+    state: present
+
+- name: Enable service tang
+  ansible.builtin.systemd:
+    name: tang
+    enabled: true
+    daemon_reload: true
+    state: started

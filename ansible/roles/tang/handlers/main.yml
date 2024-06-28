@@ -1,0 +1,7 @@
+---
+# handlers file for tang
+
+- name: Restart-service-tang
+  ansible.builtin.service:
+    name: tang
+    state: restarted

@@ -28,6 +28,7 @@ HOSTS={\
 	"haproxy01" : { "tags" : ["bgp","haproxy","master"] , memoryMB: "2048"},\
 	"lbexternal01" : { "tags" : ["lbexternal"] , memoryMB: "2048"},\
 	"nfs01" : { "tags" : ["nfs"] , memoryMB: "2048"},\
+	"tang01" : { "tags" : ["tang"] , memoryMB: "2048"},\
  }
 
 HOSTS_swift={"node01" : { memoryMB: "8192" , "tags" : ["swift"] }}
@@ -53,7 +54,8 @@ inventory=-i ./scripts/libvirt_inventory.py
 
 #end config
 
-# BEGIN terraform
+# Begin aio
+
 swift:
 	@echo "[MAKE] Terraform Swift"
 	cd ./terraform && terraform apply --auto-approve $(Terraform_Swift)
@@ -65,6 +67,21 @@ swift_destroy:
 swift_ansible:
 	@echo "[MAKE] Ansible Kubernetes"
 	cd ./ansible && ansible-playbook swift.yaml $(inventory) --skip-tags SKIP
+
+# END aio
+
+# Begin template
+
+# DOTO
+# turn on debian12
+# ansible with update and preinstall soft
+# turn off debian12
+# Convert disk
+## qemu-img convert -c -O qcow2 debian12.qcow2 deb12.qcow2
+
+# End template
+
+# BEGIN terraform
 
 terraform_init:
 	@echo "[MAKE] Terraform Init"

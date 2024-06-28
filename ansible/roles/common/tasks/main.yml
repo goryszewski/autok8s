@@ -42,6 +42,9 @@
       - curl
       - sudo
       - chrony
+      - clevis
+      - clevis-luks
+      - clevis-initramfs
     state: latest
     update_cache: yes
 
