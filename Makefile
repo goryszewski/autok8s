@@ -54,6 +54,11 @@ inventory=-i ./scripts/libvirt_inventory.py
 
 #end config
 
+# Template update
+template:
+
+#
+
 # Begin aio
 
 swift:

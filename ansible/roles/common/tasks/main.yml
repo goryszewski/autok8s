@@ -46,24 +46,28 @@
       - clevis-luks
       - clevis-initramfs
     state: latest
-    update_cache: yes
+    update_cache: true
+  tags: TEMPLATE
 
 - name: Start service chrony, if not started
   ansible.builtin.service:
     name: chrony
     state: started
-    enabled: yes
+    enabled: true
+  tags: TEMPLATE
 
 - name: Install apt by OS
   ansible.builtin.apt:
     name: "{{ item }}"
     state: latest
-    update_cache: yes
+    update_cache: true
   with_items: "{{ common.pkg }}"
   when: common.pkg is defined
+  tags: TEMPLATE
 
 - name: Install pip by OS
   ansible.builtin.pip:
     name: "{{ item }}"
   with_items: "{{ common.pip }}"
   when: common.pip is defined
+  tags: TEMPLATE

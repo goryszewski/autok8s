@@ -24,7 +24,7 @@ variable "public_network" {
 
 variable "mode_network" {
   type    = string
-  default = "nat"
+  default = "route"
 }
 
 variable "template" {
