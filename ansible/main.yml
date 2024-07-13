@@ -27,7 +27,7 @@
   hosts: all
   gather_facts: true
   roles:
-    - common
+    - autok8s.general.common
     - node_explorer
     - firewall
   tags: [ALL]

@@ -1,5 +1,7 @@
+---
+
 - name: install dep
   hosts: all
   gather_facts: true
   roles:
-    - common
+    - autok8s.general.common

@@ -139,6 +139,7 @@ ansible: ansible_k8s
 
 ansible_mini:
 	@echo "[MAKE] Ansible Kubernetes Mini"
+	# cd ./ansible && ansible-galaxy install -r requirements.yml
 	cd ./ansible && ansible-playbook main.yml $(inventory) --extra-vars @variables.yml --extra-vars @secret.yaml --vault-password-file .secret  --skip-tags SKIP,LOG,ArgoCD
 
 cluster:

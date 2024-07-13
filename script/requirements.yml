@@ -1,0 +1,6 @@
+---
+collections:
+  - name: autok8s
+    source: https://github.com/goryszewski/autok8s_collections#/autok8s
+    type: git
+    version: master
