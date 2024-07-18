@@ -1,8 +1,0 @@
-
-{% for host in groups['haproxy'] %}
-nameserver {{  hostvars[host]['ansible_host']  }}
-{% endfor %}
-
-{% for domain in domains %}
-search {{domain}}
-{% endfor %}

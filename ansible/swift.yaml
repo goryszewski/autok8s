@@ -2,5 +2,5 @@
   hosts: swift
   gather_facts: true
   roles:
-    - swift
+    - autok8s.general.swift
   tags: [swift]

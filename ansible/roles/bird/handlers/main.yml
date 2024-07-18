@@ -1,2 +1,0 @@
-  - name: sysctl--system
-    ansible.builtin.shell: sysctl --system

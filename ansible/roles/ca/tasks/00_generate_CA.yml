@@ -1,9 +1,0 @@
----
-
-- name: 'Generate CA'
-  include_tasks:
-    file: _ca.yml
-  vars:
-    _common_name: '{{item._common_name}}'
-    _ca_sign: '{{item._ca_sign}}'
-  loop: "{{ ca }}"

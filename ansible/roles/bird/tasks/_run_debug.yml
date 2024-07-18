@@ -1,9 +1,0 @@
-- name: "[ {{ hostname }} ] birdc"
-  ansible.builtin.shell: "{{ _CMD }}"
-  register: register_output
-
-- name: "[ {{ hostname }} ] birdc debug"
-  ansible.builtin.debug:
-    msg:
-      - "{{ _CMD }}"
-      - "{{ register_output.stdout_lines }}"

@@ -1,1 +1,0 @@
-ETCDCTL_API=3 etcdctl --endpoints={{inventory_hostname}}:2379 snapshot save /srv/backup.$(date "+%Y.%m.%d-%H.%M.%S")  --cacert=/etc/etcd/ssl/ETCD_CA.pem --cert=/etc/etcd/ssl/check_health.pem --key=/etc/etcd/ssl/check_health.key

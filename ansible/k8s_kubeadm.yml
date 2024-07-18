@@ -1,12 +1,12 @@
-
+---
 - hosts: init
   gather_facts: no
   roles:
-    - k8s
-    - master
+    - autok8s.k8s.k8s
+    - autok8s.k8s.master
 
 - hosts: worker
   gather_facts: no
   roles:
-    - k8s
-    - worker
+    - autok8s.k8s.k8s
+    - autok8s.k8s.worker

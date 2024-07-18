@@ -3,24 +3,24 @@
   hosts: syslog
   gather_facts: false
   roles:
-    - rsyslog
+    - autok8s.general.rsyslog
   tags: [LOG]
 
 - name: Roles for storage
   hosts: nfs
   gather_facts: false
   roles:
-    - nfs
+    - autok8s.general.nfs
   tags: [NFS]
 
 - name: Roles for haproxy/lb servers
   hosts: haproxy
   gather_facts: false
   roles:
-    - bind
-    - keepalive
-    - bird
-    - haproxy
+    - autok8s.general.bind
+    - autok8s.general.keepalive
+    - autok8s.general.bird
+    - autok8s.general.haproxy
   tags: [LB, HA, BGP, DNS]
 
 - name: Roles for all servers
@@ -28,75 +28,75 @@
   gather_facts: true
   roles:
     - autok8s.general.common
-    - node_explorer
-    - firewall
+    - autok8s.general.node_explorer
+    - autok8s.general.firewall
   tags: [ALL]
 
 - name: Roles for exabgp servers
   hosts: exabgp
   gather_facts: false
   roles:
-    - exabgp
+    - autok8s.general.exabgp
   tags: [EXABGP]
 
 - name: Roles for CA servers
   hosts: controlplane
   gather_facts: false
   roles:
-    - ca
+    - autok8s.general.ca
   tags: [CA]
 
 - name: Install Vault
   hosts: vault
   gather_facts: false
   roles:
-    - crt
-    - vault
+    - autok8s.general.crt
+    - autok8s.general.vault
   tags: [VAULT]
 
 - name: Roles for monit servers
   hosts: monit
   gather_facts: false
   roles:
-    - crt
-    - prometheus
-    - grafana
-    - nginx
+    - autok8s.general.crt
+    - autok8s.general.prometheus
+    - autok8s.general.grafana
+    - autok8s.general.nginx
   tags: [PROMETHEUS]
 
 - name: Roles for nodeK8S servers
   hosts: nodeK8S
   gather_facts: false
   roles:
-    - crt
-    - containerd
-    - kubelet
-    - kube-proxy
-    - calico
+    - autok8s.general.crt
+    - autok8s.k8s.containerd
+    - autok8s.k8s.kubelet
+    - autok8s.k8s.kube_proxy
+    - autok8s.k8s.calico
   tags: [nodeK8S]
 
 - name: Roles for controlplane servers
   hosts: controlplane
   gather_facts: false
   roles:
-    - etcd_pod
-    - kube-apiserver_pod
-    - kube-scheduler_pod
-    - kube-controller-manager_pod
-    - cloud-controller-manager_pod
+    - autok8s.k8s.etcd_pod
+    - autok8s.k8s.kube_apiserver_pod
+    - autok8s.k8s.kube_scheduler_pod
+    - autok8s.k8s.kube_controller_manager_pod
+    - autok8s.k8s.cloud_controller_manager_pod
   tags: [CP]
 
 - name: Prep cluster
   hosts: controlplane
   gather_facts: false
   roles:
-    - cluster
+    - autok8s.k8s.cluster
   tags: [CLUSTER]
 
 - name: Install lbexternal
   hosts: lbexternal
   gather_facts: false
   roles:
-    - docker
-    - lbexternal
+    - autok8s.general.docker
+    - autok8s.general.lbexternal
   tags: [lbexternal]

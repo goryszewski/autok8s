@@ -2,5 +2,5 @@
   hosts: vault
   gather_facts: false
   roles:
-    - vault
+    - autok8s.general.vault
   tags: [VAULT]

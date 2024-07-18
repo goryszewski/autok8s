@@ -1,5 +1,0 @@
-prometheus:
-  version: 2.46.0
-  platform: linux-amd64
-  hash: sha256:d2177ea21a6f60046f9510c828d4f8969628cfd35686780b3898917ef9c268b9
-  path: "/opt"

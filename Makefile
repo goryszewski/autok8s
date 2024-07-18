@@ -27,8 +27,6 @@ HOSTS={\
 	"worker01" : { "tags" : ["nodeK8S","worker"]  , memoryMB: "8192"}, \
 	"haproxy01" : { "tags" : ["bgp","haproxy","master"] , memoryMB: "2048"},\
 	"lbexternal01" : { "tags" : ["lbexternal"] , memoryMB: "2048"},\
-	"nfs01" : { "tags" : ["nfs"] , memoryMB: "2048"},\
-	"tang01" : { "tags" : ["tang"] , memoryMB: "2048"},\
  }
 
 HOSTS_swift={"node01" : { memoryMB: "8192" , "tags" : ["swift"] }}
@@ -139,7 +137,7 @@ ansible: ansible_k8s
 
 ansible_mini:
 	@echo "[MAKE] Ansible Kubernetes Mini"
-	# cd ./ansible && ansible-galaxy install -r requirements.yml
+	cd ./ansible && ansible-galaxy install -r requirements.yml
 	cd ./ansible && ansible-playbook main.yml $(inventory) --extra-vars @variables.yml --extra-vars @secret.yaml --vault-password-file .secret  --skip-tags SKIP,LOG,ArgoCD
 
 cluster:

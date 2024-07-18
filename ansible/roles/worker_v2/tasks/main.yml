@@ -1,7 +1,0 @@
-# - import_tasks: linux.yml
-- import_tasks: repo.yml
-# - import_tasks: containerd.yml
-# - import_tasks: cni.yml
-# - import_tasks: kubelet.yml
-# - import_tasks: kube_proxy.yml
-# - import_tasks: cni_calico.yml

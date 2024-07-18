@@ -1,6 +1,0 @@
----
-# handlers file for kube-scheduler
-- name: Restart kube-scheduler
-  ansible.builtin.service:
-    name: kube-scheduler
-    state: restarted

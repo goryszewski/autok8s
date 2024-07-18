@@ -1,2 +1,0 @@
-- name: load-new-config
-  ansible.builtin.command: nft -f /etc/nftables.conf

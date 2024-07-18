@@ -2,6 +2,6 @@
   hosts: lbexternal
   gather_facts: false
   roles:
-    - docker
-    - lbexternal
+    - autok8s.general.docker
+    - autok8s.general.lbexternal
   tags: [lbexternal]

@@ -1,7 +1,0 @@
----
-# handlers file for calico
-
-  - name: Restart-service-containerd
-    ansible.builtin.service:
-      name: containerd
-      state: restarted

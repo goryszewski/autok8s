@@ -1,5 +1,0 @@
-- rule: est
-  desc: estet
-  condition: container.id != host and evt.type = execve
-  output: "$evt.time,%container.name,%proc.name"
-  priority: Warning

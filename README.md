@@ -19,7 +19,8 @@ DOTO:
 * nfs + VDO?
 * router core/edge
 * dynamic + route do external-loadbalancer
-* csi (/)
+* csi by libvirt (/)
+* csi by iscsi/nfs
 * trivy / Admisssion controller - test image
 * testunit / testinfo / sonarqube?
 * update template

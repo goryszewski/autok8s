@@ -1,6 +1,0 @@
----
-# handlers file for keepalive
-- name: Restart rsyslog
-  ansible.builtin.service:
-    name: rsyslog
-    state: restarted

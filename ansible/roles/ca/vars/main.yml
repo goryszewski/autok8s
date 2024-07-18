@@ -1,3 +1,0 @@
----
-# vars file for ca
-path_ca: '/etc/kubernetes/pki'

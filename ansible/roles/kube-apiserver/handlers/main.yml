@@ -1,6 +1,0 @@
----
-# handlers file for kube-apiserver
-- name: Restart kube-apiserver
-  ansible.builtin.service:
-    name: kube-apiserver
-    state: restarted
