@@ -1,5 +1,5 @@
 version:
-  k8s_version: 1.28.6
+  k8s_version: 1.30.3
   calico_version_cni: 3.20.6
   calico_version: 3.26.0
   containerd: 1.6.28-1
@@ -51,6 +51,6 @@ domains:
   mgmt.autok8s.ext:
     a:
       - name: repo
-        ip: 192.168.100.10
+        ip: 10.0.0.10
 
   dev.autok8s.ext: {}
