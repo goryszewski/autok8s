@@ -13,7 +13,7 @@ terraform {
 }
 
 module "network" {
-  source = "./modules/network"
+  source = "github.com/goryszewski/terraform_module/libvirt/network"
   domain = var.domain
   addresses = var.node_addresses
   name = var.name_network
@@ -24,7 +24,7 @@ module "network" {
 module "node" {
 
   for_each = var.hosts
-  source   = "./modules/domain"
+  source   = "github.com/goryszewski/terraform_module/libvirt/domain"
   domain   = var.domain
   hostname = each.key
   tags     = each.value["tags"]

@@ -34,11 +34,11 @@ Terraform_Swift= -var-file="debian12.tfvars" -var 'domain=$(CONF_domain)' -var '
 
 HOSTS_single={"master01" : { "template":"rh93", memoryMB: "8192" , "tags" : ["etcd","nodeK8S","controlplane","init","worker"] }}
 
-Terraform_VARS= -var-file="debian12.tfvars"\
+Terraform_VARS= -var-file="variable/debian12.tfvars"\
 				-var 'domain=$(CONF_domain)' \
 				-var 'hosts=$(HOSTS)'
 
-Terraform_VARS_Mini=-var-file="debian12.tfvars" -var 'domain=$(CONF_domain)' -var 'hosts=$(HOSTS_test)'
+Terraform_VARS_Mini=-var-file="variable/debian12.tfvars" -var 'domain=$(CONF_domain)' -var 'hosts=$(HOSTS_test)'
 
 Terraform_VARS_ubuntu=-var-file="ubuntu2204.tfvars" -var 'domain=$(CONF_domain)' -var 'hosts=$(HOSTS_test)'
 
