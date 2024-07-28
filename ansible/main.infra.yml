@@ -1,0 +1,25 @@
+---
+
+- name: Roles for haproxy/lb servers
+  hosts: haproxy
+  gather_facts: false
+  roles:
+    - autok8s.general.bind
+    - autok8s.general.keepalive
+    - autok8s.general.haproxy
+  tags: [LB, HA, DNS]
+
+- name: Roles for all servers
+  hosts: all
+  gather_facts: true
+  roles:
+    - autok8s.general.common
+    - autok8s.general.firewall
+  tags: [ALL]
+
+- name: Roles for CA servers
+  hosts: controlplane
+  gather_facts: false
+  roles:
+    - autok8s.general.ca
+  tags: [CA]

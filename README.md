@@ -24,3 +24,4 @@ DOTO:
 * trivy / Admisssion controller - test image
 * testunit / testinfo / sonarqube?
 * update template
+* external-loadbalancer for kubernetes api ...

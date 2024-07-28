@@ -127,22 +127,20 @@ ansible_ping:
 
 ansible_k8s:
 	@echo "[MAKE] Ansible Kubernetes"
-	cd ./ansible && ansible-playbook main.yml $(inventory) --extra-vars @variables.yml --extra-vars @secret.yaml  --skip-tags SKIP
-
-ansible_k8s_kubeadm:
-	@echo "[MAKE] Ansible Kubernetes"
-	cd ./ansible && ansible-playbook k8s_kubeadm.yml $(inventory) --extra-vars @variables.yml --extra-vars @secret.yaml --vault-password-file .secret --skip-tags SKIP
+	cd ./ansible && ansible-galaxy install -r requirements.yml
+	cd ./ansible && ansible-playbook main.infra.yml $(inventory) --extra-vars @variables.yml --extra-vars @secret.yaml  --skip-tags SKIP
 
 ansible: ansible_k8s
 
 ansible_mini:
 	@echo "[MAKE] Ansible Kubernetes Mini"
 	cd ./ansible && ansible-galaxy install -r requirements.yml
-	cd ./ansible && ansible-playbook main.yml $(inventory) --extra-vars @variables.yml --extra-vars @secret.yaml --vault-password-file .secret  --skip-tags SKIP,LOG,ArgoCD
+	cd ./ansible && ansible-playbook main.infra.yml $(inventory) --extra-vars @variables.yml --extra-vars @secret.yaml --vault-password-file .secret  --skip-tags SKIP,LOG,ArgoCD
 
 cluster:
 	@echo "[MAKE] Ansible Kubernetes"
-	cd ./ansible && ansible-playbook main.yml $(inventory) --extra-vars @variables.yml --extra-vars @secret.yaml --vault-password-file .secret --tags CLUSTER
+	cd ./ansible && ansible-galaxy install -r requirements.yml
+	cd ./ansible && ansible-playbook main.k8s.yml $(inventory) --extra-vars @variables.yml --extra-vars @secret.yaml --vault-password-file .secret --tags CLUSTER
 
 vault:
 	@echo "[MAKE] Vault"

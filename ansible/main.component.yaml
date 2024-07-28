@@ -1,0 +1,54 @@
+---
+
+- name: Roles for syslog servers
+  hosts: syslog
+  gather_facts: false
+  roles:
+    - autok8s.general.rsyslog
+  tags: [LOG]
+
+- name: Roles for storage
+  hosts: nfs
+  gather_facts: false
+  roles:
+    - autok8s.general.nfs
+  tags: [NFS]
+
+- name: Roles routing
+  hosts: haproxy
+  gather_facts: false
+  roles:
+    - autok8s.general.bird
+  tags: [BGP]
+
+- name: Roles for all servers
+  hosts: all
+  gather_facts: true
+  roles:
+    - autok8s.general.node_explorer
+  tags: [ALL]
+
+- name: Roles for exabgp servers
+  hosts: exabgp
+  gather_facts: false
+  roles:
+    - autok8s.general.exabgp
+  tags: [EXABGP]
+
+- name: Install Vault
+  hosts: vault
+  gather_facts: false
+  roles:
+    - autok8s.general.crt
+    - autok8s.general.vault
+  tags: [VAULT]
+
+- name: Roles for monit servers
+  hosts: monit
+  gather_facts: false
+  roles:
+    - autok8s.general.crt
+    - autok8s.general.prometheus
+    - autok8s.general.grafana
+    - autok8s.general.nginx
+  tags: [PROMETHEUS]
