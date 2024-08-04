@@ -1,0 +1,6 @@
+- name: Prep cluster
+  hosts: controlplane
+  gather_facts: false
+  roles:
+    - autok8s.k8s.cluster
+  tags: [CLUSTER]

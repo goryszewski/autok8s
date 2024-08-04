@@ -21,18 +21,3 @@
     - autok8s.k8s.kube_controller_manager_pod
     - autok8s.k8s.cloud_controller_manager_pod
   tags: [CP]
-
-- name: Prep cluster
-  hosts: controlplane
-  gather_facts: false
-  roles:
-    - autok8s.k8s.cluster
-  tags: [CLUSTER]
-
-- name: Install lbexternal
-  hosts: lbexternal
-  gather_facts: false
-  roles:
-    - autok8s.general.docker
-    - autok8s.general.lbexternal
-  tags: [LBE]

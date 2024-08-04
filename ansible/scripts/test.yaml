@@ -40,7 +40,29 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: nginx-service
+  labels:
+    type-loadbalancer: ExternalIP
+  name: nginx-service-externalip
+spec:
+  selector:
+    app.kubernetes.io/name: proxy
+  type: LoadBalancer
+  ports:
+  - name: name-of-service-port
+    protocol: TCP
+    port: 80
+    targetPort: http-web-svc
+  - name: name-of-service-port2
+    protocol: TCP
+    port: 443
+    targetPort: http-web-svc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    type-loadbalancer: InternalIP
+  name: nginx-service-internalip
 spec:
   selector:
     app.kubernetes.io/name: proxy

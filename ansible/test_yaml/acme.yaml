@@ -1,0 +1,24 @@
+- name: ACME test
+  hosts: all
+  gather_facts: false
+  tasks:
+    - name: Generate an OpenSSL private key with the default values (4096 bits, RSA)
+      community.crypto.openssl_privatekey:
+        path: /srv/account.key
+
+    - name: Generate an OpenSSL Certificate Signing Request
+      community.crypto.openssl_csr:
+        path: /srv/account.csr
+        privatekey_path: /srv/account.key
+        common_name: www.autok8s.xyz
+
+    - name: Create a challenge for sample.com using a account key file.
+      community.crypto.acme_certificate:
+        account_key_src: /srv/account.key
+        csr: /srv/account.csr
+        dest: /srv/sample.com.crt
+        fullchain_dest: /srv/sample.com-fullchain.crt
+        acme_directory: http://10.17.3.1:8050/acme/directory
+        acme_version: 2
+        account_email: test
+      register: sample_com_challenge
