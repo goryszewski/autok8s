@@ -20,5 +20,20 @@
         fullchain_dest: /srv/sample.com-fullchain.crt
         acme_directory: http://10.17.3.1:8050/acme/directory
         acme_version: 2
-        account_email: test
-      register: sample_com_challenge
+        account_email: test@autok8s.xyz
+      register: acme_response
+
+    - name: Debug ACME response
+      debug:
+        msg: "{{ acme_response }}"
+
+    - name: Let the challenge(s) be validated and retrieve the cert and intermediate certificate
+      community.crypto.acme_certificate:
+        account_key_src: /srv/account.key
+        csr: /srv/account.csr
+        dest: /srv/sample.com.crt
+        data: "{{ acme_response }}"
+        acme_directory: http://10.17.3.1:8050/acme/directory
+        account_email: test@autok8s.xyz
+        acme_version: 2
+        terms_agreed: true
