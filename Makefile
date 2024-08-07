@@ -140,7 +140,7 @@ ansible_mini:
 cluster:
 	@echo "[MAKE] Ansible Kubernetes"
 	cd ./ansible && ansible-galaxy install -r requirements.yml
-	cd ./ansible && ansible-playbook main.k8s.yml $(inventory) --extra-vars @variables.yml --extra-vars @secret.yaml --vault-password-file .secret --tags CLUSTER
+	cd ./ansible && ansible-playbook main.cluster.yaml $(inventory) --extra-vars @variables.yml --extra-vars @secret.yaml --vault-password-file .secret --tags CLUSTER
 
 vault:
 	@echo "[MAKE] Vault"
