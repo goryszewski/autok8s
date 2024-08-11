@@ -16,7 +16,13 @@
       community.crypto.openssl_csr:
         path: "{{ csr }}"
         privatekey_path: "{{ priv }}"
-        common_name: www.autok8s.xyz
+        common_name: autok8s.xyz
+        extended_key_usage:
+          - clientAuth
+        subject_alt_name:
+          - DNS:autok8s.xyz
+          - DNS:www.autok8s.xyz
+          # - IP:127.0.0.1
 
     # - name: acme_account
     #   community.crypto.acme_account:

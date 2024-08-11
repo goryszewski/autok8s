@@ -9,7 +9,7 @@ vm requires:
 DOTO:
 * use Jenkins to deploy autok8s
 * ! create swift -> https://docs.openstack.org/swift/latest/development_saio.html
-* new ca - acme free
+* own acme(/) + certmanager
 * prometheus monitoring sd kubernetes apiserver argocd calico
 * Description
 * BGP + calico
@@ -24,4 +24,5 @@ DOTO:
 * trivy / Admisssion controller - test image
 * testunit / testinfo / sonarqube?
 * update template
-* external-loadbalancer for kubernetes api ...
+* more generic ansible_collection
+* external-loadbalancer for kubernetes api ...(/)

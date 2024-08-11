@@ -52,11 +52,3 @@
     - autok8s.general.grafana
     - autok8s.general.nginx
   tags: [PROMETHEUS]
-
-- name: Install lbexternal
-  hosts: lbexternal
-  gather_facts: false
-  roles:
-    - autok8s.general.docker
-    - autok8s.general.lbexternal
-  tags: [LBE]

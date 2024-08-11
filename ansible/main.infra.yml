@@ -6,8 +6,8 @@
   roles:
     - autok8s.general.bind
     - autok8s.general.keepalive
-    - autok8s.general.haproxy
-  tags: [LB, HA, DNS]
+    # - autok8s.general.haproxy
+  tags: [HA, DNS]
 
 - name: Roles for all servers
   hosts: all
@@ -23,3 +23,11 @@
   roles:
     - autok8s.general.ca
   tags: [CA]
+
+- name: Install lbexternal
+  hosts: lbexternal
+  gather_facts: false
+  roles:
+    - autok8s.general.docker
+    - autok8s.general.lbexternal
+  tags: [LB]

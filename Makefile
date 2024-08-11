@@ -102,6 +102,10 @@ terraform_mini:
 	@echo "[MAKE] Terraform Apply"
 	cd ./terraform && terraform apply --auto-approve $(Terraform_VARS_Mini)
 
+terraform_mini_show:
+	@echo "[MAKE] Terraform Apply"
+	cd ./terraform && terraform state list
+
 terraform_bsd:
 	@echo "[MAKE] Terraform Apply"
 	cd ./terraform && terraform apply --auto-approve $(Terraform_VARS_bsd)

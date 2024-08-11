@@ -2,12 +2,21 @@ provider "libvirt" {
   uri = var.qemu_url
 }
 
+provider "libvirtapi" {
+  hostname = "http://127.0.0.1:8050"
+  username = "test"
+  password = "test"
+}
+
 terraform {
   required_version = ">= 1.0.1"
   required_providers {
     libvirt = {
       source = "dmacvicar/libvirt"
 
+    }
+    libvirtapi = {
+      source = "github.com/goryszewski/libvirtApi"
     }
   }
 }
@@ -32,4 +41,22 @@ module "node" {
   network  = module.network.id
   public_network = var.public_network
   template = var.template
+}
+
+resource "libvirtapi_loadbalancer" "lbApi" {
+  name = "k8sapi"
+	namespace= "terraform"
+  nodes = [{
+    name = "master01"
+    ip = module.node["master01"].external[0]
+  }
+  ]
+  ports = [
+  {
+    name = "api"
+    protocol = "tcp"
+    port = "6443"
+    nodeport = "6443"
+  }
+  ]
 }
