@@ -4,4 +4,5 @@ output "tmp" {
 
 output "k8sip" {
   value = resource.libvirtapi_loadbalancer.lbApi.ip
+
 }

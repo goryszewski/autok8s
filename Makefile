@@ -6,8 +6,8 @@ HOSTS={\
 	"master03" : { memoryMB: "4096" , "tags" : ["etcd","nodeK8S","controlplane"] },\
 	"worker01" : { "tags" : ["nodeK8S","worker"]  , memoryMB: "8192"}, \
 	"worker02" : { "tags" : ["nodeK8S","worker"]  , memoryMB: "8192"}, \
-	"haproxy01" : { "tags" : ["bgp","haproxy","master"] , memoryMB: "2048"},\
-	"haproxy02" : { "tags" : ["bgp","haproxy"] , memoryMB: "2048"}, \
+	"bind01" : { "tags" : ["bgp","dns","master"] , memoryMB: "2048"},\
+	"dns02" : { "tags" : ["bgp","dns"] , memoryMB: "2048"}, \
 	"syslog" : { "tags" : ["syslog"] , memoryMB: "2048"}, \
 	"vault01" : { "tags" : ["vault"] , memoryMB: "2048"}, \
 	"vault02" : { "tags" : ["vault"] , memoryMB: "2048"}, \
@@ -19,14 +19,14 @@ HOSTS={\
  HOSTS_s={\
 	"master01" : { memoryMB: "8192" , "tags" : ["etcd","nodeK8S","controlplane","init"] },\
 	"worker01" : { "tags" : ["nodeK8S","worker"]  , memoryMB: "8192"}, \
-	"haproxy01" : { "tags" : ["bgp","haproxy","master"] , memoryMB: "2048"},\
+	"dns01" : { "tags" : ["bgp","dns","master"] , memoryMB: "2048"},\
  }
 
  HOSTS_test={\
-	"master01" : { memoryMB: "8192" , "tags" : ["etcd","nodeK8S","controlplane","init"] },\
-	"worker01" : { "tags" : ["nodeK8S","worker"]  , memoryMB: "8192"}, \
-	"haproxy01" : { "tags" : ["bgp","haproxy","master"] , memoryMB: "2048"},\
-	"lbexternal01" : { "tags" : ["lbexternal"] , memoryMB: "2048"},\
+	"master01" : { memoryMB: "8192" , "tags" : ["bgp","etcd","nodeK8S","controlplane","init"] },\
+	"worker01" : { "tags" : ["bgp","nodeK8S","worker"]  , memoryMB: "8192"}, \
+	"bind01" : { "tags" : ["dns"] , memoryMB: "2048"},\
+	"lbexternal01" : { "tags" : ["bgp","lbexternal"] , memoryMB: "2048"},\
  }
 
 HOSTS_swift={"node01" : { memoryMB: "8192" , "tags" : ["swift"] }}
@@ -88,7 +88,7 @@ swift_ansible:
 
 terraform_init:
 	@echo "[MAKE] Terraform Init"
-	cd ./terraform && terraform init $(Terraform_VARS)
+	# cd ./terraform && terraform init $(Terraform_VARS)
 
 terraform_plan: terraform_init
 	@echo "[MAKE] Terraform Plan"

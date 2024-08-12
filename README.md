@@ -26,3 +26,4 @@ DOTO:
 * update template
 * more generic ansible_collection
 * external-loadbalancer for kubernetes api ...(/)
+* Problem with NAT - fix - iptables -t nat -A POSTROUTING  -o eno1 -j MASQUERADE

@@ -14,13 +14,6 @@
     - autok8s.general.nfs
   tags: [NFS]
 
-- name: Roles routing
-  hosts: haproxy
-  gather_facts: false
-  roles:
-    - autok8s.general.bird
-  tags: [BGP]
-
 - name: Roles for all servers
   hosts: all
   gather_facts: true
