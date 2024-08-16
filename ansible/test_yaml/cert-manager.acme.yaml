@@ -1,0 +1,44 @@
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: libvirtacme
+spec:
+  acme:
+    # The ACME server URL
+    server: http://10.17.3.1:8050/acme/directory
+    # Email address used for ACME registration
+    email: user@example.com
+    # Name of a secret used to store the ACME account private key
+    privateKeySecretRef:
+      name: libvirtacme
+    # Enable the HTTP-01 challenge provider
+    solvers:
+      - http01:
+          ingress:
+            ingressClassName: haproxy
+---
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: kuard
+  annotations:
+    cert-manager.io/issuer: "libvirtacme"
+
+spec:
+  ingressClassName: haproxy
+  tls:
+  - hosts:
+    - example.example.com
+    secretName: quickstart-example-tls
+  rules:
+  - host: example.example.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: kuard
+            port:
+              number: 80

@@ -8,10 +8,32 @@
   tasks:
     - name: clean
       shell: "rm -rf /srv/test.*"
+      tags: ['SKIP']
+
     - name: Generate an OpenSSL private key with the default values (4096 bits, RSA)
       community.crypto.openssl_privatekey:
         path: "{{ priv }}"
 
+    - name: Make sure account exists and has given contacts. We agree to TOS.
+      community.crypto.acme_account:
+        account_key_src: "{{ priv }}"
+        state: present
+        terms_agreed: true
+        acme_version: 2
+        acme_directory: http://10.17.3.1:8050/acme/directory
+        contact:
+        - mailto:me@example.com
+        - mailto:myself@example.org
+
+    - name: Make sure account has given email address. Do not create account if it does not exist
+      community.crypto.acme_account:
+        account_key_src: "{{ priv }}"
+        state: present
+        allow_creation: false
+        acme_version: 2
+        acme_directory: http://10.17.3.1:8050/acme/directory
+        contact:
+        - mailto:me1@example.com
     - name: Generate an OpenSSL Certificate Signing Request
       community.crypto.openssl_csr:
         path: "{{ csr }}"
@@ -22,16 +44,16 @@
         subject_alt_name:
           - DNS:autok8s.xyz
           - DNS:www.autok8s.xyz
-          # - IP:127.0.0.1
+          - IP:127.0.0.1
 
-    # - name: acme_account
-    #   community.crypto.acme_account:
-    #     account_key_src: "{{ priv }}"
-    #     state: present
-    #     terms_agreed: true
-    #     contact: test@autok8s.xyz1
-    #     acme_version: 2
-    #     acme_directory: http://10.17.3.1:8050/acme/directory
+    - name: acme_account
+      community.crypto.acme_account:
+        account_key_src: "{{ priv }}"
+        state: present
+        terms_agreed: true
+        contact: test@autok8s.xyz1
+        acme_version: 2
+        acme_directory: http://10.17.3.1:8050/acme/directory
 
     - name: Create a challenge for sample.com using a account key file.
       community.crypto.acme_certificate:

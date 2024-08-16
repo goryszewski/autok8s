@@ -1,11 +1,13 @@
 ---
 - name: Roles for haproxy/lb servers
-  hosts: dns
+  hosts: haproxy
   gather_facts: false
   roles:
     - autok8s.general.bind
-    # - autok8s.general.keepalive
-    # - autok8s.general.haproxy
+    - role: autok8s.general.keepalive
+      vars:
+        interface: ens4
+    - autok8s.general.haproxy
   tags: [DNS]
 
 - name: Roles for all servers
@@ -16,12 +18,12 @@
     - autok8s.general.firewall
   tags: [ALL]
 
-- name: Roles routing
-  hosts: bgp
-  gather_facts: false
-  roles:
-    - autok8s.general.bird
-  tags: [BGP]
+# - name: Roles routing
+#   hosts: bgp
+#   gather_facts: false
+#   roles:
+#     - autok8s.general.bird
+#   tags: [BGP]
 
 - name: Install lbexternal
   hosts: lbexternal
@@ -31,9 +33,9 @@
     - autok8s.general.lbexternal
   tags: [LB]
 
-# - name: Roles for CA servers
-#   hosts: controlplane
-#   gather_facts: false
-#   roles:
-#     - autok8s.general.ca
-#   tags: [CA]
+- name: Roles for CA servers
+  hosts: controlplane
+  gather_facts: false
+  roles:
+    - autok8s.general.ca
+  tags: [CA]
