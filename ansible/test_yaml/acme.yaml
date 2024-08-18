@@ -6,15 +6,15 @@
     csr: "/srv/test.csr"
     cert: "/srv/test.crt"
   tasks:
-    - name: clean
+    - name: 01 - clean
       shell: "rm -rf /srv/test.*"
       tags: ['SKIP']
 
-    - name: Generate an OpenSSL private key with the default values (4096 bits, RSA)
+    - name: 02 - Generate an OpenSSL private key with the default values (4096 bits, RSA)
       community.crypto.openssl_privatekey:
         path: "{{ priv }}"
 
-    - name: Make sure account exists and has given contacts. We agree to TOS.
+    - name: 03 - Make sure account exists and has given contacts. We agree to TOS.
       community.crypto.acme_account:
         account_key_src: "{{ priv }}"
         state: present
@@ -24,8 +24,13 @@
         contact:
         - mailto:me@example.com
         - mailto:myself@example.org
+      register: acme_account_response
 
-    - name: Make sure account has given email address. Do not create account if it does not exist
+    - name: 04 - Debug acme_account response
+      debug:
+        msg: "{{ acme_account_response }}"
+
+    - name: 05 - Make sure account has given email address. Do not create account if it does not exist
       community.crypto.acme_account:
         account_key_src: "{{ priv }}"
         state: present
@@ -34,6 +39,26 @@
         acme_directory: http://10.17.3.1:8050/acme/directory
         contact:
         - mailto:me1@example.com
+      register: acme_account_response
+
+    - name: 06 - Debug acme_account response
+      debug:
+        msg: "{{ acme_account_response }}"
+
+    - name: Generate an OpenSSL private key with the default values (4096 bits, RSA) 2
+      community.crypto.openssl_privatekey:
+        path: "/srv/test2.key"
+
+    - name: Make sure account has given email address. Do not create account if it does not exist
+      community.crypto.acme_account:
+        account_key_src: "/srv/test2.key"
+        state: present
+        allow_creation: false
+        acme_version: 2
+        acme_directory: http://10.17.3.1:8050/acme/directory
+        contact:
+        - mailto:me1@example1.com
+
     - name: Generate an OpenSSL Certificate Signing Request
       community.crypto.openssl_csr:
         path: "{{ csr }}"
