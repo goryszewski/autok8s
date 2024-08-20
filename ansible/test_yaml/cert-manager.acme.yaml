@@ -29,10 +29,10 @@ spec:
   ingressClassName: haproxy
   tls:
   - hosts:
-    - example.example.com
+    - ui.dev.autok8s.ext
     secretName: quickstart-example-tls
   rules:
-  - host: example.example.com
+  - host: ui.dev.autok8s.ext
     http:
       paths:
       - path: /

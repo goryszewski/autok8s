@@ -45,11 +45,11 @@
       debug:
         msg: "{{ acme_account_response }}"
 
-    - name: Generate an OpenSSL private key with the default values (4096 bits, RSA) 2
+    - name: 07 - Generate an OpenSSL private key with the default values (4096 bits, RSA) 2
       community.crypto.openssl_privatekey:
         path: "/srv/test2.key"
 
-    - name: Make sure account has given email address. Do not create account if it does not exist
+    - name: 08 - Make sure account has given email address. Do not create account if it does not exist
       community.crypto.acme_account:
         account_key_src: "/srv/test2.key"
         state: present
@@ -58,8 +58,14 @@
         acme_directory: http://10.17.3.1:8050/acme/directory
         contact:
         - mailto:me1@example1.com
+      register: acme_account_response
+      ignore_errors: true
 
-    - name: Generate an OpenSSL Certificate Signing Request
+    - name: 09 - Debug acme_account response
+      debug:
+        msg: "{{ acme_account_response }}"
+
+    - name: 10 - Generate an OpenSSL Certificate Signing Request
       community.crypto.openssl_csr:
         path: "{{ csr }}"
         privatekey_path: "{{ priv }}"
@@ -71,16 +77,7 @@
           - DNS:www.autok8s.xyz
           - IP:127.0.0.1
 
-    - name: acme_account
-      community.crypto.acme_account:
-        account_key_src: "{{ priv }}"
-        state: present
-        terms_agreed: true
-        contact: test@autok8s.xyz1
-        acme_version: 2
-        acme_directory: http://10.17.3.1:8050/acme/directory
-
-    - name: Create a challenge for sample.com using a account key file.
+    - name: 11 - Create a challenge for sample.com using a account key file.
       community.crypto.acme_certificate:
         account_key_src: "{{ priv }}"
         csr: "{{ csr }}"
@@ -91,11 +88,11 @@
         terms_agreed: true
       register: acme_response
 
-    - name: Debug ACME response
+    - name: 12 - Debug ACME response
       debug:
         msg: "{{ acme_response }}"
 
-    - name: Let the challenge(s) be validated and retrieve the cert and intermediate certificate
+    - name: 13 - Let the challenge(s) be validated and retrieve the cert and intermediate certificate
       community.crypto.acme_certificate:
         account_key_src: "{{ priv }}"
         csr: "{{ csr }}"

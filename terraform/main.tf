@@ -49,6 +49,10 @@ resource "libvirtapi_loadbalancer" "lbApi" {
   nodes = [{
     name = "master01"
     ip = module.node["master01"].external[0]
+  },
+  {
+    name = "master02"
+    ip = module.node["master02"].external[0]
   }
   ]
   ports = [

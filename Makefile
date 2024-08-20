@@ -6,8 +6,8 @@ HOSTS={\
 	"master03" : { memoryMB: "4096" , "tags" : ["etcd","nodeK8S","controlplane"] },\
 	"worker01" : { "tags" : ["nodeK8S","worker"]  , memoryMB: "8192"}, \
 	"worker02" : { "tags" : ["nodeK8S","worker"]  , memoryMB: "8192"}, \
-	"bind01" : { "tags" : ["bgp","dns","master"] , memoryMB: "2048"},\
-	"dns02" : { "tags" : ["bgp","dns"] , memoryMB: "2048"}, \
+	"haproxy01" : { "tags" : ["dns","master"] , memoryMB: "2048"},\
+	"dns02" : { "tags" : ["dns"] , memoryMB: "2048"}, \
 	"syslog" : { "tags" : ["syslog"] , memoryMB: "2048"}, \
 	"vault01" : { "tags" : ["vault"] , memoryMB: "2048"}, \
 	"vault02" : { "tags" : ["vault"] , memoryMB: "2048"}, \
@@ -19,14 +19,15 @@ HOSTS={\
  HOSTS_s={\
 	"master01" : { memoryMB: "8192" , "tags" : ["etcd","nodeK8S","controlplane","init"] },\
 	"worker01" : { "tags" : ["nodeK8S","worker"]  , memoryMB: "8192"}, \
-	"dns01" : { "tags" : ["bgp","dns","master"] , memoryMB: "2048"},\
+	"dns01" : { "tags" : ["dns","master"] , memoryMB: "2048"},\
  }
 
  HOSTS_test={\
-	"master01" : { memoryMB: "8192" , "tags" : ["bgp","etcd","nodeK8S","controlplane","init"] },\
-	"worker01" : { "tags" : ["bgp","nodeK8S","worker"]  , memoryMB: "8192"}, \
-	"bind01" : { "tags" : ["dns"] , memoryMB: "2048"},\
-	"lbexternal01" : { "tags" : ["bgp","lbexternal"] , memoryMB: "2048"},\
+	"master01" : { memoryMB: "8192" , "tags" : ["etcd","nodeK8S","controlplane","init"] },\
+	"master02" : { memoryMB: "8192" , "tags" : ["etcd","nodeK8S","controlplane"] },\
+	"worker01" : { "tags" : ["nodeK8S","worker"]  , memoryMB: "8192"}, \
+	"haproxy01" : { "tags" : ["haproxy","dns"] , memoryMB: "2048"},\
+	"lbexternal01" : { "tags" : ["lbexternal"] , memoryMB: "2048"},\
  }
 
 HOSTS_swift={"node01" : { memoryMB: "8192" , "tags" : ["swift"] }}
@@ -100,6 +101,7 @@ terraform_apply: terraform_plan
 
 terraform_mini:
 	@echo "[MAKE] Terraform Apply"
+	sudo iptables -t nat -A POSTROUTING  -o eno1 -j MASQUERADE
 	cd ./terraform && terraform apply --auto-approve $(Terraform_VARS_Mini)
 
 terraform_mini_show:
@@ -132,7 +134,7 @@ ansible_ping:
 ansible_k8s:
 	@echo "[MAKE] Ansible Kubernetes"
 	cd ./ansible && ansible-galaxy install -r requirements.yml
-	cd ./ansible && ansible-playbook main.infra.yml $(inventory) --extra-vars @variables.yml --extra-vars @secret.yaml  --skip-tags SKIP
+	cd ./ansible && ansible-playbook main.k8s.yaml $(inventory) --extra-vars @variables.yml --extra-vars @secret.yaml  --skip-tags SKIP
 
 ansible: ansible_k8s
 
@@ -144,7 +146,7 @@ ansible_mini:
 cluster:
 	@echo "[MAKE] Ansible Kubernetes"
 	cd ./ansible && ansible-galaxy install -r requirements.yml
-	cd ./ansible && ansible-playbook main.cluster.yaml $(inventory) --extra-vars @variables.yml --extra-vars @secret.yaml --vault-password-file .secret --tags CLUSTER
+	cd ./ansible && ansible-playbook main.cluster.yaml $(inventory) --extra-vars @variables.yml --extra-vars @secret.yaml --vault-password-file .secret
 
 vault:
 	@echo "[MAKE] Vault"
