@@ -7,7 +7,7 @@
     cert: "/srv/test.crt"
   tasks:
     - name: 01 - clean
-      shell: "rm -rf /srv/test.*"
+      shell: "rm -rf /srv/*"
       tags: ['SKIP']
 
     - name: 02 - Generate an OpenSSL private key with the default values (4096 bits, RSA)
@@ -98,6 +98,8 @@
         csr: "{{ csr }}"
         dest: "{{ cert }}"
         data: "{{ acme_response }}"
+        fullchain: /srv/sample.com-fullchain.crt
+        chain: /srv/sample.com-intermediate.crt
         acme_directory: http://10.17.3.1:8050/acme/directory
         account_email: test@autok8s.xyz
         acme_version: 2

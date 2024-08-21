@@ -2,6 +2,7 @@ apiVersion: cert-manager.io/v1
 kind: Issuer
 metadata:
   name: libvirtacme
+  namespace: dev
 spec:
   acme:
     # The ACME server URL
@@ -22,6 +23,7 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: kuard
+  namespace: dev
   annotations:
     cert-manager.io/issuer: "libvirtacme"
 
@@ -29,16 +31,16 @@ spec:
   ingressClassName: haproxy
   tls:
   - hosts:
-    - ui.dev.autok8s.ext
+    - uissl.dev.autok8s.ext
     secretName: quickstart-example-tls
   rules:
-  - host: ui.dev.autok8s.ext
+  - host: uissl.dev.autok8s.ext
     http:
       paths:
       - path: /
         pathType: Prefix
         backend:
           service:
-            name: kuard
+            name: ui-test-service
             port:
               number: 80
