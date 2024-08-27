@@ -13,6 +13,7 @@
     - name: 02 - Generate an OpenSSL private key with the default values (4096 bits, RSA)
       community.crypto.openssl_privatekey:
         path: "{{ priv }}"
+      tags: ['account']
 
     - name: 03 - Make sure account exists and has given contacts. We agree to TOS.
       community.crypto.acme_account:
@@ -25,14 +26,17 @@
         - mailto:me@example.com
         - mailto:myself@example.org
       register: acme_account_response
+      tags: ['account']
 
     - name: 04 - Debug acme_account response
       debug:
         msg: "{{ acme_account_response }}"
+      tags: ['account']
 
     - name: 05 - Make sure account has given email address. Do not create account if it does not exist
       community.crypto.acme_account:
         account_key_src: "{{ priv }}"
+        terms_agreed: true
         state: present
         allow_creation: false
         acme_version: 2
@@ -40,10 +44,12 @@
         contact:
         - mailto:me1@example.com
       register: acme_account_response
+      tags: ['account']
 
     - name: 06 - Debug acme_account response
       debug:
         msg: "{{ acme_account_response }}"
+      tags: ['account']
 
     - name: 07 - Generate an OpenSSL private key with the default values (4096 bits, RSA) 2
       community.crypto.openssl_privatekey:
