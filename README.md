@@ -28,3 +28,6 @@ DOTO:
 * external-loadbalancer for kubernetes api ...(/)
 * Problem with NAT - fix - iptables -t nat -A POSTROUTING  -o eno1 -j MASQUERADE
 * notes (i)
+
+BUG:
+* edit /etc/libvirt/qemu.conf -> security_driver = "none"

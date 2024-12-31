@@ -11,6 +11,11 @@ variable "node_addresses" {
   default = ["10.17.3.0/24"]
 }
 
+variable "pool" {
+  type    = string
+  default = "default"
+}
+
 variable "name_network" {
   type    = string
   default = "Local_ansible"

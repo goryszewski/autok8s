@@ -89,7 +89,7 @@ swift_ansible:
 
 terraform_init:
 	@echo "[MAKE] Terraform Init"
-	# cd ./terraform && terraform init $(Terraform_VARS)
+	cd ./terraform && terraform init $(Terraform_VARS_Mini)
 
 terraform_plan: terraform_init
 	@echo "[MAKE] Terraform Plan"
