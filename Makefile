@@ -22,6 +22,11 @@ HOSTS={\
 	"dns01" : { "tags" : ["dns","master"] , memoryMB: "2048"},\
  }
 
+ HOSTS_db={\
+	"sql01" : { "tags" : ["db","mariadb"], memoryMB: "8192" },\
+	"sql02" : { "tags" : ["db","mariadb"], memoryMB: "8192"}, \
+}
+
  HOSTS_test={\
 	"master01" : { memoryMB: "8192" , "tags" : ["etcd","nodeK8S","controlplane","init"] },\
 	"master02" : { memoryMB: "8192" , "tags" : ["etcd","nodeK8S","controlplane"] },\
@@ -31,6 +36,7 @@ HOSTS={\
  }
 
 HOSTS_swift={"node01" : { memoryMB: "8192" , "tags" : ["swift"] }}
+
 Terraform_Swift= -var-file="debian12.tfvars" -var 'domain=$(CONF_domain)' -var 'hosts=$(HOSTS_swift)'
 
 HOSTS_single={"master01" : { "template":"rh93", memoryMB: "8192" , "tags" : ["etcd","nodeK8S","controlplane","init","worker"] }}
@@ -46,6 +52,8 @@ Terraform_VARS_ubuntu=-var-file="ubuntu2204.tfvars" -var 'domain=$(CONF_domain)'
 Terraform_VARS_bsd=-var-file="freebsd14.tfvars" -var 'domain=$(CONF_domain)' -var 'hosts=$(HOSTS_s)'
 
 Terraform_VARS_redhat=-var-file="rh93.tfvars" -var 'domain=$(CONF_domain)' -var 'hosts=$(HOSTS_single)'
+
+Terraform_VARS_db=-var-file="variable/debian12.tfvars" -var 'domain=$(CONF_domain)' -var 'hosts=$(HOSTS_db)''
 
 inventory=-i ./scripts/libvirt_inventory.py
 
@@ -103,6 +111,11 @@ terraform_mini:
 	@echo "[MAKE] Terraform Apply"
 	sudo iptables -t nat -A POSTROUTING  -o eno1 -j MASQUERADE
 	cd ./terraform && terraform apply --auto-approve $(Terraform_VARS_Mini)
+
+terraform_db:
+	@echo "[MAKE] Terraform Apply"
+	sudo iptables -t nat -A POSTROUTING  -o eno1 -j MASQUERADE
+	cd ./terraform && terraform apply --auto-approve $(Terraform_VARS_db)
 
 terraform_mini_show:
 	@echo "[MAKE] Terraform Apply"
