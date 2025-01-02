@@ -53,7 +53,7 @@ Terraform_VARS_bsd=-var-file="freebsd14.tfvars" -var 'domain=$(CONF_domain)' -va
 
 Terraform_VARS_redhat=-var-file="rh93.tfvars" -var 'domain=$(CONF_domain)' -var 'hosts=$(HOSTS_single)'
 
-Terraform_VARS_db=-var-file="variable/debian12.tfvars" -var 'domain=$(CONF_domain)' -var 'hosts=$(HOSTS_db)''
+Terraform_VARS_db=-var-file="variable/debian12.tfvars" -var 'domain=$(CONF_domain)' -var 'hosts=$(HOSTS_db)'
 
 inventory=-i ./scripts/libvirt_inventory.py
 
@@ -116,6 +116,10 @@ terraform_db:
 	@echo "[MAKE] Terraform Apply"
 	sudo iptables -t nat -A POSTROUTING  -o eno1 -j MASQUERADE
 	cd ./terraform && terraform apply --auto-approve $(Terraform_VARS_db)
+
+terraform_db_destroy: terraform_init
+	@echo "[MAKE] Terraform Destroy"
+	cd ./terraform && terraform destroy --auto-approve $(Terraform_VARS_db)
 
 terraform_mini_show:
 	@echo "[MAKE] Terraform Apply"
