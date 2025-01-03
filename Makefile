@@ -155,6 +155,11 @@ ansible_k8s:
 
 ansible: ansible_k8s
 
+ansible_db:
+	@echo "[MAKE] Ansible DB Cluster"
+	cd ./ansible && ansible-galaxy install -r requirements.yml
+	cd ./ansible && ansible-playbook sandbox.db.yml $(inventory) --extra-vars @variables.yml --extra-vars @secret.yaml --vault-password-file .secret
+
 ansible_mini:
 	@echo "[MAKE] Ansible Kubernetes Mini"
 	cd ./ansible && ansible-galaxy install -r requirements.yml

@@ -1,0 +1,7 @@
+---
+# tasks file for mariadb
+
+- name: Install mariadb-server
+  ansible.builtin.package:
+    name: mariadb-server
+    state: present

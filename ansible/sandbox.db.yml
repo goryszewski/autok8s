@@ -1,0 +1,8 @@
+---
+
+- name: Roles for db servers
+  hosts: mariadb
+  gather_facts: true
+  roles:
+    - mariadb
+  tags: [db]
