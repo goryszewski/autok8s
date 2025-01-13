@@ -25,6 +25,7 @@ HOSTS={\
  HOSTS_db={\
 	"sql01" : { "tags" : ["db","mariadb"], memoryMB: "8192" },\
 	"sql02" : { "tags" : ["db","mariadb"], memoryMB: "8192"}, \
+	"sql03" : { "tags" : ["db","mariadb"], memoryMB: "8192"}, \
 }
 
  HOSTS_test={\
@@ -158,7 +159,7 @@ ansible: ansible_k8s
 ansible_db:
 	@echo "[MAKE] Ansible DB Cluster"
 	cd ./ansible && ansible-galaxy install -r requirements.yml
-	cd ./ansible && ansible-playbook sandbox.db.yml $(inventory) --extra-vars @variables.yml --extra-vars @secret.yaml --vault-password-file .secret
+	cd ./ansible && ansible-playbook sandbox.db.yml $(inventory) -vv
 
 ansible_mini:
 	@echo "[MAKE] Ansible Kubernetes Mini"
