@@ -159,7 +159,7 @@ ansible: ansible_k8s
 ansible_db:
 	@echo "[MAKE] Ansible DB Cluster"
 	cd ./ansible && ansible-galaxy install -r requirements.yml
-	cd ./ansible && ansible-playbook sandbox.db.yml $(inventory) -vv
+	cd ./ansible && ansible-playbook sandbox.db.yml $(inventory)
 
 ansible_mini:
 	@echo "[MAKE] Ansible Kubernetes Mini"

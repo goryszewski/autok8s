@@ -1,17 +1,37 @@
 ---
 # tasks file for mariadb
 
-# - name: Install mariadb-server
-#   ansible.builtin.package:
-#     name: mariadb-server
-#     state: present
+- name: Install mariadb-server
+  ansible.builtin.apt:
+    update_cache: true
+    allow_change_held_packages: true
+    pkg: "mariadb-server"
+    state: present
 
-# - name: Install galera
-#   ansible.builtin.package:
-#     name: galera
-    # state: present
 
-- name: config
-  template:
+- name: Enable service mariadb
+  ansible.builtin.systemd:
+    name: mariadb
+    enabled: true
+    state: stopped
+
+
+- name: Deploy config
+  ansible.builtin.template:
     src: my.cnf
     dest: /etc/mysql/conf.d/galera.cnf
+
+
+- name: Galera new cluster
+  ansible.builtin.shell: galera_new_cluster
+  delegate_to: "{{ groups.db[0] }}"
+  run_once: true
+
+- name: Enable service mariadb
+  when: "inventory_hostname != groups.db[0] "
+  ansible.builtin.systemd:
+    name: mariadb
+    enabled: true
+    state: started
+
+  # SHOW GLOBAL STATUS LIKE 'wsrep_%';
