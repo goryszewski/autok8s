@@ -1,0 +1,16 @@
+[mysqld]
+wsrep_provider=/usr/lib/libgalera_smm.so
+wsrep_cluster_name=pxc-cluster
+{% set list = []%}
+{% for host in groups["mariadb"] %}
+{% set list = list.append(hostvars[host]['ansible_host'])%}
+{% endfor %}
+wsrep_cluster_address="gcomm://{{ list | join(',')}}"
+wsrep_node_address="{{ ansible_host }}"
+wsrep_node_name="{{ inventory_hostname }}"
+wsrep_sst_method=xtrabackup-v2
+pxc_encrypt_cluster_traffic=OFF # DOTO DODAC SSL
+pxc_strict_mode=ENFORCING
+binlog_format=ROW
+default_storage_engine=InnoDB
+innodb_autoinc_lock_mode=2

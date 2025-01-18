@@ -1,0 +1,76 @@
+---
+# tasks file for percona
+
+
+- name: Download percona-release_latest.generic_all.deb
+  ansible.builtin.get_url:
+    url: https://repo.percona.com/apt/percona-release_latest.generic_all.deb
+    dest: /tmp/percona-release_latest.generic_all.deb
+    mode: '0440'
+  register: test01
+
+- name: Get stats of a file
+  ansible.builtin.stat:
+    path: /tmp/percona-release_latest.generic_all.deb
+  register: test02
+
+
+- name: Install deb
+  when: test02.stat.exists
+  ansible.builtin.apt:
+    deb: /tmp/percona-release_latest.generic_all.deb
+
+- name: Enable REPO
+  ansible.builtin.shell: percona-release setup pxc-80
+  register: test03
+
+
+
+- name: Install percona-xtradb-cluster
+  ansible.builtin.apt:
+    update_cache: true
+    allow_change_held_packages: true
+    pkg: "percona-xtradb-cluster"
+    state: present
+
+
+- name: Stoped service mysql
+  when: "inventory_hostname != groups.db[0] "
+  ansible.builtin.systemd:
+    name: mysql
+    enabled: true
+    state: stopped
+
+
+- name: Deploy config
+  # when: "inventory_hostname != groups.db[0] "
+  ansible.builtin.template:
+    src: wsrep.cnf.j2
+    dest: /etc/mysql/mysql.conf.d/mysqld.cnf
+
+# - name: Deploy config new cluster
+#   ansible.builtin.template:
+#     src: wsrep.cnf-new.j2
+#     dest: /etc/mysql/mysql.conf.d/mysqld.cnf
+#   delegate_to: "{{ groups.db[0] }}"
+#   run_once: true
+
+- name: Galera new cluster
+  ansible.builtin.shell: systemctl start mysql@bootstrap.service
+  delegate_to: "{{ groups.db[0] }}"
+  run_once: true
+
+- name: Enable service mysql
+  when: "inventory_hostname != groups.db[0] "
+  ansible.builtin.systemd:
+    name: mysql
+    enabled: true
+    state: started
+
+  # SHOW GLOBAL STATUS LIKE 'wsrep_%';
+
+- name: test
+  ansible.builtin.shell: mysql -e "SHOW GLOBAL STATUS LIKE 'wsrep%'"
+  register: test03
+
+- ansible.builtin.debug: var=test03

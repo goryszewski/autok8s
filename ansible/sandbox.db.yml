@@ -4,5 +4,6 @@
   hosts: mariadb
   gather_facts: true
   roles:
-    - mariadb
+    # - mariadb
+    - percona
   tags: [db]
