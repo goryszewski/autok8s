@@ -1,9 +1,0 @@
----
-
-- name: Roles for db servers
-  hosts: mariadb
-  gather_facts: true
-  roles:
-    # - mariadb
-    - percona
-  tags: [db]

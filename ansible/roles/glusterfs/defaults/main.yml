@@ -1,0 +1,3 @@
+---
+# defaults file for glusterfs
+gluster_version: 10

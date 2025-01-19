@@ -1,0 +1,4 @@
+---
+# vars file for glusterfs
+
+static_etc_hosts: false

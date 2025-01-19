@@ -1,0 +1,72 @@
+---
+# tasks file for glusterfs
+
+- ansible.builtin.shell: grep 'VERSION_ID=' /etc/os-release | cut -d '=' -f 2 | tr -d '"'
+  register: DEBID
+
+- ansible.builtin.shell: grep 'VERSION=' /etc/os-release | grep -Eo '[a-z]+'
+  register: DEBVER
+
+- ansible.builtin.shell: dpkg --print-architecture
+  register: DEBARCH
+
+- name: Add repositories key
+  ansible.builtin.apt_key:
+    url: https://download.gluster.org/pub/gluster/glusterfs/{{ gluster_version }}/rsa.pub
+    state: present
+
+- name: Add repositories
+  ansible.builtin.apt_repository:
+    repo: 'deb https://download.gluster.org/pub/gluster/glusterfs/LATEST/Debian/{{ DEBID["stdout"] }}/{{ DEBARCH["stdout"]  }}/apt {{ DEBVER["stdout"]  }} main'
+    state: present
+    filename: 'glusterfs'
+
+- name: Install - glusterfs-server
+  ansible.builtin.apt:
+    update_cache: yes
+    allow_change_held_packages: true
+    pkg:
+      - glusterfs-server
+
+- name: Enable service glusterd
+  ansible.builtin.systemd:
+    name: glusterd.service
+    enabled: true
+    state: started
+
+- name: Static etc hosts
+  when: static_etc_hosts
+  ansible.builtin.lineinfile:
+    path: "/etc/hosts"
+    regexp: "{{ item }}"
+    line:  "{{ hostvars[item]['ansible_host']  }}  {{ hostvars[item]['inventory_hostname_short']   }} {{ item }}"
+    state: present
+  with_items: "{{ hosts }}"
+
+- name: Install - dep
+  ansible.builtin.apt:
+    update_cache: true
+    allow_change_held_packages: true
+    pkg:
+      - parted
+
+- name: Create a new xfs primary partition
+  community.general.parted:
+    device: /dev/vdb
+    number: 1
+    state: present
+    fs_type: xfs
+
+- name: Create a xfs filesystem on /dev/vdb1 and check disk blocks
+  community.general.filesystem:
+    fstype: xfs
+    dev: /dev/vdb1
+    opts: -i size=512 -d su=128k,sw=01
+
+- name: Mount brick
+  ansible.posix.mount:
+    path: /mnt/brick
+    src: /dev/vdb1
+    fstype: xfs
+    opts: rw,inode64,noatime,nouuid
+    state: mounted

@@ -22,10 +22,10 @@ HOSTS={\
 	"dns01" : { "tags" : ["dns","master"] , memoryMB: "2048"},\
  }
 
- HOSTS_db={\
-	"sql01" : { "tags" : ["db","mariadb"], memoryMB: "8192" },\
-	"sql02" : { "tags" : ["db","mariadb"], memoryMB: "8192"}, \
-	"sql03" : { "tags" : ["db","mariadb"], memoryMB: "8192"}, \
+ HOSTS_nodes={\
+	"node01" : { "tags" : ["nodes"], memoryMB: "8192" },\
+	"node02" : { "tags" : ["nodes"], memoryMB: "8192"}, \
+	"node03" : { "tags" : ["nodes"], memoryMB: "8192"}, \
 }
 
  HOSTS_test={\
@@ -54,7 +54,7 @@ Terraform_VARS_bsd=-var-file="freebsd14.tfvars" -var 'domain=$(CONF_domain)' -va
 
 Terraform_VARS_redhat=-var-file="rh93.tfvars" -var 'domain=$(CONF_domain)' -var 'hosts=$(HOSTS_single)'
 
-Terraform_VARS_db=-var-file="variable/debian12.tfvars" -var 'domain=$(CONF_domain)' -var 'hosts=$(HOSTS_db)'
+Terraform_VARS_nodes=-var-file="variable/debian12.tfvars" -var 'domain=$(CONF_domain)' -var 'hosts=$(HOSTS_nodes)'
 
 inventory=-i ./scripts/libvirt_inventory.py
 
@@ -113,10 +113,10 @@ terraform_mini:
 	sudo iptables -t nat -A POSTROUTING  -o eno1 -j MASQUERADE
 	cd ./terraform && terraform apply --auto-approve $(Terraform_VARS_Mini)
 
-terraform_db:
+terraform_nodes:
 	@echo "[MAKE] Terraform Apply"
 	sudo iptables -t nat -A POSTROUTING  -o eno1 -j MASQUERADE
-	cd ./terraform && terraform apply --auto-approve $(Terraform_VARS_db)
+	cd ./terraform && terraform apply --auto-approve $(Terraform_VARS_nodes)
 
 terraform_db_destroy: terraform_init
 	@echo "[MAKE] Terraform Destroy"
@@ -156,10 +156,10 @@ ansible_k8s:
 
 ansible: ansible_k8s
 
-ansible_db:
-	@echo "[MAKE] Ansible DB Cluster"
-	cd ./ansible && ansible-galaxy install -r requirements.yml
-	cd ./ansible && ansible-playbook sandbox.db.yml $(inventory)
+ansible_nodes:
+	@echo "[MAKE] Ansible Nodes Cluster"
+	# cd ./ansible && ansible-galaxy install -r requirements.yml
+	cd ./ansible && ansible-playbook sandbox.nodes.yml $(inventory)
 
 ansible_mini:
 	@echo "[MAKE] Ansible Kubernetes Mini"

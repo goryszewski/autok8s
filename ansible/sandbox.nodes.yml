@@ -1,0 +1,14 @@
+---
+
+- name: Roles for nodes servers - Sandbox
+  hosts: nodes
+  gather_facts: true
+  roles:
+    # - mariadb
+    # - percona
+    - role: glusterfs
+      vars:
+        - hosts: "{{groups.nodes}}"
+        - static_etc_hosts: true
+
+  tags: [nodes]
