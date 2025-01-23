@@ -1,14 +1,40 @@
 ---
+- name: Roles for dns servers
+  hosts: dns
+  gather_facts: false
+  roles:
+    - autok8s.general.bind
+    - role: autok8s.general.keepalive
+      vars:
+        interface: ens4
+  tags: [DNS]
 
-- name: Roles for nodes servers - Sandbox
+- name: Prep - Sandbox
+  hosts: nodes
+  gather_facts: true
+  tasks:
+    - name: Prep etc hosts
+      ansible.builtin.lineinfile:
+        path: "/etc/hosts"
+        regexp: "{{ item }}"
+        line:  "{{ hostvars[item]['ansible_host']  }}  {{ hostvars[item]['inventory_hostname_short']   }} {{ item }}"
+        state: present
+      with_items: "{{ groups.all }}"
+
+- name: Roles for nodes servers - sql galera
   hosts: nodes
   gather_facts: true
   roles:
-    # - mariadb
-    # - percona
-    - role: glusterfs
+    - role: percona
+    # - role: mariadb
       vars:
         - hosts: "{{groups.nodes}}"
-        - static_etc_hosts: true
 
   tags: [nodes]
+
+- name: Roles for nodes servers - glusterfs
+  hosts: glusterfs
+  gather_facts: true
+  roles:
+    - role: glusterfs
+  tags: [glusterfs]

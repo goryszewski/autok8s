@@ -23,9 +23,10 @@ HOSTS={\
  }
 
  HOSTS_nodes={\
-	"node01" : { "tags" : ["nodes"], memoryMB: "8192" },\
-	"node02" : { "tags" : ["nodes"], memoryMB: "8192"}, \
-	"node03" : { "tags" : ["nodes"], memoryMB: "8192"}, \
+	"node01" : { "tags" : ["nodes","db"], memoryMB: "8192" },\
+	"node02" : { "tags" : ["nodes","db"], memoryMB: "8192"}, \
+	"node03" : { "tags" : ["nodes","db"], memoryMB: "8192"}, \
+	"dns01" : { "tags" : ["dns"] , memoryMB: "2048"},\
 }
 
  HOSTS_test={\
@@ -159,7 +160,7 @@ ansible: ansible_k8s
 ansible_nodes:
 	@echo "[MAKE] Ansible Nodes Cluster"
 	# cd ./ansible && ansible-galaxy install -r requirements.yml
-	cd ./ansible && ansible-playbook sandbox.nodes.yml $(inventory)
+	cd ./ansible && ansible-playbook sandbox.nodes.yml $(inventory)  --extra-vars @variables.yml --extra-vars @secret.yaml  --skip-tags SKIP
 
 ansible_mini:
 	@echo "[MAKE] Ansible Kubernetes Mini"

@@ -24,8 +24,6 @@
   ansible.builtin.shell: percona-release setup pxc-80
   register: test03
 
-
-
 - name: Install percona-xtradb-cluster
   ansible.builtin.apt:
     update_cache: true
@@ -33,17 +31,15 @@
     pkg: "percona-xtradb-cluster"
     state: present
 
-
 - name: Stoped service mysql
-  when: "inventory_hostname != groups.db[0] "
+  when: "inventory_hostname != hosts[0] "
   ansible.builtin.systemd:
     name: mysql
     enabled: true
     state: stopped
 
-
 - name: Deploy config
-  # when: "inventory_hostname != groups.db[0] "
+  # when: "inventory_hostname != hosts[0] "
   ansible.builtin.template:
     src: wsrep.cnf.j2
     dest: /etc/mysql/mysql.conf.d/mysqld.cnf
@@ -52,16 +48,16 @@
 #   ansible.builtin.template:
 #     src: wsrep.cnf-new.j2
 #     dest: /etc/mysql/mysql.conf.d/mysqld.cnf
-#   delegate_to: "{{ groups.db[0] }}"
+#   delegate_to: "{{ hosts[0] }}"
 #   run_once: true
 
 - name: Galera new cluster
   ansible.builtin.shell: systemctl start mysql@bootstrap.service
-  delegate_to: "{{ groups.db[0] }}"
+  delegate_to: "{{ hosts[0] }}"
   run_once: true
 
 - name: Enable service mysql
-  when: "inventory_hostname != groups.db[0] "
+  when: "inventory_hostname != hosts[0] "
   ansible.builtin.systemd:
     name: mysql
     enabled: true
@@ -74,3 +70,30 @@
   register: test03
 
 - ansible.builtin.debug: var=test03
+
+- name: Install python3-pymysql
+  ansible.builtin.apt:
+    update_cache: true
+    allow_change_held_packages: true
+    pkg: "python3-pymysql"
+    state: present
+
+- name: Create a new database with name 'cloud'
+  community.mysql.mysql_db:
+    name: cloud
+    state: present
+    login_unix_socket: /run/mysqld/mysqld.sock
+
+- name: Create database user with name 'client' and password 'client' with all database privileges
+  community.mysql.mysql_user:
+    name: client
+    host: "%"
+    password: client
+    priv: '*.*:ALL'
+    state: present
+    login_unix_socket: /run/mysqld/mysqld.sock
+- name: Simple query to cloud db
+  community.mysql.mysql_query:
+    login_db: cloud
+    query: CREATE TABLE IF NOT EXISTS task (id INT AUTO_INCREMENT PRIMARY KEY,data1 VARCHAR(50) NOT NULL)
+    login_unix_socket: /run/mysqld/mysqld.sock

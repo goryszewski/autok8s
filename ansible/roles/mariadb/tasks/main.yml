@@ -8,7 +8,6 @@
     pkg: "mariadb-server"
     state: present
 
-
 - name: Enable service mariadb
   ansible.builtin.systemd:
     name: mariadb
@@ -24,11 +23,11 @@
 
 - name: Galera new cluster
   ansible.builtin.shell: galera_new_cluster
-  delegate_to: "{{ groups.db[0] }}"
+  delegate_to: "{{ hosts[0] }}"
   run_once: true
 
 - name: Enable service mariadb
-  when: "inventory_hostname != groups.db[0] "
+  when: "inventory_hostname != hosts[0] "
   ansible.builtin.systemd:
     name: mariadb
     enabled: true

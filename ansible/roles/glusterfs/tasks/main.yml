@@ -34,15 +34,6 @@
     enabled: true
     state: started
 
-- name: Static etc hosts
-  when: static_etc_hosts
-  ansible.builtin.lineinfile:
-    path: "/etc/hosts"
-    regexp: "{{ item }}"
-    line:  "{{ hostvars[item]['ansible_host']  }}  {{ hostvars[item]['inventory_hostname_short']   }} {{ item }}"
-    state: present
-  with_items: "{{ hosts }}"
-
 - name: Install - dep
   ansible.builtin.apt:
     update_cache: true
@@ -65,8 +56,19 @@
 
 - name: Mount brick
   ansible.posix.mount:
-    path: /mnt/brick
+    path: /gfs
     src: /dev/vdb1
     fstype: xfs
     opts: rw,inode64,noatime,nouuid
     state: mounted
+
+- name: Test peers
+  shell: gluster pool list | grep -i connected | wc -l
+  register: output
+
+- name: add pool
+  when: "item != hosts[0] and output.stdout| int == 1"
+  shell: "gluster peer probe {{ item  }}"
+  with_items: "{{ hosts }}"
+  delegate_to: "{{hosts[0]}}"
+  run_once: true
