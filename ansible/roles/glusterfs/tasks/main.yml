@@ -72,3 +72,24 @@
   with_items: "{{ hosts }}"
   delegate_to: "{{hosts[0]}}"
   run_once: true
+
+
+- name: check exist
+  shell: gluster volume list | grep gfs_vol
+  register: output
+- debug: var=output
+  delegate_to: "{{hosts[0]}}"
+  run_once: true
+
+- name: Create replica
+  when: output["rc"] != 0
+  shell: gluster volume create gfs_vol replica 3 node01:/gfs/brick node02:/gfs/brick node03:/gfs/brick
+  register: output
+  delegate_to: "{{hosts[0]}}"
+  run_once: true
+- debug: var=output
+  delegate_to: "{{hosts[0]}}"
+  run_once: true
+
+- name: start replica
+  shell:  gluster volume start gfs_vol

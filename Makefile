@@ -26,7 +26,6 @@ HOSTS={\
 	"node01" : { "tags" : ["nodes","db"], memoryMB: "8192" },\
 	"node02" : { "tags" : ["nodes","db"], memoryMB: "8192"}, \
 	"node03" : { "tags" : ["nodes","db"], memoryMB: "8192"}, \
-	"dns01" : { "tags" : ["dns"] , memoryMB: "2048"},\
 }
 
  HOSTS_test={\
