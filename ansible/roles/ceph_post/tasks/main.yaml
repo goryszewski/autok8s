@@ -1,0 +1,23 @@
+- name: Read SSH public key from master
+  slurp:
+    src: "/etc/ceph/ceph.pub"
+  delegate_to: servera.autok8s.xyz
+  run_once: true
+  register: slurped_key
+
+- name: Set the SSH key content as a variable
+  set_fact:
+    ssh_key_content: "{{ slurped_key.content | b64decode }}"
+
+- name: Add the SSH public key to authorized_keys on remote machine
+  authorized_key:
+    user: root
+    state: present
+    key: "{{ ssh_key_content }}"
+
+- name: Read SSH public key from master
+  shell: cephadm shell --mount /srv/init.yaml -- ceph orch apply -i /mnt/init.yaml
+  delegate_to: servera.autok8s.xyz
+  run_once: true
+  register: output
+- debug: var=output

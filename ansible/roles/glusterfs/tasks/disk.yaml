@@ -1,0 +1,20 @@
+- name: Create a new xfs primary partition
+  community.general.parted:
+    device: /dev/{{ item }}
+    number: 1
+    state: present
+    fs_type: xfs
+
+- name: Create a xfs filesystem on /dev/{{ item }}1 and check disk blocks
+  community.general.filesystem:
+    fstype: xfs
+    dev: /dev/{{ item }}1
+    opts: -i size=512 -d su=128k,sw=01
+
+- name: Mount brick
+  ansible.posix.mount:
+    path: /gfs/brick_{{ item}}
+    src: /dev/{{ item }}1
+    fstype: xfs
+    opts: rw,inode64,noatime,nouuid
+    state: mounted

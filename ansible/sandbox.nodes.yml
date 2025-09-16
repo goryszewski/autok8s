@@ -7,36 +7,85 @@
     - role: autok8s.general.keepalive
       vars:
         interface: ens4
-  tags: [DNS]
+  tags: [DNS,SKIP]
 
 - name: Prep - Sandbox
-  hosts: nodes
+  hosts: all
   gather_facts: true
-  tasks:
+  pre_tasks:
     - name: Prep etc hosts
       ansible.builtin.lineinfile:
         path: "/etc/hosts"
         regexp: "{{ item }}"
-        line:  "{{ hostvars[item]['ansible_host']  }}  {{ hostvars[item]['inventory_hostname_short']   }} {{ item }}"
+        line:  "{{ hostvars[item]['ansible_host'] }} {{ item }}  {{ hostvars[item]['inventory_hostname_short']   }}"
         state: present
       with_items: "{{ groups.all }}"
+
+    - name: fix name
+      # ansible.builtin.debug: var=inventory_hostname
+      shell: "hostnamectl set-hostname {{ inventory_hostname }}"
+  tags: [ALL]
 
 - name: Roles for nodes servers - sql galera
   hosts: galera
   gather_facts: true
   roles:
     - role: percona
-    # - role: mariadb
       vars:
         - hosts: "{{groups.nodes}}"
 
-  tags: [nodes]
+  tags: [galera]
+
+- name: Roles for nodes servers - sql mariadb replica
+  hosts: mariadb
+  gather_facts: true
+  roles:
+    - role: mariadb_replica
+      vars:
+        - hosts: "{{groups.nodes}}"
+        - replica_from: "node01.autok8s.xyz"
+
+  tags: [mariadb]
 
 - name: Roles for nodes servers - glusterfs
-  hosts: glusterfs,nodes
+  hosts: gluster
   gather_facts: true
+  tags: [gluster, SKIP]
   roles:
     - role: glusterfs
       vars:
         - hosts: "{{groups.nodes}}"
-  tags: [glusterfs]
+        - name_vol: "gfs_test"
+
+- name: Roles for nodes servers - glusterfs
+  hosts: test
+  gather_facts: true
+  tags: [gluster]
+  roles:
+    - role: gluster_client
+      vars:
+        - name_vol: "gfs_test"
+  post_tasks:
+    - shell:  mount -t glusterfs node01:/gfs_test /mnt
+
+- name: Roles for nodes servers - ceph
+  hosts: ceph
+  gather_facts: true
+  tags: [ceph]
+  roles:
+    - role: ceph_prep
+
+- name: Roles for nodes servers - cephmaster
+  hosts: master
+  gather_facts: true
+  tags: [ceph]
+  roles:
+    - role: ceph_master
+
+- name: Roles for nodes servers - ceph_post
+  hosts: ceph
+  gather_facts: true
+  tags: [ceph]
+  roles:
+    - role: ceph_post
+# END

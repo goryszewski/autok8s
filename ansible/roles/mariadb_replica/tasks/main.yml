@@ -1,0 +1,97 @@
+---
+# tasks file for mariadb
+
+- name: Install mariadb-server
+  ansible.builtin.apt:
+    update_cache: true
+    allow_change_held_packages: true
+    pkg: "mariadb-server"
+    state: present
+
+- name: Install dep
+  ansible.builtin.apt:
+    update_cache: true
+    allow_change_held_packages: true
+    pkg: "python3-pymysql"
+    state: present
+
+- name: Install dep
+  ansible.builtin.apt:
+    update_cache: true
+    allow_change_held_packages: true
+    pkg: "mariadb-backup"
+    state: present
+
+- name: Deploy config
+  ansible.builtin.template:
+    src: my.cnf.j2
+    dest: /etc/mysql/mariadb.conf.d/50-server.cnf
+  notify: Restart mariadb
+
+- name: Force all notified handlers to run at this point, not waiting for normal sync points
+  ansible.builtin.meta: flush_handlers
+
+- name: Enable service mariadb
+  when: "inventory_hostname != hosts[0] "
+  ansible.builtin.systemd:
+    name: mariadb
+    enabled: true
+    state: started
+
+- name: test Position
+  when: "inventory_hostname == replica_from"
+  shell: " mysql -e 'show master status\\G' | grep Position | cut -f2 -d':' | xargs"
+  register: Position
+- debug: var=Position['stdout']
+  when: "inventory_hostname == replica_from"
+
+- name: test File
+  when: "inventory_hostname == replica_from"
+  shell: " mysql -e 'show master status\\G' | grep File | cut -f2 -d':' | xargs"
+  register: File
+- debug: var=File['stdout']
+
+- name: set fact on replica nodes
+  when: "inventory_hostname == replica_from"
+  set_fact:
+    "File": "{{File['stdout']}}"
+    "Pos": "{{Position['stdout']}}"
+  delegate_to: '{{replica_from}}'
+  delegate_facts: True
+
+- name: Create database user with name 'replication' and password '12345' with replication privileges
+  when: "inventory_hostname == replica_from"
+  mysql_user:
+    name: replication
+    host: "%"
+    password: 12345
+    priv: "*.*:REPLICATION SLAVE"
+    state: present
+    login_unix_socket: /var/run/mysqld/mysqld.sock
+- name: Create database user with name 'backup' and password '12345' with all privileges
+  when: "inventory_hostname == replica_from"
+  mysql_user:
+    name: backup
+    host: "%"
+    password: 12345
+    priv: "*.*:ALL"
+    state: present
+    login_unix_socket: /var/run/mysqld/mysqld.sock
+
+# create replica
+
+- name: test create replica
+  when: "inventory_hostname != replica_from"
+  shell: |
+    mysql -e "
+    CHANGE MASTER [\"test_01\"] TO
+    MASTER_HOST='{{ replica_from }}',
+    MASTER_USER='replication',
+    MASTER_PASSWORD='12345',
+    MASTER_PORT=3306,
+    MASTER_LOG_FILE='{{hostvars[replica_from]['File'] }}',
+    MASTER_LOG_POS={{hostvars[replica_from]['Pos'] }},
+    MASTER_CONNECT_RETRY=10; start slave"
+  register: replica
+- debug: var=replica['stdout']
+  when: "inventory_hostname != replica_from"

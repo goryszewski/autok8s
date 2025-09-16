@@ -1,0 +1,41 @@
+
+---
+{% for host in groups["ceph"] %}
+service_type: host
+addr: {{hostvars[host]['ansible_host']}}
+hostname: {{hostvars[host]['inventory_hostname']}}
+---
+{% endfor %}
+
+
+service_type: mon
+placement:
+  hosts:
+{% for host in groups["ceph"] %}
+    - {{hostvars[host]['inventory_hostname']}}
+{% endfor %}
+
+---
+service_type: rgw
+service_id: realm.zone
+placement:
+  hosts:
+{% for host in groups["ceph"] %}
+    - {{hostvars[host]['inventory_hostname']}}
+{% endfor %}
+---
+service_type: mgr
+placement:
+  hosts:
+{% for host in groups["ceph"] %}
+    - {{hostvars[host]['inventory_hostname']}}
+{% endfor %}
+
+---
+service_type: osd
+service_id: default_drive_group
+placement:
+  host_pattern: 'server*'
+data_devices:
+  paths:
+    - /dev/vdb

@@ -41,26 +41,11 @@
     pkg:
       - parted
 
-- name: Create a new xfs primary partition
-  community.general.parted:
-    device: /dev/vdb
-    number: 1
-    state: present
-    fs_type: xfs
-
-- name: Create a xfs filesystem on /dev/vdb1 and check disk blocks
-  community.general.filesystem:
-    fstype: xfs
-    dev: /dev/vdb1
-    opts: -i size=512 -d su=128k,sw=01
-
-- name: Mount brick
-  ansible.posix.mount:
-    path: /gfs
-    src: /dev/vdb1
-    fstype: xfs
-    opts: rw,inode64,noatime,nouuid
-    state: mounted
+- name: Prep disk
+  ansible.builtin.include_tasks: disk.yaml
+  with_items:
+    - vdb
+    - vdc
 
 - name: Test peers
   shell: gluster pool list | grep -i connected | wc -l
@@ -75,15 +60,19 @@
 
 
 - name: check exist
-  shell: gluster volume list | grep gfs_vol
+  shell: gluster volume list | grep {{ name_vol }}
+  ignore_errors: true
   register: output
+  delegate_to: "{{hosts[0]}}"
+  run_once: true
+
 - debug: var=output
   delegate_to: "{{hosts[0]}}"
   run_once: true
 
 - name: Create replica
   when: output["rc"] != 0
-  shell: gluster volume create gfs_vol replica 3 node01:/gfs/brick node02:/gfs/brick node03:/gfs/brick
+  shell: gluster volume create {{ name_vol }} replica 3 node01:/gfs/brick_vdb/brick node02:/gfs/brick_vdb/brick node03:/gfs/brick_vdb/brick node01:/gfs/brick_vdc/brick node02:/gfs/brick_vdc/brick node03:/gfs/brick_vdc/brick
   register: output
   delegate_to: "{{hosts[0]}}"
   run_once: true
@@ -92,4 +81,11 @@
   run_once: true
 
 - name: start replica
-  shell:  gluster volume start gfs_vol
+  shell:  gluster volume start {{ name_vol }}
+  delegate_to: "{{hosts[0]}}"
+  run_once: true
+
+- name: Python Execution
+  mg_disk: yourName=test
+  register: result
+- debug: var=result

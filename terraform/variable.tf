@@ -21,6 +21,13 @@ variable "name_network" {
   default = "Local_ansible"
 }
 
+variable "disks" {
+  type = map(object({
+    size= number
+  }))
+  default = { }
+}
+
 variable "public_network" {
   type    = string
   default = "public"

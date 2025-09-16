@@ -1,64 +1,7 @@
 #VAR
 CONF_domain=autok8s.xyz
-HOSTS={\
-	"master01" : { memoryMB: "4096" , "tags" : ["etcd","nodeK8S","controlplane","init"] },\
-	"master02" : { memoryMB: "4096" , "tags" : ["etcd","nodeK8S","controlplane"] },\
-	"master03" : { memoryMB: "4096" , "tags" : ["etcd","nodeK8S","controlplane"] },\
-	"worker01" : { "tags" : ["nodeK8S","worker"]  , memoryMB: "8192"}, \
-	"worker02" : { "tags" : ["nodeK8S","worker"]  , memoryMB: "8192"}, \
-	"haproxy01" : { "tags" : ["dns","master"] , memoryMB: "2048"},\
-	"dns02" : { "tags" : ["dns"] , memoryMB: "2048"}, \
-	"syslog" : { "tags" : ["syslog"] , memoryMB: "2048"}, \
-	"vault01" : { "tags" : ["vault"] , memoryMB: "2048"}, \
-	"vault02" : { "tags" : ["vault"] , memoryMB: "2048"}, \
-	"prometheus": {"tags" : ["monit"] , memoryMB: "2048"} \
-	"lbexternal01" : { "tags" : ["lbexternal"] , memoryMB: "2048"},\
-	"nfs01" : { "tags" : ["nfs"] , memoryMB: "2048"},\
- }
-
- HOSTS_s={\
-	"master01" : { memoryMB: "8192" , "tags" : ["etcd","nodeK8S","controlplane","init"] },\
-	"worker01" : { "tags" : ["nodeK8S","worker"]  , memoryMB: "8192"}, \
-	"dns01" : { "tags" : ["dns","master"] , memoryMB: "2048"},\
- }
-
- HOSTS_nodes={\
-	"node01" : { "tags" : ["nodes","db"], memoryMB: "8192" },\
-	"node02" : { "tags" : ["nodes","db"], memoryMB: "8192"}, \
-	"node03" : { "tags" : ["nodes","db"], memoryMB: "8192"}, \
-}
-
- HOSTS_test={\
-	"master01" : { memoryMB: "8192" , "tags" : ["etcd","nodeK8S","controlplane","init"] },\
-	"master02" : { memoryMB: "8192" , "tags" : ["etcd","nodeK8S","controlplane"] },\
-	"worker01" : { "tags" : ["nodeK8S","worker"]  , memoryMB: "8192"}, \
-	"haproxy01" : { "tags" : ["haproxy","dns"] , memoryMB: "2048"},\
-	"lbexternal01" : { "tags" : ["lbexternal"] , memoryMB: "2048"},\
- }
-
-HOSTS_swift={"node01" : { memoryMB: "8192" , "tags" : ["swift"] }}
-
-Terraform_Swift= -var-file="debian12.tfvars" -var 'domain=$(CONF_domain)' -var 'hosts=$(HOSTS_swift)'
-
-HOSTS_single={"master01" : { "template":"rh93", memoryMB: "8192" , "tags" : ["etcd","nodeK8S","controlplane","init","worker"] }}
-
-Terraform_VARS= -var-file="variable/debian12.tfvars"\
-				-var 'domain=$(CONF_domain)' \
-				-var 'hosts=$(HOSTS)'
-
-Terraform_VARS_Mini=-var-file="variable/debian12.tfvars" -var 'domain=$(CONF_domain)' -var 'hosts=$(HOSTS_test)'
-
-Terraform_VARS_ubuntu=-var-file="ubuntu2204.tfvars" -var 'domain=$(CONF_domain)' -var 'hosts=$(HOSTS_test)'
-
-Terraform_VARS_bsd=-var-file="freebsd14.tfvars" -var 'domain=$(CONF_domain)' -var 'hosts=$(HOSTS_s)'
-
-Terraform_VARS_redhat=-var-file="rh93.tfvars" -var 'domain=$(CONF_domain)' -var 'hosts=$(HOSTS_single)'
-
-Terraform_VARS_nodes=-var-file="variable/debian12.tfvars" -var 'domain=$(CONF_domain)' -var 'hosts=$(HOSTS_nodes)'
 
 inventory=-i ./scripts/libvirt_inventory.py
-
-
 
 #end config
 
@@ -94,55 +37,38 @@ swift_ansible:
 
 # End template
 
+
+.PHONY: build
+build: terraform ans
+	@echo "[MAKE] Build ENV=${ENV}"
+
+.PHONY: rebuild
+rebuild: destroy terraform ans
+	@echo "[MAKE] rebuild ENV=${ENV}"
 # BEGIN terraform
 
-terraform_init:
-	@echo "[MAKE] Terraform Init"
-	cd ./terraform && terraform init $(Terraform_VARS_Mini)
-
-terraform_plan: terraform_init
-	@echo "[MAKE] Terraform Plan"
-	cd ./terraform && terraform plan  $(Terraform_VARS)
-
-terraform_apply: terraform_plan
-	@echo "[MAKE] Terraform Apply"
-	cd ./terraform && terraform apply --auto-approve $(Terraform_VARS)
-
-terraform_mini:
-	@echo "[MAKE] Terraform Apply"
+.PHONY: terraform
+terraform:
+	@echo "[MAKE] TEST ${ENV}"
 	sudo iptables -t nat -A POSTROUTING  -o eno1 -j MASQUERADE
-	cd ./terraform && terraform apply --auto-approve $(Terraform_VARS_Mini)
+	cd ./terraform && terraform apply --auto-approve  -var-file="../env/${ENV}.tfvars" -var-file="variable/debian12.tfvars" -var 'domain=$(CONF_domain)'
 
-terraform_nodes:
-	@echo "[MAKE] Terraform Apply"
-	sudo iptables -t nat -A POSTROUTING  -o eno1 -j MASQUERADE
-	cd ./terraform && terraform apply --auto-approve $(Terraform_VARS_nodes)
-
-terraform_db_destroy: terraform_init
+.PHONY: destroy
+destroy:
 	@echo "[MAKE] Terraform Destroy"
-	cd ./terraform && terraform destroy --auto-approve $(Terraform_VARS_db)
-
-terraform_mini_show:
-	@echo "[MAKE] Terraform Apply"
-	cd ./terraform && terraform state list
-
-terraform_bsd:
-	@echo "[MAKE] Terraform Apply"
-	cd ./terraform && terraform apply --auto-approve $(Terraform_VARS_bsd)
-
-terraform_ubuntu: terraform_plan
-	@echo "[MAKE] Terraform Apply"
-	cd ./terraform && terraform apply --auto-approve $(Terraform_VARS_ubuntu)
-
-terraform_redhat: terraform_plan
-	@echo "[MAKE] Terraform Apply"
-	cd ./terraform && terraform apply --auto-approve $(Terraform_VARS_redhat)
-
-terraform_destroy: terraform_init
-	@echo "[MAKE] Terraform Destroy"
-	cd ./terraform && terraform destroy --auto-approve $(Terraform_VARS_Mini)
+	cd ./terraform && terraform destroy --auto-approve  -var-file='../env/${ENV}.tfvars' -var-file="variable/debian12.tfvars"  -var 'domain=$(CONF_domain)'
 
 # END terraform
+
+inventory:
+	@echo "[MAKE] Ansible Nodes Cluster"
+	# cd ./ansible && ansible-galaxy install -r requirements.yml
+	cd ./ansible && ansible-inventory $(inventory)  --list
+
+ans:
+	@echo "[MAKE] Ansible Nodes Cluster"
+	# cd ./ansible && ansible-galaxy install -r requirements.yml
+	cd ./ansible && ansible-playbook sandbox.nodes.yml $(inventory)  --extra-vars @variables.yml --extra-vars @secret.yaml  --tags ${ENV},ALL --skip-tags SKIP
 
 ansible_ping:
 	@echo "[MAKE] Ansible All ping"

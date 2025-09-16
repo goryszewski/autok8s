@@ -37,6 +37,7 @@ module "node" {
   domain   = var.domain
   hostname = each.key
   pool     = var.pool
+  disks    = each.value["disks"]
   tags     = each.value["tags"]
   memoryMB = each.value["memoryMB"]
   network  = module.network.id

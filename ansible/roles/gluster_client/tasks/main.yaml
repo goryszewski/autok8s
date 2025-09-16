@@ -1,0 +1,26 @@
+- ansible.builtin.shell: grep 'VERSION_ID=' /etc/os-release | cut -d '=' -f 2 | tr -d '"'
+  register: DEBID
+
+- ansible.builtin.shell: grep 'VERSION=' /etc/os-release | grep -Eo '[a-z]+'
+  register: DEBVER
+
+- ansible.builtin.shell: dpkg --print-architecture
+  register: DEBARCH
+
+- name: Add repositories key
+  ansible.builtin.apt_key:
+    url: https://download.gluster.org/pub/gluster/glusterfs/{{ gluster_version }}/rsa.pub
+    state: present
+
+- name: Add repositories
+  ansible.builtin.apt_repository:
+    repo: 'deb https://download.gluster.org/pub/gluster/glusterfs/LATEST/Debian/{{ DEBID["stdout"] }}/{{ DEBARCH["stdout"]  }}/apt {{ DEBVER["stdout"]  }} main'
+    state: present
+    filename: 'glusterfs'
+
+- name: Install - glusterfs-client
+  ansible.builtin.apt:
+    update_cache: yes
+    allow_change_held_packages: true
+    pkg:
+      - glusterfs-client

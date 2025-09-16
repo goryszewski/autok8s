@@ -1,0 +1,6 @@
+- name: Install cephadm
+  ansible.builtin.apt:
+    update_cache: true
+    allow_change_held_packages: true
+    pkg: "cephadm"
+    state: present

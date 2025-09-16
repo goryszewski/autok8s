@@ -1,6 +1,18 @@
 # auto_k8s - Learn terraform + ansible + k8s
 Inspiration <a rel="license" href="https://github.com/kelseyhightower/kubernetes-the-hard-way">kelseyhightower kubernetes-the-hard-way</a> and  <a rel="license" href="https://docs.tigera.io/calico/latest/getting-started/kubernetes/hardway/">Calico Hard way</a>
 
+
+# Run environment
+```
+ENV=mariadb make terraform
+ENV=mariadb make inventory
+ENV=mariadb make ans
+
+ENV=k8sTEST make destroy
+
+ENV=ceph make terraform
+```
+
 vm requires:
  * qemu-guest-agent
  * disabled cloud-init

@@ -1,0 +1,22 @@
+- name: Install cephadm
+  ansible.builtin.apt:
+    update_cache: true
+    allow_change_held_packages: true
+    pkg: "cephadm"
+    state: present
+
+- name: Deploy config initcluster.yaml
+  # when: "inventory_hostname != hosts[0] "
+  ansible.builtin.template:
+    src: init_cluster.yaml.j2
+    dest: /srv/init.yaml
+- name: Deploy config init_single.yaml
+  # when: "inventory_hostname != hosts[0] "
+  ansible.builtin.template:
+    src: init_single.yaml.j2
+    dest: /srv/init_s.yaml
+
+- name: Init
+  shell: "cephadm bootstrap --mon-ip={{ ansible_host }} --apply-spec=/srv/init_s.yaml --initial-dashboard-password=redhat --dashboard-password-noupdate --allow-fqdn-hostname "
+  register: output
+- debug: var=output

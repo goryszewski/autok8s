@@ -1,0 +1,15 @@
+HOSTS = {
+  "master01" : { memoryMB : "4096", "tags" : ["etcd", "nodeK8S", "controlplane", "init"] },
+  "master02" : { memoryMB : "4096", "tags" : ["etcd", "nodeK8S", "controlplane"] },
+  "master03" : { memoryMB : "4096", "tags" : ["etcd", "nodeK8S", "controlplane"] },
+  "worker01" : { "tags" : ["nodeK8S", "worker"], memoryMB : "8192" },
+  "worker02" : { "tags" : ["nodeK8S", "worker"], memoryMB : "8192" },
+  "haproxy01" : { "tags" : ["dns", "master"], memoryMB : "2048" },
+  "dns02" : { "tags" : ["dns"], memoryMB : "2048" },
+  "syslog" : { "tags" : ["syslog"], memoryMB : "2048" },
+  "vault01" : { "tags" : ["vault"], memoryMB : "2048" },
+  "vault02" : { "tags" : ["vault"], memoryMB : "2048" },
+  "prometheus" : { "tags" : ["monit"], memoryMB : "2048" },
+  "lbexternal01" : { "tags" : ["lbexternal"], memoryMB : "2048" },
+  "nfs01" : { "tags" : ["nfs"], memoryMB : "2048" },
+}

@@ -1,0 +1,5 @@
+# Mariadb_replica variables
+
+mariadb_replica_id: 3
+
+# Mariadb_replica END

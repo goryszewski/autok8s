@@ -1,0 +1,28 @@
+---
+service_type: host
+addr: {{ ansible_host }}
+hostname: {{ inventory_hostname }}
+---
+service_type: mon
+placement:
+  hosts:
+    - {{ inventory_hostname }}
+---
+service_type: rgw
+service_id: realm.zone
+placement:
+  hosts:
+    - {{ inventory_hostname }}
+---
+service_type: mgr
+placement:
+  hosts:
+    - {{ inventory_hostname }}
+---
+service_type: osd
+service_id: default_drive_group
+placement:
+  host_pattern: 'server*'
+data_devices:
+  paths:
+    - /dev/vdb
